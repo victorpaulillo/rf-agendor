@@ -21,3 +21,8 @@ pip freeze > requirements.txt
 
 # Run flask
 flask run
+
+
+# To deploy the container on Cloud Run
+cp app.py main.py
+gcloud run deploy
