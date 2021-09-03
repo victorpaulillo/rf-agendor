@@ -1,7 +1,7 @@
 import os
 import base64
 import requests
-import datetime
+from datetime import datetime
 from google.cloud import storage
 from flask import Flask
 
@@ -9,14 +9,14 @@ app = Flask(__name__)
 
 @app.route("/")
 def download():
-    start_time = datetime.datetime.now()
+    start_time = datetime.now()
     pubsub_message = 'F.K03200$Z.D10710.MOTICSV.zip'
     url = 'http://200.152.38.155/CNPJ/' + pubsub_message 
     myfile = requests.get(url)
-    down_time = datetime.datetime.now()
+    down_time = datetime.now()
 
     open(pubsub_message, 'wb').write(myfile.content)
-    download_time = datetime.datetime.now()
+    download_time = datetime.now()
 
     print('Down time: ', down_time - start_time)
     print('Download time: ', download_time - start_time)
