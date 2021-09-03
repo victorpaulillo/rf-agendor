@@ -10,7 +10,8 @@ app = Flask(__name__)
 @app.route("/")
 def download():
     start_time = datetime.now()
-    pubsub_message = 'F.K03200$Z.D10710.MOTICSV.zip'
+    # pubsub_message = 'F.K03200$Z.D10710.MOTICSV.zip'
+    pubsub_message = 'K3241.K03200Y0.D10710.ESTABELE.zip'
     url = 'http://200.152.38.155/CNPJ/' + pubsub_message 
     myfile = requests.get(url)
     down_time = datetime.now()
