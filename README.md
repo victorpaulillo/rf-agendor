@@ -24,5 +24,8 @@ flask run
 
 
 # To deploy the container on Cloud Run
-cp app.py main.py
 gcloud run deploy
+
+# To run locally, it is necessary to change the name of the main scrip to "app.py"
+
+

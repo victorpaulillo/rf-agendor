@@ -7,18 +7,34 @@ from google.cloud import pubsub_v1
 from concurrent import futures
 
 
-from flask import Flask
+from flask import Flask, request
 
 app = Flask(__name__)
 
-@app.route("/")
-def download_pubsub(event, context):
-    """Triggered from a message on a Cloud Pub/Sub topic.
-    Args:
-         event (dict): Event payload.
-         context (google.cloud.functions.Context): Metadata for the event.
-    """
-    pubsub_message = base64.b64decode(event['data']).decode('utf-8')
+# [START eventarc_pubsub_handler]
+@app.route('/', methods=['POST'])
+#def download_pubsub(event, context):
+#    """Triggered from a message on a Cloud Pub/Sub topic.
+#    Args:
+#         event (dict): Event payload.
+#         context (google.cloud.functions.Context): Metadata for the event.
+#    """
+#    pubsub_message = base64.b64decode(event['data']).decode('utf-8')
+def index():
+    data = request.get_json()
+    if not data:
+        msg = 'no Pub/Sub message received'
+        print(f'error: {msg}')
+        return f'Bad Request: {msg}', 400
+
+    if not isinstance(data, dict) or 'message' not in data:
+        msg = 'invalid Pub/Sub message format'
+        print(f'error: {msg}')
+        return f'Bad Request: {msg}', 400
+
+    pubsub_message = data['message']
+    pubsub_message = base64.b64decode(pubsub_message['data']).decode('utf-8')
+
     print(pubsub_message)
     start_time = datetime.now()
 
