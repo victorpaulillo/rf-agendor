@@ -79,6 +79,7 @@ def index():
     """
     query_job = client.query(query)  # Make an API request.
 
+    print(f"Inserted record on bigquery etl_jobs table with the query: {query}")
 
     """Publishes messages to a Pub/Sub topic"""
 
