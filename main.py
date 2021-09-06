@@ -4,6 +4,8 @@ import requests
 from datetime import datetime
 from google.cloud import storage
 from google.cloud import pubsub_v1
+from google.cloud import bigquery
+
 from concurrent import futures
 
 
@@ -66,6 +68,17 @@ def index():
 
     print('Upload time: ', upload_time-start_time)
     print("File {} uploaded to {}.".format(source_file_name, destination_blob_name))
+
+    #Insert download file record into etl_jobs table on bigquery
+    # Construct a BigQuery client object.
+    client = bigquery.Client()
+
+    query = """
+            insert `cnpj-rf-324200.rf.etl_jobs` (file_name, download_timestamp)
+            values('""" + pubsub_message + """', timestamp(DATETIME(CURRENT_TIMESTAMP(), "America/Sao_Paulo")))
+    """
+    query_job = client.query(query)  # Make an API request.
+
 
     """Publishes messages to a Pub/Sub topic"""
 
