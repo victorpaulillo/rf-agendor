@@ -54,7 +54,7 @@ def index():
     print('Download time: ', download_time - start_time)
     print('Finished downloading')
 
-    bucket_name = "cnpj-rf"
+    bucket_name = "cnpj_rf"
     file_name = pubsub_message
     destination_bucket_name = "download_files/"
     destination_blob_name = destination_bucket_name + file_name
@@ -74,7 +74,7 @@ def index():
     client = bigquery.Client()
 
     query = """
-            insert `cnpj-rf-324200.rf.etl_jobs` (file_name, download_timestamp)
+            insert `fiery-marking-325513.rf.etl_jobs` (file_name, download_timestamp)
             values('""" + pubsub_message + """', timestamp(DATETIME(CURRENT_TIMESTAMP(), "America/Sao_Paulo")))
     """
     query_job = client.query(query)  # Make an API request.
@@ -84,7 +84,7 @@ def index():
     """Publishes messages to a Pub/Sub topic"""
 
     # TODO(developer)
-    project_id = "cnpj-rf-324200"
+    project_id = "fiery-marking-325513"
     topic_id = "downloaded_files"
 
     publisher = pubsub_v1.PublisherClient()
