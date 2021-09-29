@@ -28,4 +28,5 @@ gcloud run deploy
 
 # To run locally, it is necessary to change the name of the main scrip to "app.py"
 
-
+Kubernetes
+https://medium.com/google-cloud/a-guide-to-deploy-flask-app-on-google-kubernetes-engine-bfbbee5c6fb
