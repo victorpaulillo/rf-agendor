@@ -38,4 +38,6 @@ https://medium.com/google-cloud/a-guide-to-deploy-flask-app-on-google-kubernetes
 gcloud builds --project fiery-marking-325513\
     submit --tag gcr.io/fiery-marking-325513/flask-app:v1 .
 
-    
+# flask-app:v1 
+
+
