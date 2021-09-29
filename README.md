@@ -30,3 +30,12 @@ gcloud run deploy
 
 Kubernetes
 https://medium.com/google-cloud/a-guide-to-deploy-flask-app-on-google-kubernetes-engine-bfbbee5c6fb
+
+
+# Update the Dockerfile according to the medium post
+
+# Build the flask app using the code:
+gcloud builds --project fiery-marking-325513\
+    submit --tag gcr.io/fiery-marking-325513/flask-app:v1 .
+
+    
