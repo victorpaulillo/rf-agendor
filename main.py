@@ -40,14 +40,15 @@ def index():
     print(pubsub_message)
     start_time = datetime.now()
 
-    # pubsub_message = 'F.K03200$Z.D10710.MOTICSV.zip'
-    # pubsub_message = 'K3241.K03200Y0.D10710.ESTABELE.zip'
 
     url = 'http://200.152.38.155/CNPJ/' + pubsub_message 
-    myfile = requests.get(url)
+    myfile = requests.get(url, stream=True)
     down_time = datetime.now()
 
-    open(pubsub_message, 'wb').write(myfile.content)
+    #open(pubsub_message, 'wb').write(myfile.content)
+    with open(pubsub_message, "wb") as outfile:
+        for chunk in myfile.iter_content(chunk_size=None):  # Let the server decide.
+            outfile.write(chunk)
     download_time = datetime.now()
 
     print('Down time: ', down_time - start_time)
