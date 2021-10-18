@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, date
 
 from airflow import DAG
 from airflow.operators.dummy_operator import DummyOperator
-from airflow.operators.bash_operator import BashOperator
+# from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python_operator import PythonOperator
 #from airflow.operators.postgres_operator import PostgresOperator
 import psycopg2
@@ -40,13 +40,13 @@ dag = DAG(
 # Start the DAG
 start_dag = DummyOperator(task_id='start_dag', dag=dag)
 
-# BashOperator to list all files on the Google Cloud Storage
-gcs_files = BashOperator(
-    task_id="gcs_files",
-    bash_command=f"gsutil ls gs://cnpj_rf/download_files |  tr '\n' '||'",
-    xcom_push=True,
-    dag=dag
-)
+# # BashOperator to list all files on the Google Cloud Storage
+# gcs_files = BashOperator(
+#     task_id="gcs_files",
+#     bash_command=f"gsutil ls gs://cnpj_rf/download_files |  tr '\n' '||'",
+#     xcom_push=True,
+#     dag=dag
+# )
 
 import requests
 from datetime import datetime
@@ -204,7 +204,7 @@ download_file3 = PythonOperator(
 
 
 
-start_dag >> gcs_files >> [download_file0, download_file1, download_file2, download_file3]
+start_dag >> [download_file0, download_file1, download_file2, download_file3]
 # download_file4, download_file5, download_file6, download_file7, download_file8, download_file9]
 
 
