@@ -127,7 +127,7 @@ download_file0 = PythonOperator(
     task_id='download_file0',
     dag=dag,
     python_callable=download_files,
-    op_kwargs={"pubsub_message":'K3241.K03200Y0.D10911.ESTABELE.zip'},
+    op_kwargs={"pubsub_message":'K3241.K03200Y0.D11009.ESTABELE.zip'},
     )
 
 #PythonOperator that runs the truncate funtion
@@ -135,7 +135,7 @@ download_file1 = PythonOperator(
     task_id='download_file1',
     dag=dag,
     python_callable=download_files,
-    op_kwargs={"pubsub_message":'K3241.K03200Y1.D10911.ESTABELE.zip'},
+    op_kwargs={"pubsub_message":'K3241.K03200Y1.D11009.ESTABELE.zip'},
     )
 
 #PythonOperator that runs the truncate funtion
@@ -143,7 +143,7 @@ download_file2 = PythonOperator(
     task_id='download_file2',
     dag=dag,
     python_callable=download_files,
-    op_kwargs={"pubsub_message":'K3241.K03200Y2.D10911.ESTABELE.zip'},
+    op_kwargs={"pubsub_message":'K3241.K03200Y2.D11009.ESTABELE.zip'},
 )
 
 #PythonOperator that runs the truncate funtion
@@ -151,7 +151,7 @@ download_file3 = PythonOperator(
     task_id='download_file3',
     dag=dag,
     python_callable=download_files,
-    op_kwargs={"pubsub_message":'K3241.K03200Y3.D10911.ESTABELE.zip'},
+    op_kwargs={"pubsub_message":'K3241.K03200Y3.D11009.ESTABELE.zip'},
     )
 
 # #PythonOperator that runs the truncate funtion
