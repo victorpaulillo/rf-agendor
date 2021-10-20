@@ -171,7 +171,7 @@ def zipextract(bucketname, file_name_):
 
 
 
-def mv_blob(bucket_name, blob_name, new_bucket_name, new_blob_name, file_name_, file_name_final):
+def mv_blob(bucket_name, file_name_):
     """
     Function for moving files between directories or buckets. it will use GCP's copy 
     function then delete the blob from the old location.
@@ -185,6 +185,8 @@ def mv_blob(bucket_name, blob_name, new_bucket_name, new_blob_name, file_name_, 
     new_blob_name: str, name of file in new directory in target bucket 
         ex. 'data/destination/file_name'
     """
+    new_bucket_name = bucket_name
+    file_name_final = file_name_[:-4]
     blob_name = "download_files/" + file_name_ + "/" + file_name_final
     new_blob_name = "unzip_files/" + file_name_final
 
@@ -247,7 +249,6 @@ def remove_special_character(bucket_name, file_name, file_name_final, new_blob_s
 
 
 
-#PythonOperator that runs the truncate funtion
 download_file0 = PythonOperator(
     task_id='download_file0',
     dag=dag,
@@ -255,7 +256,6 @@ download_file0 = PythonOperator(
     op_kwargs={"pubsub_message":'F.K03200$Z.D11009.CNAECSV.zip'},
     )
 
-#PythonOperator that runs the truncate funtion
 download_file1 = PythonOperator(
     task_id='download_file1',
     dag=dag,
@@ -263,8 +263,6 @@ download_file1 = PythonOperator(
     op_kwargs={"pubsub_message":'F.K03200$Z.D11009.MUNICCSV.zip'},
     )
 
-
-#PythonOperator that runs the truncate funtion
 unzip_file1 = PythonOperator(
     task_id='unzip_file1',
     dag=dag,
@@ -273,7 +271,6 @@ unzip_file1 = PythonOperator(
     )
 
 
-#PythonOperator that runs the truncate funtion
 unzip_file2 = PythonOperator(
     task_id='unzip_file2',
     dag=dag,
@@ -282,6 +279,24 @@ unzip_file2 = PythonOperator(
     )
 
 
+mv_file1 = PythonOperator(
+    task_id='mv_file1',
+    dag=dag,
+    python_callable=mv_blob,
+    op_kwargs={"bucket_name":'cnpj_rf', "file_name_": 'F.K03200$Z.D11009.MUNICCSV.zip'},
+    )
+
+mv_file2 = PythonOperator(
+    task_id='mv_file2',
+    dag=dag,
+    python_callable=mv_blob,
+    op_kwargs={"bucket_name":'cnpj_rf', "file_name_": 'F.K03200$Z.D11009.MUNICCSV.zip'},
+    )
+
+
+
+
+mv_blob(bucket_name, blob_name, new_bucket_name, new_blob_name, file_name_, file_name_final):
 
 
 
@@ -357,7 +372,7 @@ unzip_file2 = PythonOperator(
 
 
 
-start_dag >> [download_file0, download_file1]
+start_dag >> [download_file0, download_file1] >> [unzip_file1, unzip_file2]
 # , download_file2, download_file3]
 # download_file4, download_file5, download_file6, download_file7, download_file8, download_file9]
 
