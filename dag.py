@@ -363,7 +363,11 @@ mv_file2 = PythonOperator(
 
 
 
-start_dag >> [download_file0, download_file1] >> [unzip_file1, unzip_file2] >> [mv_file1~, mv_file2]
+start_dag >> [download_file0, download_file1] 
+# >> [unzip_file1, unzip_file2] >> [mv_file1, mv_file2]
+
+
+
 # , download_file2, download_file3]
 # download_file4, download_file5, download_file6, download_file7, download_file8, download_file9]
 
