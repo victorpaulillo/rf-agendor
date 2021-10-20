@@ -7,6 +7,11 @@ from airflow.operators.python_operator import PythonOperator
 #from airflow.operators.postgres_operator import PostgresOperator
 import psycopg2
 
+from scripts import download_files
+from scripts import zipextract
+from scripts import mv_blob
+from scripts import remove_special_character
+
 
 # ***** IMPORTANT ******
 # This makes our dag timezone aware
@@ -48,86 +53,13 @@ start_dag = DummyOperator(task_id='start_dag', dag=dag)
 #     dag=dag
 # )
 
-import requests
-from datetime import datetime
-from google.cloud import storage
-from google.cloud import pubsub_v1
-from google.cloud import bigquery
-
-def download_files(pubsub_message):
-
-    start_time = datetime.now()
-    print(start_time)
-    url = 'http://200.152.38.155/CNPJ/' + pubsub_message 
-    with requests.get(url, stream=True) as myfile:
-        down_time = datetime.now()
-
-    #open(pubsub_message, 'wb').write(myfile.content)
-        with open(pubsub_message, "wb") as outfile:
-            for chunk in myfile.iter_content(chunk_size=None):  # Let the server decide.
-                outfile.write(chunk)
-    download_time = datetime.now()
-
-    print('Down time: ', down_time - start_time)
-    print('Download time: ', download_time - start_time)
-    print('Finished downloading')
-
-    bucket_name = "cnpj_rf"
-    file_name = pubsub_message
-    destination_bucket_name = "download_files/"
-    destination_blob_name = destination_bucket_name + file_name
-    source_file_name = pubsub_message
-    
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(destination_blob_name)
-    blob.upload_from_filename(source_file_name)
-    upload_time = datetime.now()
-
-    print('Upload time: ', upload_time-start_time)
-    print("File {} uploaded to {}.".format(source_file_name, destination_blob_name))
-
-    #Insert download file record into etl_jobs table on bigquery
-    # Construct a BigQuery client object.
-    client = bigquery.Client()
-
-    query = """
-            insert `fiery-marking-325513.rf.etl_jobs` (file_name, download_timestamp)
-            values('""" + pubsub_message + """', timestamp(DATETIME(CURRENT_TIMESTAMP(), "America/Sao_Paulo")))
-    """
-    query_job = client.query(query)  # Make an API request.
-
-    print(f"Inserted record on bigquery etl_jobs table with the query: {query}")
-
-    """Publishes messages to a Pub/Sub topic"""
-
-    # # TODO(developer)
-    # project_id = "fiery-marking-325513"
-    # topic_id = "downloaded_files"
-
-    # publisher = pubsub_v1.PublisherClient()
-    # topic_path = publisher.topic_path(project_id, topic_id)
-
-    # data = str(pubsub_message)
-    # # Data must be a bytestring
-    # data = data.encode("utf-8")
-    # # Add two attributes, origin and username, to the message
-    # future = publisher.publish(
-    #     topic_path, data, origin="python-sample", username="gcp"
-    # )
-    # print(future.result())
-
-    # print(f"Published messages with custom attributes to {topic_path}.")
-
-    return "Hello {}!".format(pubsub_message)
-
 
 #PythonOperator that runs the truncate funtion
 download_file0 = PythonOperator(
     task_id='download_file0',
     dag=dag,
     python_callable=download_files,
-    op_kwargs={"pubsub_message":'K3241.K03200Y0.D11009.ESTABELE.zip'},
+    op_kwargs={"pubsub_message":'F.K03200$Z.D11009.CNAECSV.zip'},
     )
 
 #PythonOperator that runs the truncate funtion
@@ -135,24 +67,24 @@ download_file1 = PythonOperator(
     task_id='download_file1',
     dag=dag,
     python_callable=download_files,
-    op_kwargs={"pubsub_message":'K3241.K03200Y1.D11009.ESTABELE.zip'},
+    op_kwargs={"pubsub_message":'F.K03200$Z.D11009.MUNICCSV.zip'},
     )
 
 #PythonOperator that runs the truncate funtion
-download_file2 = PythonOperator(
-    task_id='download_file2',
-    dag=dag,
-    python_callable=download_files,
-    op_kwargs={"pubsub_message":'K3241.K03200Y2.D11009.ESTABELE.zip'},
-)
+# download_file2 = PythonOperator(
+#     task_id='download_file2',
+#     dag=dag,
+#     python_callable=download_files,
+#     op_kwargs={"pubsub_message":'K3241.K03200Y2.D11009.ESTABELE.zip'},
+# )
 
-#PythonOperator that runs the truncate funtion
-download_file3 = PythonOperator(
-    task_id='download_file3',
-    dag=dag,
-    python_callable=download_files,
-    op_kwargs={"pubsub_message":'K3241.K03200Y3.D11009.ESTABELE.zip'},
-    )
+# #PythonOperator that runs the truncate funtion
+# download_file3 = PythonOperator(
+#     task_id='download_file3',
+#     dag=dag,
+#     python_callable=download_files,
+#     op_kwargs={"pubsub_message":'K3241.K03200Y3.D11009.ESTABELE.zip'},
+#     )
 
 # #PythonOperator that runs the truncate funtion
 # download_file4 = PythonOperator(
@@ -204,7 +136,8 @@ download_file3 = PythonOperator(
 
 
 
-start_dag >> [download_file0, download_file1, download_file2, download_file3]
+start_dag >> [download_file0, download_file1]
+# , download_file2, download_file3]
 # download_file4, download_file5, download_file6, download_file7, download_file8, download_file9]
 
 
