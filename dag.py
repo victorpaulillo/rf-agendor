@@ -208,13 +208,13 @@ def mv_blob(bucket_name, file_name_):
 
 def remove_special_character(bucket_name, file_name_):
     file_name_final = file_name_[:-4]
-    new_blob_name = "unzip_files/" + file_name_final
+    blob_name = "unzip_files/" + file_name_final
     new_blob_special_character = "unzip_files_treated/" + file_name_final
 
     client = storage.Client()
     bucket = client.get_bucket(bucket_name)
 
-    blob = bucket.get_blob(file_name_)
+    blob = bucket.get_blob(blob_name)
     file = blob.download_as_string()
 
     file_decoded = file.decode("ISO-8859-1")
@@ -222,7 +222,7 @@ def remove_special_character(bucket_name, file_name_):
     
     bucket.blob(new_blob_special_character + file_name_final).upload_from_string(file_upload, 'text/csv')
     
-    print(f'File moved from {new_blob_name} to {new_blob_special_character}')
+    print(f'File moved from {blob_name} to {new_blob_special_character}')
 
 # remove_special_character(bucket_name=bucket_name, file_name=file_name, file_name_final=file_name_final, new_blob_speacial_character=new_blob_speacial_character)
 
