@@ -143,20 +143,11 @@ def download_files(pubsub_message):
 
 
 
-
-bucket_name = "cnpj_rf"
-new_bucket_name = bucket_name
-new_blob_speacial_character = 'unzip_files_treated/'
-file_name_gs = 'F.K03200$Z.D11009.MUNICCSV.zip'
-file_name = "download_files/" + file_name_gs
-file_name_final = file_name_gs[:-4]
-
-
-
-
-
-
-def zipextract(bucketname, file_name):
+def zipextract(bucketname, file_name_):
+    new_bucket_name = bucketname
+    file_name = "download_files/" + file_name_
+    file_name_final = file_name_[:-4]
+    new_blob_speacial_character = 'unzip_files_treated/'
 
     storage_client = storage.Client()
     bucket = storage_client.get_bucket(bucketname)
@@ -178,10 +169,9 @@ def zipextract(bucketname, file_name):
 # zipextract(bucket_name, file_name) # if the file is gs://mybucket/path/file.zip
 
 
-blob_name = "download_files/" + file_name_gs + "/" + file_name_final
-new_blob_name = "unzip_files/" + file_name_final
 
-def mv_blob(bucket_name, blob_name, new_bucket_name, new_blob_name):
+
+def mv_blob(bucket_name, blob_name, new_bucket_name, new_blob_name, file_name_, file_name_final):
     """
     Function for moving files between directories or buckets. it will use GCP's copy 
     function then delete the blob from the old location.
@@ -195,6 +185,9 @@ def mv_blob(bucket_name, blob_name, new_bucket_name, new_blob_name):
     new_blob_name: str, name of file in new directory in target bucket 
         ex. 'data/destination/file_name'
     """
+    blob_name = "download_files/" + file_name_ + "/" + file_name_final
+    new_blob_name = "unzip_files/" + file_name_final
+
     storage_client = storage.Client()
     source_bucket = storage_client.get_bucket(bucket_name)
     source_blob = source_bucket.blob(blob_name)
@@ -211,7 +204,7 @@ def mv_blob(bucket_name, blob_name, new_bucket_name, new_blob_name):
 # mv_blob(bucket_name=bucket_name, blob_name=blob_name, new_bucket_name=new_bucket_name, new_blob_name=new_blob_name)
 
 
-def remove_special_character(bucket_name, file_name, file_name_final, new_blob_speacial_character):
+def remove_special_character(bucket_name, file_name, file_name_final, new_blob_speacial_character, new_blob_name):
 
     client = storage.Client()
     bucket = client.get_bucket(bucket_name)
@@ -269,6 +262,34 @@ download_file1 = PythonOperator(
     python_callable=download_files,
     op_kwargs={"pubsub_message":'F.K03200$Z.D11009.MUNICCSV.zip'},
     )
+
+
+#PythonOperator that runs the truncate funtion
+unzip_file1 = PythonOperator(
+    task_id='unzip_file1',
+    dag=dag,
+    python_callable=zipextract,
+    op_kwargs={"file_name_":'F.K03200$Z.D11009.MUNICCSV.zip', "bucketname": "cnpj_rf"},
+    )
+
+
+#PythonOperator that runs the truncate funtion
+unzip_file2 = PythonOperator(
+    task_id='unzip_file2',
+    dag=dag,
+    python_callable=zipextract,
+    op_kwargs={"file_name_":'F.K03200$Z.D11009.CNAECSV.zip', "bucketname": "cnpj_rf"},
+    )
+
+
+
+
+
+
+
+
+
+
 
 #PythonOperator that runs the truncate funtion
 # download_file2 = PythonOperator(
