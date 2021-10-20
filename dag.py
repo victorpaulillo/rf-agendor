@@ -29,14 +29,14 @@ default_args = {
  'email_on_failure': True
 }
 
-local_tz = pendulum.timezone('America/Toronto')
+local_tz = pendulum.timezone('America/Sao_Paulo')
 
 #--------------------------------------------------------------------------------
 
 dag = DAG(
     dag_id='test',
     description=f'Test',
-    schedule_interval='0 10 * * *',
+    schedule_interval='0 23 * * *',
     start_date=datetime(2021, 4, 7, tzinfo=local_tz),
     default_args=default_args,
     catchup=False,
