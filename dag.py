@@ -7,10 +7,10 @@ from airflow.operators.python_operator import PythonOperator
 #from airflow.operators.postgres_operator import PostgresOperator
 import psycopg2
 
-from .scripts import download_files
-from .scripts import zipextract
-from .scripts import mv_blob
-from .scripts import remove_special_character
+from scripts.scripts import download_files
+from scripts.scripts import zipextract
+from scripts.scripts import mv_blob
+from scripts.scripts import remove_special_character
 
 
 # ***** IMPORTANT ******
