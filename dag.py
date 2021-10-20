@@ -379,7 +379,10 @@ remove_special_char2 = PythonOperator(
 
 
 
-start_dag >> [download_file0, download_file1] 
+start_dag >> download_file0 >> unzip_file2 >> mv_file2
+start_dag >> download_file1 >> unzip_file1 >> mv_file1
+
+
 # >> [unzip_file1, unzip_file2] >> [mv_file1, mv_file2]
 
 
