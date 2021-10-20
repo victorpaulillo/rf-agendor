@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta, date
+from bs4 import BeautifulSoup
+import urllib3
 
 from airflow import DAG
 from airflow.operators.dummy_operator import DummyOperator
@@ -227,16 +229,53 @@ def remove_special_character(bucket_name, file_name_):
 # remove_special_character(bucket_name=bucket_name, file_name=file_name, file_name_final=file_name_final, new_blob_speacial_character=new_blob_speacial_character)
 
 
+def list_files_rf():
+
+    http = urllib3.PoolManager()
+
+    url = 'http://200.152.38.155/CNPJ/'
+    response = http.request('GET', url)
+
+    soup = BeautifulSoup(response.data, 'html.parser')
+    results = soup.find_all('a')
+
+    i=0
+    list_files=[]
+    for file in results:
+        file_url = file['href']
+        if file_url[0] in ['?', '/', 'L']:
+            pass
+        else:
+            i=i+1
+            list_files.append(file_url)
+
+    print(list_files)
+    return list_files
+
+
+
+def print_first_file(**kwargs):
+    ti = kwargs['ti']
+    pulled_value = ti.xcom_pull(task_ids='list_files_rf')
+    pulled_value_first = pulled_value[0]
+    pulled_value_second = pulled_value[1]
+    print(pulled_value_first)
+    print(pulled_value_second)
 
 
 
 
+list_files_rf = PythonOperator(
+    task_id='list_files_rf',
+    dag=dag,
+    python_callable=list_files_rf,
+    )
 
-
-
-
-
-
+print_first_file = PythonOperator(
+    task_id='print_first_file',
+    dag=dag,
+    python_callable=print_first_file,
+    )
 
 
 
