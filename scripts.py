@@ -83,7 +83,7 @@ def download_files(pubsub_message):
 bucket_name = "cnpj_rf"
 new_bucket_name = bucket_name
 new_blob_speacial_character = 'unzip_files_treated/'
-file_name_gs = 'F.K03200$Z.D10410.MUNICCSV.zip'
+file_name_gs = 'F.K03200$Z.D11009.MUNICCSV.zip'
 file_name = "download_files/" + file_name_gs
 file_name_final = file_name_gs[:-4]
 
