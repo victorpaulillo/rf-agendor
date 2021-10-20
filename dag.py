@@ -206,20 +206,23 @@ def mv_blob(bucket_name, file_name_):
 # mv_blob(bucket_name=bucket_name, blob_name=blob_name, new_bucket_name=new_bucket_name, new_blob_name=new_blob_name)
 
 
-def remove_special_character(bucket_name, file_name, file_name_final, new_blob_speacial_character, new_blob_name):
+def remove_special_character(bucket_name, file_name_):
+    file_name_final = file_name_[:-4]
+    new_blob_name = "unzip_files/" + file_name_final
+    new_blob_special_character = "unzip_files_treated/" + file_name_final
 
     client = storage.Client()
     bucket = client.get_bucket(bucket_name)
 
-    blob = bucket.get_blob(file_name)
+    blob = bucket.get_blob(file_name_)
     file = blob.download_as_string()
 
     file_decoded = file.decode("ISO-8859-1")
     file_upload = re.sub(r"[^a-zA-Z0-9,-@+_ \"\n]", '', str(file_decoded))
     
-    bucket.blob(new_blob_speacial_character + file_name_final).upload_from_string(file_upload, 'text/csv')
+    bucket.blob(new_blob_special_character + file_name_final).upload_from_string(file_upload, 'text/csv')
     
-    print(f'File moved from {new_blob_name} to {new_blob_speacial_character}')
+    print(f'File moved from {new_blob_name} to {new_blob_special_character}')
 
 # remove_special_character(bucket_name=bucket_name, file_name=file_name, file_name_final=file_name_final, new_blob_speacial_character=new_blob_speacial_character)
 
@@ -290,9 +293,22 @@ mv_file2 = PythonOperator(
     task_id='mv_file2',
     dag=dag,
     python_callable=mv_blob,
+    op_kwargs={"bucket_name":'cnpj_rf', "file_name_": 'F.K03200$Z.D11009.CNAECSV.zip'},
+    )
+
+remove_special_char1 = PythonOperator(
+    task_id='remove_special_char1',
+    dag=dag,
+    python_callable=remove_special_character,
     op_kwargs={"bucket_name":'cnpj_rf', "file_name_": 'F.K03200$Z.D11009.MUNICCSV.zip'},
     )
 
+remove_special_char2 = PythonOperator(
+    task_id='remove_special_char2',
+    dag=dag,
+    python_callable=remove_special_character,
+    op_kwargs={"bucket_name":'cnpj_rf', "file_name_": 'F.K03200$Z.D11009.CNAECSV.zip'},
+    )
 
 
 
