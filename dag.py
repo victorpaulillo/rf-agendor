@@ -220,7 +220,7 @@ def remove_special_character(bucket_name, file_name_):
     file_decoded = file.decode("ISO-8859-1")
     file_upload = re.sub(r"[^a-zA-Z0-9,-@+_ \"\n]", '', str(file_decoded))
     
-    bucket.blob(new_blob_special_character + file_name_final).upload_from_string(file_upload, 'text/csv')
+    bucket.blob(new_blob_special_character).upload_from_string(file_upload, 'text/csv')
     
     print(f'File moved from {blob_name} to {new_blob_special_character}')
 
