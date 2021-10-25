@@ -47,23 +47,6 @@ dag = DAG(
 # Start the DAG
 start_dag = DummyOperator(task_id='start_dag', dag=dag)
 
-# # BashOperator to list all files on the Google Cloud Storage
-# gcs_files = BashOperator(
-#     task_id="gcs_files",
-#     bash_command=f"gsutil ls gs://cnpj_rf/download_files |  tr '\n' '||'",
-#     xcom_push=True,
-#     dag=dag
-# )
-
-
-
-
-
-
-
-
-
-
 
 import requests
 from datetime import datetime
@@ -74,16 +57,6 @@ import re
 from zipfile import ZipFile, is_zipfile
 import io
     
-
-def print_first_file(**kwargs):
-    ti = kwargs['ti']
-    pulled_value = ti.xcom_pull(task_ids='list_files_rf')
-    pulled_value_first = pulled_value[0]
-    pulled_value_second = pulled_value[1]
-    print(pulled_value_first)
-    print(pulled_value_second)
-
-
 def download_files(**kwargs):
     ti = kwargs['ti']
     file_number = kwargs.get('file_number')
@@ -155,10 +128,6 @@ def download_files(**kwargs):
 
     return "Hello {}!".format(pubsub_message)
 
-
-
-
-# def zipextract(bucketname, file_name_):
 def zipextract(**kwargs):
     ti = kwargs['ti']
     file_number = kwargs.get('file_number')
@@ -187,12 +156,6 @@ def zipextract(**kwargs):
     
     print(f'File unzipped from {file_name}')
 
-# zipextract(bucket_name, file_name) # if the file is gs://mybucket/path/file.zip
-
-
-
-
-# def mv_blob(bucket_name, file_name_):
 def mv_blob(**kwargs):
     """
     Function for moving files between directories or buckets. it will use GCP's copy 
@@ -228,12 +191,8 @@ def mv_blob(**kwargs):
     source_blob.delete()
     
     print(f'File moved from {source_blob} to {new_blob_name}')
-    
-# mv_blob(bucket_name=bucket_name, blob_name=blob_name, new_bucket_name=new_bucket_name, new_blob_name=new_blob_name)
 
-
-# def remove_special_character(bucket_name, file_name_):
-def remove_special_character(**kwargs):
+def remove_spec_char(**kwargs):
     ti = kwargs['ti']
     file_number = kwargs.get('file_number')
     bucket_name = kwargs.get('bucket_name')
@@ -260,8 +219,6 @@ def remove_special_character(**kwargs):
     else:
         print(f'Did nothing, file is not ESTABELE, it is {file_name_}')
 
-# remove_special_character(bucket_name=bucket_name, file_name=file_name, file_name_final=file_name_final, new_blob_speacial_character=new_blob_speacial_character)
-
 
 def list_files_rf():
 
@@ -282,7 +239,8 @@ def list_files_rf():
         else:
             i=i+1
             list_files.append(file_url)
-
+    null_files = ['', '', '', '', '']
+    list_files.extend(null_files)
     print(list_files)
     return list_files
 
@@ -294,9 +252,6 @@ list_files_rf = PythonOperator(
     )
 
 
-
-
-
 download_file0 = PythonOperator(task_id='download_file0',dag=dag,python_callable=download_files,op_kwargs={"file_number":'0'})
 download_file1 = PythonOperator(task_id='download_file1',dag=dag,python_callable=download_files,op_kwargs={"file_number":'1'})
 download_file2 = PythonOperator(task_id='download_file2',dag=dag,python_callable=download_files,op_kwargs={"file_number":'2'})
@@ -304,96 +259,178 @@ download_file3 = PythonOperator(task_id='download_file3',dag=dag,python_callable
 download_file4 = PythonOperator(task_id='download_file4',dag=dag,python_callable=download_files,op_kwargs={"file_number":'4'})
 download_file5 = PythonOperator(task_id='download_file5',dag=dag,python_callable=download_files,op_kwargs={"file_number":'5'})
 download_file6 = PythonOperator(task_id='download_file6',dag=dag,python_callable=download_files,op_kwargs={"file_number":'6'})
-# download_file7 = PythonOperator(task_id='download_file7',dag=dag,python_callable=download_files,op_kwargs={"file_number":'7'})
-# download_file8 = PythonOperator(task_id='download_file8',dag=dag,python_callable=download_files,op_kwargs={"file_number":'8'})
-# download_file9 = PythonOperator(task_id='download_file9',dag=dag,python_callable=download_files,op_kwargs={"file_number":'9'})
-# download_file10 = PythonOperator(task_id='download_file10',dag=dag,python_callable=download_files,op_kwargs={"file_number":'10'})
-# download_file11 = PythonOperator(task_id='download_file11',dag=dag,python_callable=download_files,op_kwargs={"file_number":'11'})
-# download_file12 = PythonOperator(task_id='download_file12',dag=dag,python_callable=download_files,op_kwargs={"file_number":'12'})
-# download_file13 = PythonOperator(task_id='download_file13',dag=dag,python_callable=download_files,op_kwargs={"file_number":'13'})
-# download_file14 = PythonOperator(task_id='download_file14',dag=dag,python_callable=download_files,op_kwargs={"file_number":'14'})
-# download_file15 = PythonOperator(task_id='download_file15',dag=dag,python_callable=download_files,op_kwargs={"file_number":'15'})
-# download_file16 = PythonOperator(task_id='download_file16',dag=dag,python_callable=download_files,op_kwargs={"file_number":'16'})
-# download_file17 = PythonOperator(task_id='download_file17',dag=dag,python_callable=download_files,op_kwargs={"file_number":'17'})
-# download_file18 = PythonOperator(task_id='download_file18',dag=dag,python_callable=download_files,op_kwargs={"file_number":'18'})
-# download_file19 = PythonOperator(task_id='download_file19',dag=dag,python_callable=download_files,op_kwargs={"file_number":'19'})
-# download_file20 = PythonOperator(task_id='download_file20',dag=dag,python_callable=download_files,op_kwargs={"file_number":'20'})
-# download_file21 = PythonOperator(task_id='download_file21',dag=dag,python_callable=download_files,op_kwargs={"file_number":'21'})
-# download_file22 = PythonOperator(task_id='download_file22',dag=dag,python_callable=download_files,op_kwargs={"file_number":'22'})
-# download_file23 = PythonOperator(task_id='download_file23',dag=dag,python_callable=download_files,op_kwargs={"file_number":'23'})
-# download_file24 = PythonOperator(task_id='download_file24',dag=dag,python_callable=download_files,op_kwargs={"file_number":'24'})
-# download_file25 = PythonOperator(task_id='download_file25',dag=dag,python_callable=download_files,op_kwargs={"file_number":'25'})
-# download_file26 = PythonOperator(task_id='download_file26',dag=dag,python_callable=download_files,op_kwargs={"file_number":'26'})
-# download_file27 = PythonOperator(task_id='download_file27',dag=dag,python_callable=download_files,op_kwargs={"file_number":'27'})
-# download_file28 = PythonOperator(task_id='download_file28',dag=dag,python_callable=download_files,op_kwargs={"file_number":'28'})
-# download_file29 = PythonOperator(task_id='download_file29',dag=dag,python_callable=download_files,op_kwargs={"file_number":'29'})
-# download_file30 = PythonOperator(task_id='download_file30',dag=dag,python_callable=download_files,op_kwargs={"file_number":'30'})
-# download_file31 = PythonOperator(task_id='download_file31',dag=dag,python_callable=download_files,op_kwargs={"file_number":'31'})
-# download_file32 = PythonOperator(task_id='download_file32',dag=dag,python_callable=download_files,op_kwargs={"file_number":'32'})
-# download_file33 = PythonOperator(task_id='download_file33',dag=dag,python_callable=download_files,op_kwargs={"file_number":'33'})
-# download_file34 = PythonOperator(task_id='download_file34',dag=dag,python_callable=download_files,op_kwargs={"file_number":'34'})
-# download_file35 = PythonOperator(task_id='download_file35',dag=dag,python_callable=download_files,op_kwargs={"file_number":'35'})
-# download_file36 = PythonOperator(task_id='download_file36',dag=dag,python_callable=download_files,op_kwargs={"file_number":'36'})
-# download_file37 = PythonOperator(task_id='download_file37',dag=dag,python_callable=download_files,op_kwargs={"file_number":'37'})
-# download_file38 = PythonOperator(task_id='download_file38',dag=dag,python_callable=download_files,op_kwargs={"file_number":'38'})
-# download_file39 = PythonOperator(task_id='download_file39',dag=dag,python_callable=download_files,op_kwargs={"file_number":'39'})
-# download_file40 = PythonOperator(task_id='download_file40',dag=dag,python_callable=download_files,op_kwargs={"file_number":'40'})
+download_file7 = PythonOperator(task_id='download_file7',dag=dag,python_callable=download_files,op_kwargs={"file_number":'7'})
+download_file8 = PythonOperator(task_id='download_file8',dag=dag,python_callable=download_files,op_kwargs={"file_number":'8'})
+download_file9 = PythonOperator(task_id='download_file9',dag=dag,python_callable=download_files,op_kwargs={"file_number":'9'})
+download_file10 = PythonOperator(task_id='download_file10',dag=dag,python_callable=download_files,op_kwargs={"file_number":'10'})
+download_file11 = PythonOperator(task_id='download_file11',dag=dag,python_callable=download_files,op_kwargs={"file_number":'11'})
+download_file12 = PythonOperator(task_id='download_file12',dag=dag,python_callable=download_files,op_kwargs={"file_number":'12'})
+download_file13 = PythonOperator(task_id='download_file13',dag=dag,python_callable=download_files,op_kwargs={"file_number":'13'})
+download_file14 = PythonOperator(task_id='download_file14',dag=dag,python_callable=download_files,op_kwargs={"file_number":'14'})
+download_file15 = PythonOperator(task_id='download_file15',dag=dag,python_callable=download_files,op_kwargs={"file_number":'15'})
+download_file16 = PythonOperator(task_id='download_file16',dag=dag,python_callable=download_files,op_kwargs={"file_number":'16'})
+download_file17 = PythonOperator(task_id='download_file17',dag=dag,python_callable=download_files,op_kwargs={"file_number":'17'})
+download_file18 = PythonOperator(task_id='download_file18',dag=dag,python_callable=download_files,op_kwargs={"file_number":'18'})
+download_file19 = PythonOperator(task_id='download_file19',dag=dag,python_callable=download_files,op_kwargs={"file_number":'19'})
+download_file20 = PythonOperator(task_id='download_file20',dag=dag,python_callable=download_files,op_kwargs={"file_number":'20'})
+download_file21 = PythonOperator(task_id='download_file21',dag=dag,python_callable=download_files,op_kwargs={"file_number":'21'})
+download_file22 = PythonOperator(task_id='download_file22',dag=dag,python_callable=download_files,op_kwargs={"file_number":'22'})
+download_file23 = PythonOperator(task_id='download_file23',dag=dag,python_callable=download_files,op_kwargs={"file_number":'23'})
+download_file24 = PythonOperator(task_id='download_file24',dag=dag,python_callable=download_files,op_kwargs={"file_number":'24'})
+download_file25 = PythonOperator(task_id='download_file25',dag=dag,python_callable=download_files,op_kwargs={"file_number":'25'})
+download_file26 = PythonOperator(task_id='download_file26',dag=dag,python_callable=download_files,op_kwargs={"file_number":'26'})
+download_file27 = PythonOperator(task_id='download_file27',dag=dag,python_callable=download_files,op_kwargs={"file_number":'27'})
+download_file28 = PythonOperator(task_id='download_file28',dag=dag,python_callable=download_files,op_kwargs={"file_number":'28'})
+download_file29 = PythonOperator(task_id='download_file29',dag=dag,python_callable=download_files,op_kwargs={"file_number":'29'})
+download_file30 = PythonOperator(task_id='download_file30',dag=dag,python_callable=download_files,op_kwargs={"file_number":'30'})
+download_file31 = PythonOperator(task_id='download_file31',dag=dag,python_callable=download_files,op_kwargs={"file_number":'31'})
+download_file32 = PythonOperator(task_id='download_file32',dag=dag,python_callable=download_files,op_kwargs={"file_number":'32'})
+download_file33 = PythonOperator(task_id='download_file33',dag=dag,python_callable=download_files,op_kwargs={"file_number":'33'})
+download_file34 = PythonOperator(task_id='download_file34',dag=dag,python_callable=download_files,op_kwargs={"file_number":'34'})
+download_file35 = PythonOperator(task_id='download_file35',dag=dag,python_callable=download_files,op_kwargs={"file_number":'35'})
+download_file36 = PythonOperator(task_id='download_file36',dag=dag,python_callable=download_files,op_kwargs={"file_number":'36'})
+download_file37 = PythonOperator(task_id='download_file37',dag=dag,python_callable=download_files,op_kwargs={"file_number":'37'})
+download_file38 = PythonOperator(task_id='download_file38',dag=dag,python_callable=download_files,op_kwargs={"file_number":'38'})
+download_file39 = PythonOperator(task_id='download_file39',dag=dag,python_callable=download_files,op_kwargs={"file_number":'39'})
+download_file40 = PythonOperator(task_id='download_file40',dag=dag,python_callable=download_files,op_kwargs={"file_number":'40'})
 
 
+unzip_file0 = PythonOperator(task_id='unzip_file0',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'0', "bucket_name": "cnpj_rf"})
+unzip_file1 = PythonOperator(task_id='unzip_file1',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'1', "bucket_name": "cnpj_rf"})
+unzip_file2 = PythonOperator(task_id='unzip_file2',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'2', "bucket_name": "cnpj_rf"})
+unzip_file3 = PythonOperator(task_id='unzip_file3',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'3', "bucket_name": "cnpj_rf"})
+unzip_file4 = PythonOperator(task_id='unzip_file4',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'4', "bucket_name": "cnpj_rf"})
+unzip_file5 = PythonOperator(task_id='unzip_file5',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'5', "bucket_name": "cnpj_rf"})
+unzip_file6 = PythonOperator(task_id='unzip_file6',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'6', "bucket_name": "cnpj_rf"})
+unzip_file7 = PythonOperator(task_id='unzip_file7',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'7', "bucket_name": "cnpj_rf"})
+unzip_file8 = PythonOperator(task_id='unzip_file8',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'8', "bucket_name": "cnpj_rf"})
+unzip_file9 = PythonOperator(task_id='unzip_file9',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'9', "bucket_name": "cnpj_rf"})
+unzip_file10 = PythonOperator(task_id='unzip_file10',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'10', "bucket_name": "cnpj_rf"})
+unzip_file11 = PythonOperator(task_id='unzip_file11',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'11', "bucket_name": "cnpj_rf"})
+unzip_file12 = PythonOperator(task_id='unzip_file12',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'12', "bucket_name": "cnpj_rf"})
+unzip_file13 = PythonOperator(task_id='unzip_file13',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'13', "bucket_name": "cnpj_rf"})
+unzip_file14 = PythonOperator(task_id='unzip_file14',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'14', "bucket_name": "cnpj_rf"})
+unzip_file15 = PythonOperator(task_id='unzip_file15',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'15', "bucket_name": "cnpj_rf"})
+unzip_file16 = PythonOperator(task_id='unzip_file16',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'16', "bucket_name": "cnpj_rf"})
+unzip_file17 = PythonOperator(task_id='unzip_file17',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'17', "bucket_name": "cnpj_rf"})
+unzip_file18 = PythonOperator(task_id='unzip_file18',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'18', "bucket_name": "cnpj_rf"})
+unzip_file19 = PythonOperator(task_id='unzip_file19',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'19', "bucket_name": "cnpj_rf"})
+unzip_file20 = PythonOperator(task_id='unzip_file20',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'20', "bucket_name": "cnpj_rf"})
+unzip_file21 = PythonOperator(task_id='unzip_file21',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'21', "bucket_name": "cnpj_rf"})
+unzip_file22 = PythonOperator(task_id='unzip_file22',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'22', "bucket_name": "cnpj_rf"})
+unzip_file23 = PythonOperator(task_id='unzip_file23',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'23', "bucket_name": "cnpj_rf"})
+unzip_file24 = PythonOperator(task_id='unzip_file24',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'24', "bucket_name": "cnpj_rf"})
+unzip_file25 = PythonOperator(task_id='unzip_file25',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'25', "bucket_name": "cnpj_rf"})
+unzip_file26 = PythonOperator(task_id='unzip_file26',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'26', "bucket_name": "cnpj_rf"})
+unzip_file27 = PythonOperator(task_id='unzip_file27',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'27', "bucket_name": "cnpj_rf"})
+unzip_file28 = PythonOperator(task_id='unzip_file28',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'28', "bucket_name": "cnpj_rf"})
+unzip_file29 = PythonOperator(task_id='unzip_file29',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'29', "bucket_name": "cnpj_rf"})
+unzip_file30 = PythonOperator(task_id='unzip_file30',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'30', "bucket_name": "cnpj_rf"})
+unzip_file31 = PythonOperator(task_id='unzip_file31',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'31', "bucket_name": "cnpj_rf"})
+unzip_file32 = PythonOperator(task_id='unzip_file32',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'32', "bucket_name": "cnpj_rf"})
+unzip_file33 = PythonOperator(task_id='unzip_file33',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'33', "bucket_name": "cnpj_rf"})
+unzip_file34 = PythonOperator(task_id='unzip_file34',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'34', "bucket_name": "cnpj_rf"})
+unzip_file35 = PythonOperator(task_id='unzip_file35',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'35', "bucket_name": "cnpj_rf"})
+unzip_file36 = PythonOperator(task_id='unzip_file36',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'36', "bucket_name": "cnpj_rf"})
+unzip_file37 = PythonOperator(task_id='unzip_file37',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'37', "bucket_name": "cnpj_rf"})
+unzip_file38 = PythonOperator(task_id='unzip_file38',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'38', "bucket_name": "cnpj_rf"})
+unzip_file39 = PythonOperator(task_id='unzip_file39',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'39', "bucket_name": "cnpj_rf"})
+unzip_file40 = PythonOperator(task_id='unzip_file40',dag=dag,python_callable=zipextract,op_kwargs={"file_number":'40', "bucket_name": "cnpj_rf"})
 
 
-unzip_file0 = PythonOperator(
-    task_id='unzip_file0',
-    dag=dag,
-    python_callable=zipextract,
-    op_kwargs={"file_number":'0', "bucket_name": "cnpj_rf"},
-    )
+mv_file0 = PythonOperator(task_id='mv_file0',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'0'})
+mv_file1 = PythonOperator(task_id='mv_file1',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'1'})
+mv_file2 = PythonOperator(task_id='mv_file2',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'2'})
+mv_file3 = PythonOperator(task_id='mv_file3',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'3'})
+mv_file4 = PythonOperator(task_id='mv_file4',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'4'})
+mv_file5 = PythonOperator(task_id='mv_file5',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'5'})
+mv_file6 = PythonOperator(task_id='mv_file6',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'6'})
+mv_file7 = PythonOperator(task_id='mv_file7',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'7'})
+mv_file8 = PythonOperator(task_id='mv_file8',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'8'})
+mv_file9 = PythonOperator(task_id='mv_file9',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'9'})
+mv_file10 = PythonOperator(task_id='mv_file10',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'10'})
+mv_file11 = PythonOperator(task_id='mv_file11',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'11'})
+mv_file12 = PythonOperator(task_id='mv_file12',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'12'})
+mv_file13 = PythonOperator(task_id='mv_file13',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'13'})
+mv_file14 = PythonOperator(task_id='mv_file14',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'14'})
+mv_file15 = PythonOperator(task_id='mv_file15',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'15'})
+mv_file16 = PythonOperator(task_id='mv_file16',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'16'})
+mv_file17 = PythonOperator(task_id='mv_file17',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'17'})
+mv_file18 = PythonOperator(task_id='mv_file18',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'18'})
+mv_file19 = PythonOperator(task_id='mv_file19',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'19'})
+mv_file20 = PythonOperator(task_id='mv_file20',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'20'})
+mv_file21 = PythonOperator(task_id='mv_file21',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'21'})
+mv_file22 = PythonOperator(task_id='mv_file22',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'22'})
+mv_file23 = PythonOperator(task_id='mv_file23',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'23'})
+mv_file24 = PythonOperator(task_id='mv_file24',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'24'})
+mv_file25 = PythonOperator(task_id='mv_file25',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'25'})
+mv_file26 = PythonOperator(task_id='mv_file26',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'26'})
+mv_file27 = PythonOperator(task_id='mv_file27',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'27'})
+mv_file28 = PythonOperator(task_id='mv_file28',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'28'})
+mv_file29 = PythonOperator(task_id='mv_file29',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'29'})
+mv_file30 = PythonOperator(task_id='mv_file30',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'30'})
+mv_file31 = PythonOperator(task_id='mv_file31',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'31'})
+mv_file32 = PythonOperator(task_id='mv_file32',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'32'})
+mv_file33 = PythonOperator(task_id='mv_file33',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'33'})
+mv_file34 = PythonOperator(task_id='mv_file34',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'34'})
+mv_file35 = PythonOperator(task_id='mv_file35',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'35'})
+mv_file36 = PythonOperator(task_id='mv_file36',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'36'})
+mv_file37 = PythonOperator(task_id='mv_file37',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'37'})
+mv_file38 = PythonOperator(task_id='mv_file38',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'38'})
+mv_file39 = PythonOperator(task_id='mv_file39',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'39'})
+mv_file40 = PythonOperator(task_id='mv_file40',dag=dag,python_callable=mv_blob,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'40'})
 
 
-unzip_file1 = PythonOperator(
-    task_id='unzip_file1',
-    dag=dag,
-    python_callable=zipextract,
-    op_kwargs={"file_number":'1', "bucket_name": "cnpj_rf"},
-    )
+remove_spec_char0 = PythonOperator(task_id='remove_spec_char0',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'0'})
+remove_spec_char1 = PythonOperator(task_id='remove_spec_char1',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'1'})
+remove_spec_char2 = PythonOperator(task_id='remove_spec_char2',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'2'})
+remove_spec_char3 = PythonOperator(task_id='remove_spec_char3',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'3'})
+remove_spec_char4 = PythonOperator(task_id='remove_spec_char4',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'4'})
+remove_spec_char5 = PythonOperator(task_id='remove_spec_char5',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'5'})
+remove_spec_char6 = PythonOperator(task_id='remove_spec_char6',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'6'})
+remove_spec_char7 = PythonOperator(task_id='remove_spec_char7',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'7'})
+remove_spec_char8 = PythonOperator(task_id='remove_spec_char8',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'8'})
+remove_spec_char9 = PythonOperator(task_id='remove_spec_char9',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'9'})
+remove_spec_char10 = PythonOperator(task_id='remove_spec_char10',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'10'})
+remove_spec_char11 = PythonOperator(task_id='remove_spec_char11',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'11'})
+remove_spec_char12 = PythonOperator(task_id='remove_spec_char12',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'12'})
+remove_spec_char13 = PythonOperator(task_id='remove_spec_char13',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'13'})
+remove_spec_char14 = PythonOperator(task_id='remove_spec_char14',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'14'})
+remove_spec_char15 = PythonOperator(task_id='remove_spec_char15',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'15'})
+remove_spec_char16 = PythonOperator(task_id='remove_spec_char16',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'16'})
+remove_spec_char17 = PythonOperator(task_id='remove_spec_char17',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'17'})
+remove_spec_char18 = PythonOperator(task_id='remove_spec_char18',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'18'})
+remove_spec_char19 = PythonOperator(task_id='remove_spec_char19',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'19'})
+remove_spec_char20 = PythonOperator(task_id='remove_spec_char20',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'20'})
+remove_spec_char21 = PythonOperator(task_id='remove_spec_char21',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'21'})
+remove_spec_char22 = PythonOperator(task_id='remove_spec_char22',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'22'})
+remove_spec_char23 = PythonOperator(task_id='remove_spec_char23',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'23'})
+remove_spec_char24 = PythonOperator(task_id='remove_spec_char24',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'24'})
+remove_spec_char25 = PythonOperator(task_id='remove_spec_char25',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'25'})
+remove_spec_char26 = PythonOperator(task_id='remove_spec_char26',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'26'})
+remove_spec_char27 = PythonOperator(task_id='remove_spec_char27',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'27'})
+remove_spec_char28 = PythonOperator(task_id='remove_spec_char28',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'28'})
+remove_spec_char29 = PythonOperator(task_id='remove_spec_char29',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'29'})
+remove_spec_char30 = PythonOperator(task_id='remove_spec_char30',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'30'})
+remove_spec_char31 = PythonOperator(task_id='remove_spec_char31',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'31'})
+remove_spec_char32 = PythonOperator(task_id='remove_spec_char32',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'32'})
+remove_spec_char33 = PythonOperator(task_id='remove_spec_char33',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'33'})
+remove_spec_char34 = PythonOperator(task_id='remove_spec_char34',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'34'})
+remove_spec_char35 = PythonOperator(task_id='remove_spec_char35',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'35'})
+remove_spec_char36 = PythonOperator(task_id='remove_spec_char36',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'36'})
+remove_spec_char37 = PythonOperator(task_id='remove_spec_char37',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'37'})
+remove_spec_char38 = PythonOperator(task_id='remove_spec_char38',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'38'})
+remove_spec_char39 = PythonOperator(task_id='remove_spec_char39',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'39'})
+remove_spec_char40 = PythonOperator(task_id='remove_spec_char40',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'40'})
 
 
-mv_file0 = PythonOperator(
-    task_id='mv_file0',
-    dag=dag,
-    python_callable=mv_blob,
-    op_kwargs={"bucket_name":'cnpj_rf', "file_number":'0'},
-    )
-
-mv_file1 = PythonOperator(
-    task_id='mv_file1',
-    dag=dag,
-    python_callable=mv_blob,
-    op_kwargs={"bucket_name":'cnpj_rf', "file_number":'1'},
-    )
-
-remove_special_char0 = PythonOperator(
-    task_id='remove_special_char0',
-    dag=dag,
-    python_callable=remove_special_character,
-    op_kwargs={"bucket_name":'cnpj_rf', "file_number":'0'},
-    )
-
-remove_special_char1 = PythonOperator(
-    task_id='remove_special_char1',
-    dag=dag,
-    python_callable=remove_special_character,
-    op_kwargs={"bucket_name":'cnpj_rf', "file_number":'1'},
-    )
+start_dag >> list_files_rf >> download_file0 >> unzip_file0 >> mv_file0 >> remove_spec_char0
+start_dag >> list_files_rf >> download_file1 >> unzip_file1 >> mv_file1 >> remove_spec_char1 >> download_file5 >> unzip_file5 >> mv_file5 >> remove_spec_char5 >> download_file5 >> unzip_file5 >> mv_file5 >> remove_spec_char5 >> download_file9 >> unzip_file9 >> mv_file9 >> remove_spec_char9     >> download_file13 >> unzip_file13 >> mv_file13 >> remove_spec_char13 >> download_file17 >> unzip_file17 >> mv_file17 >> remove_spec_char17 >> download_file21 >> unzip_file21 >> mv_file21 >> remove_spec_char21 >> download_file25 >> unzip_file25 >> mv_file25 >> remove_spec_char25
+start_dag >> list_files_rf >> download_file2 >> unzip_file2 >> mv_file2 >> remove_spec_char2 >> download_file6 >> unzip_file6 >> mv_file6 >> remove_spec_char6 >> download_file6 >> unzip_file6 >> mv_file6 >> remove_spec_char6 >> download_file10 >> unzip_file10 >> mv_file10 >> remove_spec_char10 >> download_file14 >> unzip_file14 >> mv_file14 >> remove_spec_char14 >> download_file18 >> unzip_file18 >> mv_file18 >> remove_spec_char18 >> download_file22 >> unzip_file22 >> mv_file22 >> remove_spec_char22 >> download_file26 >> unzip_file26 >> mv_file26 >> remove_spec_char26
+start_dag >> list_files_rf >> download_file3 >> unzip_file3 >> mv_file3 >> remove_spec_char3 >> download_file7 >> unzip_file7 >> mv_file7 >> remove_spec_char7 >> download_file7 >> unzip_file7 >> mv_file7 >> remove_spec_char7 >> download_file11 >> unzip_file11 >> mv_file11 >> remove_spec_char11 >> download_file15 >> unzip_file15 >> mv_file15 >> remove_spec_char15 >> download_file19 >> unzip_file19 >> mv_file19 >> remove_spec_char19 >> download_file23 >> unzip_file23 >> mv_file23 >> remove_spec_char23 >> download_file27 >> unzip_file27 >> mv_file27 >> remove_spec_char27
+start_dag >> list_files_rf >> download_file4 >> unzip_file4 >> mv_file4 >> remove_spec_char4 >> download_file8 >> unzip_file8 >> mv_file8 >> remove_spec_char8 >> download_file8 >> unzip_file8 >> mv_file8 >> remove_spec_char8 >> download_file12 >> unzip_file12 >> mv_file12 >> remove_spec_char12 >> download_file16 >> unzip_file16 >> mv_file16 >> remove_spec_char16 >> download_file20 >> unzip_file20 >> mv_file20 >> remove_spec_char20 >> download_file24 >> unzip_file24 >> mv_file24 >> remove_spec_char24 >> download_file28 >> unzip_file28 >> mv_file28 >> remove_spec_char28
 
 
-
-
-start_dag >> list_files_rf >> download_file0 >> unzip_file0 >> mv_file0 >> remove_special_char0
-start_dag >> list_files_rf >> download_file1 >> unzip_file1 >> mv_file1 >> remove_special_char1
-start_dag >> list_files_rf >> download_file2
-start_dag >> list_files_rf >> download_file3 
-start_dag >> list_files_rf >> download_file4 
 start_dag >> list_files_rf >> download_file5 
 start_dag >> list_files_rf >> download_file6 
 
