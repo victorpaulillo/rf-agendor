@@ -348,37 +348,37 @@ unzip_file0 = PythonOperator(
     )
 
 
-unzip_file2 = PythonOperator(
-    task_id='unzip_file2',
+unzip_file1 = PythonOperator(
+    task_id='unzip_file1',
     dag=dag,
     python_callable=zipextract,
     op_kwargs={"file_name_":'F.K03200$Z.D11009.CNAECSV.zip', "bucketname": "cnpj_rf"},
     )
 
 
-mv_file1 = PythonOperator(
-    task_id='mv_file1',
+mv_file0 = PythonOperator(
+    task_id='mv_file0',
     dag=dag,
     python_callable=mv_blob,
     op_kwargs={"bucket_name":'cnpj_rf', "file_name_": 'F.K03200$Z.D11009.MUNICCSV.zip'},
     )
 
-mv_file2 = PythonOperator(
-    task_id='mv_file2',
+mv_file1 = PythonOperator(
+    task_id='mv_file1',
     dag=dag,
     python_callable=mv_blob,
     op_kwargs={"bucket_name":'cnpj_rf', "file_name_": 'F.K03200$Z.D11009.CNAECSV.zip'},
     )
 
-remove_special_char1 = PythonOperator(
-    task_id='remove_special_char1',
+remove_special_char0 = PythonOperator(
+    task_id='remove_special_char0',
     dag=dag,
     python_callable=remove_special_character,
     op_kwargs={"bucket_name":'cnpj_rf', "file_name_": 'F.K03200$Z.D11009.MUNICCSV.zip'},
     )
 
-remove_special_char2 = PythonOperator(
-    task_id='remove_special_char2',
+remove_special_char1 = PythonOperator(
+    task_id='remove_special_char1',
     dag=dag,
     python_callable=remove_special_character,
     op_kwargs={"bucket_name":'cnpj_rf', "file_name_": 'F.K03200$Z.D11009.CNAECSV.zip'},
@@ -454,7 +454,7 @@ remove_special_char2 = PythonOperator(
 
 
 start_dag >> download_file0 >> unzip_file1 >> mv_file1 >> remove_special_char1
-start_dag >> download_file1 >> unzip_file2 >> mv_file2 >> remove_special_char2
+start_dag >> download_file1 >> unzip_file1 >> mv_file1 >> remove_special_char1
 
 
 # >> [unzip_file1, unzip_file2] >> [mv_file1, mv_file2]
