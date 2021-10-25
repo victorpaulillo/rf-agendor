@@ -74,8 +74,20 @@ import re
 from zipfile import ZipFile, is_zipfile
 import io
     
-    
-def download_files(pubsub_message):
+
+def print_first_file(**kwargs):
+    ti = kwargs['ti']
+    pulled_value = ti.xcom_pull(task_ids='list_files_rf')
+    pulled_value_first = pulled_value[0]
+    pulled_value_second = pulled_value[1]
+    print(pulled_value_first)
+    print(pulled_value_second)
+
+
+def download_files(**kwargs):
+    ti = kwargs['ti']
+    file_number = kwargs.get('file_number')
+    pubsub_message = ti.xcom_pull(task_ids='list_files_rf')[file_number]
 
     start_time = datetime.now()
     print(start_time)
@@ -253,29 +265,17 @@ def list_files_rf():
     return list_files
 
 
-
-def print_first_file(**kwargs):
-    ti = kwargs['ti']
-    pulled_value = ti.xcom_pull(task_ids='list_files_rf')
-    pulled_value_first = pulled_value[0]
-    pulled_value_second = pulled_value[1]
-    print(pulled_value_first)
-    print(pulled_value_second)
-
-
-
-
 list_files_rf = PythonOperator(
     task_id='list_files_rf',
     dag=dag,
     python_callable=list_files_rf,
     )
 
-print_first_file = PythonOperator(
-    task_id='print_first_file',
-    dag=dag,
-    python_callable=print_first_file,
-    )
+# print_first_file = PythonOperator(
+#     task_id='print_first_file',
+#     dag=dag,
+#     python_callable=print_first_file,
+#     )
 
 
 
@@ -295,18 +295,53 @@ download_file0 = PythonOperator(
     task_id='download_file0',
     dag=dag,
     python_callable=download_files,
-    op_kwargs={"pubsub_message":'F.K03200$Z.D11009.MUNICCSV.zip'},
+    op_kwargs={"file_number":'0'},
     )
 
 download_file1 = PythonOperator(
     task_id='download_file1',
     dag=dag,
     python_callable=download_files,
-    op_kwargs={"pubsub_message":'F.K03200$Z.D11009.CNAECSV.zip'},
+    op_kwargs={"file_number":'1'},
     )
 
-unzip_file1 = PythonOperator(
-    task_id='unzip_file1',
+download_file2 = PythonOperator(
+    task_id='download_file2',
+    dag=dag,
+    python_callable=download_files,
+    op_kwargs={"file_number":'2'},
+    )
+
+download_file3 = PythonOperator(
+    task_id='download_file3',
+    dag=dag,
+    python_callable=download_files,
+    op_kwargs={"file_number":'3'},
+    )
+
+download_file4 = PythonOperator(
+    task_id='download_file4',
+    dag=dag,
+    python_callable=download_files,
+    op_kwargs={"file_number":'4'},
+    )
+
+download_file5 = PythonOperator(
+    task_id='download_file5',
+    dag=dag,
+    python_callable=download_files,
+    op_kwargs={"file_number":'5'},
+    )
+
+download_file6 = PythonOperator(
+    task_id='download_file6',
+    dag=dag,
+    python_callable=download_files,
+    op_kwargs={"file_number":'6'},
+    )
+
+unzip_file0 = PythonOperator(
+    task_id='unzip_file0',
     dag=dag,
     python_callable=zipextract,
     op_kwargs={"file_name_":'F.K03200$Z.D11009.MUNICCSV.zip', "bucketname": "cnpj_rf"},
