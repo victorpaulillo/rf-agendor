@@ -455,6 +455,12 @@ remove_special_char1 = PythonOperator(
 
 start_dag >> list_files_rf >> download_file0 >> unzip_file0 >> mv_file0 >> remove_special_char0
 start_dag >> list_files_rf >> download_file1 >> unzip_file1 >> mv_file1 >> remove_special_char1
+start_dag >> list_files_rf >> download_file2
+start_dag >> list_files_rf >> download_file3 
+start_dag >> list_files_rf >> download_file4 
+start_dag >> list_files_rf >> download_file5 
+start_dag >> list_files_rf >> download_file6 
+
 
 
 # >> [unzip_file1, unzip_file2] >> [mv_file1, mv_file2]
