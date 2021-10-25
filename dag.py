@@ -87,8 +87,11 @@ def print_first_file(**kwargs):
 def download_files(**kwargs):
     ti = kwargs['ti']
     file_number = kwargs.get('file_number')
-    pubsub_message = ti.xcom_pull(task_ids='list_files_rf')[file_number]
     print(file_number)
+    lala = ti.xcom_pull(task_ids='list_files_rf')
+    print(lala)
+    pubsub_message = ti.xcom_pull(task_ids='list_files_rf')[file_number]
+    
     print(pubsub_message)
 
     start_time = datetime.now()
