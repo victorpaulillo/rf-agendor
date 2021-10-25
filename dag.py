@@ -87,12 +87,7 @@ def print_first_file(**kwargs):
 def download_files(**kwargs):
     ti = kwargs['ti']
     file_number = kwargs.get('file_number')
-    print(file_number)
-    print(file_number[0])
-    lala = ti.xcom_pull(task_ids='list_files_rf')
-    print(lala)
     pubsub_message = ti.xcom_pull(task_ids='list_files_rf')[int(file_number)]
-    
     print(pubsub_message)
 
     start_time = datetime.now()
@@ -163,14 +158,20 @@ def download_files(**kwargs):
 
 
 
-def zipextract(bucketname, file_name_):
-    new_bucket_name = bucketname
+# def zipextract(bucketname, file_name_):
+def zipextract(**kwargs):
+    ti = kwargs['ti']
+    file_number = kwargs.get('file_number')
+    bucket_name = kwargs.get('bucket_name')
+    file_name_ = ti.xcom_pull(task_ids='list_files_rf')[int(file_number)]
+
+    new_bucket_name = bucket_name
     file_name = "download_files/" + file_name_
     file_name_final = file_name_[:-4]
     new_blob_speacial_character = 'unzip_files_treated/'
 
     storage_client = storage.Client()
-    bucket = storage_client.get_bucket(bucketname)
+    bucket = storage_client.get_bucket(bucket_name)
 
     destination_blob_pathname = file_name
 
@@ -191,7 +192,8 @@ def zipextract(bucketname, file_name_):
 
 
 
-def mv_blob(bucket_name, file_name_):
+# def mv_blob(bucket_name, file_name_):
+def mv_blob(**kwargs):
     """
     Function for moving files between directories or buckets. it will use GCP's copy 
     function then delete the blob from the old location.
@@ -205,6 +207,10 @@ def mv_blob(bucket_name, file_name_):
     new_blob_name: str, name of file in new directory in target bucket 
         ex. 'data/destination/file_name'
     """
+    ti = kwargs['ti']
+    file_number = kwargs.get('file_number')
+    bucket_name = kwargs.get('bucket_name')
+    file_name_ = ti.xcom_pull(task_ids='list_files_rf')[int(file_number)]
     new_bucket_name = bucket_name
     file_name_final = file_name_[:-4]
     blob_name = "download_files/" + file_name_ + "/" + file_name_final
@@ -226,23 +232,33 @@ def mv_blob(bucket_name, file_name_):
 # mv_blob(bucket_name=bucket_name, blob_name=blob_name, new_bucket_name=new_bucket_name, new_blob_name=new_blob_name)
 
 
-def remove_special_character(bucket_name, file_name_):
-    file_name_final = file_name_[:-4]
-    blob_name = "unzip_files/" + file_name_final
-    new_blob_special_character = "unzip_files_treated/" + file_name_final
+# def remove_special_character(bucket_name, file_name_):
+def remove_special_character(**kwargs):
+    ti = kwargs['ti']
+    file_number = kwargs.get('file_number')
+    bucket_name = kwargs.get('bucket_name')
+    file_name_ = ti.xcom_pull(task_ids='list_files_rf')[int(file_number)]
+    if 'ESTABELE' in file_name_:
 
-    client = storage.Client()
-    bucket = client.get_bucket(bucket_name)
+        file_name_final = file_name_[:-4]
+        blob_name = "unzip_files/" + file_name_final
+        new_blob_special_character = "unzip_files_treated/" + file_name_final
 
-    blob = bucket.get_blob(blob_name)
-    file = blob.download_as_string()
+        client = storage.Client()
+        bucket = client.get_bucket(bucket_name)
 
-    file_decoded = file.decode("ISO-8859-1")
-    file_upload = re.sub(r"[^a-zA-Z0-9,-@+_ \"\n]", '', str(file_decoded))
-    
-    bucket.blob(new_blob_special_character).upload_from_string(file_upload, 'text/csv')
-    
-    print(f'File moved from {blob_name} to {new_blob_special_character}')
+        blob = bucket.get_blob(blob_name)
+        file = blob.download_as_string()
+
+        file_decoded = file.decode("ISO-8859-1")
+        file_upload = re.sub(r"[^a-zA-Z0-9,-@+_ \"\n]", '', str(file_decoded))
+        
+        bucket.blob(new_blob_special_character).upload_from_string(file_upload, 'text/csv')
+        
+        print(f'File moved from {blob_name} to {new_blob_special_character}')
+
+    else:
+        print(f'Did nothing, file is not ESTABELE, it is {file_name_}')
 
 # remove_special_character(bucket_name=bucket_name, file_name=file_name, file_name_final=file_name_final, new_blob_speacial_character=new_blob_speacial_character)
 
@@ -277,80 +293,60 @@ list_files_rf = PythonOperator(
     python_callable=list_files_rf,
     )
 
-# print_first_file = PythonOperator(
-#     task_id='print_first_file',
-#     dag=dag,
-#     python_callable=print_first_file,
-#     )
 
 
 
 
+download_file0 = PythonOperator(task_id='download_file0',dag=dag,python_callable=download_files,op_kwargs={"file_number":'0'})
+download_file1 = PythonOperator(task_id='download_file1',dag=dag,python_callable=download_files,op_kwargs={"file_number":'1'})
+download_file2 = PythonOperator(task_id='download_file2',dag=dag,python_callable=download_files,op_kwargs={"file_number":'2'})
+download_file3 = PythonOperator(task_id='download_file3',dag=dag,python_callable=download_files,op_kwargs={"file_number":'3'})
+download_file4 = PythonOperator(task_id='download_file4',dag=dag,python_callable=download_files,op_kwargs={"file_number":'4'})
+download_file5 = PythonOperator(task_id='download_file5',dag=dag,python_callable=download_files,op_kwargs={"file_number":'5'})
+download_file6 = PythonOperator(task_id='download_file6',dag=dag,python_callable=download_files,op_kwargs={"file_number":'6'})
+# download_file7 = PythonOperator(task_id='download_file7',dag=dag,python_callable=download_files,op_kwargs={"file_number":'7'})
+# download_file8 = PythonOperator(task_id='download_file8',dag=dag,python_callable=download_files,op_kwargs={"file_number":'8'})
+# download_file9 = PythonOperator(task_id='download_file9',dag=dag,python_callable=download_files,op_kwargs={"file_number":'9'})
+# download_file10 = PythonOperator(task_id='download_file10',dag=dag,python_callable=download_files,op_kwargs={"file_number":'10'})
+# download_file11 = PythonOperator(task_id='download_file11',dag=dag,python_callable=download_files,op_kwargs={"file_number":'11'})
+# download_file12 = PythonOperator(task_id='download_file12',dag=dag,python_callable=download_files,op_kwargs={"file_number":'12'})
+# download_file13 = PythonOperator(task_id='download_file13',dag=dag,python_callable=download_files,op_kwargs={"file_number":'13'})
+# download_file14 = PythonOperator(task_id='download_file14',dag=dag,python_callable=download_files,op_kwargs={"file_number":'14'})
+# download_file15 = PythonOperator(task_id='download_file15',dag=dag,python_callable=download_files,op_kwargs={"file_number":'15'})
+# download_file16 = PythonOperator(task_id='download_file16',dag=dag,python_callable=download_files,op_kwargs={"file_number":'16'})
+# download_file17 = PythonOperator(task_id='download_file17',dag=dag,python_callable=download_files,op_kwargs={"file_number":'17'})
+# download_file18 = PythonOperator(task_id='download_file18',dag=dag,python_callable=download_files,op_kwargs={"file_number":'18'})
+# download_file19 = PythonOperator(task_id='download_file19',dag=dag,python_callable=download_files,op_kwargs={"file_number":'19'})
+# download_file20 = PythonOperator(task_id='download_file20',dag=dag,python_callable=download_files,op_kwargs={"file_number":'20'})
+# download_file21 = PythonOperator(task_id='download_file21',dag=dag,python_callable=download_files,op_kwargs={"file_number":'21'})
+# download_file22 = PythonOperator(task_id='download_file22',dag=dag,python_callable=download_files,op_kwargs={"file_number":'22'})
+# download_file23 = PythonOperator(task_id='download_file23',dag=dag,python_callable=download_files,op_kwargs={"file_number":'23'})
+# download_file24 = PythonOperator(task_id='download_file24',dag=dag,python_callable=download_files,op_kwargs={"file_number":'24'})
+# download_file25 = PythonOperator(task_id='download_file25',dag=dag,python_callable=download_files,op_kwargs={"file_number":'25'})
+# download_file26 = PythonOperator(task_id='download_file26',dag=dag,python_callable=download_files,op_kwargs={"file_number":'26'})
+# download_file27 = PythonOperator(task_id='download_file27',dag=dag,python_callable=download_files,op_kwargs={"file_number":'27'})
+# download_file28 = PythonOperator(task_id='download_file28',dag=dag,python_callable=download_files,op_kwargs={"file_number":'28'})
+# download_file29 = PythonOperator(task_id='download_file29',dag=dag,python_callable=download_files,op_kwargs={"file_number":'29'})
+# download_file30 = PythonOperator(task_id='download_file30',dag=dag,python_callable=download_files,op_kwargs={"file_number":'30'})
+# download_file31 = PythonOperator(task_id='download_file31',dag=dag,python_callable=download_files,op_kwargs={"file_number":'31'})
+# download_file32 = PythonOperator(task_id='download_file32',dag=dag,python_callable=download_files,op_kwargs={"file_number":'32'})
+# download_file33 = PythonOperator(task_id='download_file33',dag=dag,python_callable=download_files,op_kwargs={"file_number":'33'})
+# download_file34 = PythonOperator(task_id='download_file34',dag=dag,python_callable=download_files,op_kwargs={"file_number":'34'})
+# download_file35 = PythonOperator(task_id='download_file35',dag=dag,python_callable=download_files,op_kwargs={"file_number":'35'})
+# download_file36 = PythonOperator(task_id='download_file36',dag=dag,python_callable=download_files,op_kwargs={"file_number":'36'})
+# download_file37 = PythonOperator(task_id='download_file37',dag=dag,python_callable=download_files,op_kwargs={"file_number":'37'})
+# download_file38 = PythonOperator(task_id='download_file38',dag=dag,python_callable=download_files,op_kwargs={"file_number":'38'})
+# download_file39 = PythonOperator(task_id='download_file39',dag=dag,python_callable=download_files,op_kwargs={"file_number":'39'})
+# download_file40 = PythonOperator(task_id='download_file40',dag=dag,python_callable=download_files,op_kwargs={"file_number":'40'})
 
 
 
-
-
-
-
-
-
-
-
-download_file0 = PythonOperator(
-    task_id='download_file0',
-    dag=dag,
-    python_callable=download_files,
-    op_kwargs={"file_number":'0'},
-    )
-
-download_file1 = PythonOperator(
-    task_id='download_file1',
-    dag=dag,
-    python_callable=download_files,
-    op_kwargs={"file_number":'1'},
-    )
-
-download_file2 = PythonOperator(
-    task_id='download_file2',
-    dag=dag,
-    python_callable=download_files,
-    op_kwargs={"file_number":'2'},
-    )
-
-download_file3 = PythonOperator(
-    task_id='download_file3',
-    dag=dag,
-    python_callable=download_files,
-    op_kwargs={"file_number":'3'},
-    )
-
-download_file4 = PythonOperator(
-    task_id='download_file4',
-    dag=dag,
-    python_callable=download_files,
-    op_kwargs={"file_number":'4'},
-    )
-
-download_file5 = PythonOperator(
-    task_id='download_file5',
-    dag=dag,
-    python_callable=download_files,
-    op_kwargs={"file_number":'5'},
-    )
-
-download_file6 = PythonOperator(
-    task_id='download_file6',
-    dag=dag,
-    python_callable=download_files,
-    op_kwargs={"file_number":'6'},
-    )
 
 unzip_file0 = PythonOperator(
     task_id='unzip_file0',
     dag=dag,
     python_callable=zipextract,
-    op_kwargs={"file_name_":'F.K03200$Z.D11009.MUNICCSV.zip', "bucketname": "cnpj_rf"},
+    op_kwargs={"file_number":'0', "bucket_name": "cnpj_rf"},
     )
 
 
@@ -358,7 +354,7 @@ unzip_file1 = PythonOperator(
     task_id='unzip_file1',
     dag=dag,
     python_callable=zipextract,
-    op_kwargs={"file_name_":'F.K03200$Z.D11009.CNAECSV.zip', "bucketname": "cnpj_rf"},
+    op_kwargs={"file_number":'1', "bucket_name": "cnpj_rf"},
     )
 
 
@@ -366,96 +362,30 @@ mv_file0 = PythonOperator(
     task_id='mv_file0',
     dag=dag,
     python_callable=mv_blob,
-    op_kwargs={"bucket_name":'cnpj_rf', "file_name_": 'F.K03200$Z.D11009.MUNICCSV.zip'},
+    op_kwargs={"bucket_name":'cnpj_rf', "file_number":'0'},
     )
 
 mv_file1 = PythonOperator(
     task_id='mv_file1',
     dag=dag,
     python_callable=mv_blob,
-    op_kwargs={"bucket_name":'cnpj_rf', "file_name_": 'F.K03200$Z.D11009.CNAECSV.zip'},
+    op_kwargs={"bucket_name":'cnpj_rf', "file_number":'1'},
     )
 
 remove_special_char0 = PythonOperator(
     task_id='remove_special_char0',
     dag=dag,
     python_callable=remove_special_character,
-    op_kwargs={"bucket_name":'cnpj_rf', "file_name_": 'F.K03200$Z.D11009.MUNICCSV.zip'},
+    op_kwargs={"bucket_name":'cnpj_rf', "file_number":'0'},
     )
 
 remove_special_char1 = PythonOperator(
     task_id='remove_special_char1',
     dag=dag,
     python_callable=remove_special_character,
-    op_kwargs={"bucket_name":'cnpj_rf', "file_name_": 'F.K03200$Z.D11009.CNAECSV.zip'},
+    op_kwargs={"bucket_name":'cnpj_rf', "file_number":'1'},
     )
 
-
-
-
-#PythonOperator that runs the truncate funtion
-# download_file2 = PythonOperator(
-#     task_id='download_file2',
-#     dag=dag,
-#     python_callable=download_files,
-#     op_kwargs={"pubsub_message":'K3241.K03200Y2.D11009.ESTABELE.zip'},
-# )
-
-# #PythonOperator that runs the truncate funtion
-# download_file3 = PythonOperator(
-#     task_id='download_file3',
-#     dag=dag,
-#     python_callable=download_files,
-#     op_kwargs={"pubsub_message":'K3241.K03200Y3.D11009.ESTABELE.zip'},
-#     )
-
-# #PythonOperator that runs the truncate funtion
-# download_file4 = PythonOperator(
-#     task_id='download_file4',
-#     dag=dag,
-#     python_callable=download_files,
-#     op_kwargs={"pubsub_message":'K3241.K03200Y4.D10911.ESTABELE.zip'},
-# )
-    
-# #PythonOperator that runs the truncate funtion
-# download_file5 = PythonOperator(
-#     task_id='download_file5',
-#     dag=dag,
-#     python_callable=download_files,
-#     op_kwargs={"pubsub_message":'K3241.K03200Y5.D10911.ESTABELE.zip'},
-#     )
-
-# #PythonOperator that runs the truncate funtion
-# download_file6 = PythonOperator(
-#     task_id='download_file6',
-#     dag=dag,
-#     python_callable=download_files,
-#     op_kwargs={"pubsub_message":'K3241.K03200Y6.D10911.ESTABELE.zip'},
-#     )
-
-# #PythonOperator that runs the truncate funtion
-# download_file7 = PythonOperator(
-#     task_id='download_file7',
-#     dag=dag,
-#     python_callable=download_files,
-#     op_kwargs={"pubsub_message":'K3241.K03200Y7.D10911.ESTABELE.zip'},
-#     )
-
-# #PythonOperator that runs the truncate funtion
-# download_file8 = PythonOperator(
-#     task_id='download_file8',
-#     dag=dag,
-#     python_callable=download_files,
-#     op_kwargs={"pubsub_message":'K3241.K03200Y8.D10911.ESTABELE.zip'},
-#     )
-
-# #PythonOperator that runs the truncate funtion
-# download_file9 = PythonOperator(
-#     task_id='download_file9',
-#     dag=dag,
-#     python_callable=download_files,
-#     op_kwargs={"pubsub_message":'K3241.K03200Y9.D10911.ESTABELE.zip'},
-#     )
 
 
 
@@ -466,94 +396,5 @@ start_dag >> list_files_rf >> download_file3
 start_dag >> list_files_rf >> download_file4 
 start_dag >> list_files_rf >> download_file5 
 start_dag >> list_files_rf >> download_file6 
-
-
-
-# >> [unzip_file1, unzip_file2] >> [mv_file1, mv_file2]
-
-
-
-# , download_file2, download_file3]
-# download_file4, download_file5, download_file6, download_file7, download_file8, download_file9]
-
-
-# #Function that connects with Postgres and truncate the stage table
-# def truncate_stage_table():
-#     conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
-#     cur = conn.cursor()
-#     cur.execute("truncate prod_external.xignite_daily_adjusted_price_augmented_stage")
-#     conn.commit()
-#     cur.close()
-#     conn.close()
-#     return None
-
-# #PythonOperator that runs the truncate funtion
-# truncate_stage_table = PythonOperator(
-#     task_id='truncate_stage_table',
-#     dag=dag,
-#     python_callable=truncate_stage_table,
-#     )
-
-# # Function to join the files found on Google Cloud Storage and add it on one string bash command
-# def gcs_files_create_bash_command(**context):
-#     gcs_files=context['templates_dict']['gcs_path_filename']
-#     list_files=gcs_files.split("|")[1:-1]
-#     database='composer'
-#     table='prod_external.xignite_daily_adjusted_price_augmented_stage'
-#     gcloud_import_command = ''
-#     for file in list_files:
-#         import_file = 'gcloud sql import csv composer-postgres {} --database={} --table={} ; '.format(file, database, table)
-#         gcloud_import_command = gcloud_import_command + import_file
-#     return gcloud_import_command[:-2]
-
-# # Run the function that join on one string the files found on Google Cloud Storage
-# gcs_files_create_bash_command = PythonOperator(
-#     task_id='gcs_files_create_bash_command',
-#     dag=dag,
-#     python_callable=gcs_files_create_bash_command,
-#     provide_context=True,  
-#     templates_dict={'gcs_path_filename': "{{ ti.xcom_pull(task_ids='gcs_files') }}" },
-#     xcom_push=True,
-#     )
-
-# # Get the result from the join files function
-# xcom_get_import_command = '{{ ti.xcom_pull(task_ids="gcs_files_create_bash_command")}}'
-
-# #BashOperator to import the files from the GCS to Postgres stage table. It runs the bash command string with the multiple files
-# import_files_stage = BashOperator(
-#     task_id="import_files_stage",
-#     bash_command=xcom_get_import_command,
-#     retries=2,
-#     retry_delay=timedelta(minutes=2),
-#     dag=dag
-# )
-
-# #Function to insert the data from stage table to production table 
-# def insert_stage_data_into_prod():
-#     conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASS, host=DB_HOST)
-#     cur = conn.cursor()
-#     cur.execute("""INSERT INTO prod_external.xignite_daily_adjusted_price_augmented
-#                     SELECT s.*
-#                     FROM prod_external.xignite_daily_adjusted_price_augmented_stage as s
-#                     left join prod_external.xignite_daily_adjusted_price_augmented as p
-#                     on s.ID = p.ID
-#                     where p.ID is null
-#                     ON CONFLICT (ID) DO NOTHING
-#                     """)
-#     conn.commit()
-#     cur.close()
-#     conn.close()
-#     return None
-
-# #PythonOperator to run the function that insert the data from stage table to production table 
-# insert_stage_data_into_prod = PythonOperator(
-#     task_id='insert_stage_data_into_prod',
-#     dag=dag,
-#     python_callable=insert_stage_data_into_prod,
-#     )
-
-# #Workflow Dependencies
-# start_dag >> snowflake_copy_into_gcs >> gcs_files >> truncate_stage_table >> gcs_files_create_bash_command >> import_files_stage >> insert_stage_data_into_prod
-
 
 
