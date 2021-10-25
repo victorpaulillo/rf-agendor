@@ -427,11 +427,3 @@ start_dag >> list_files_rf >> download_file3 >> unzip_file3 >> mv_file3 >> remov
 start_dag >> list_files_rf >> download_file4 >> unzip_file4 >> mv_file4 >> remove_spec_char4 >> download_file8 >> unzip_file8 >> mv_file8 >> remove_spec_char8 >> download_file12 >> unzip_file12 >> mv_file12 >> remove_spec_char12 >> download_file16 >> unzip_file16 >> mv_file16 >> remove_spec_char16 >> download_file20 >> unzip_file20 >> mv_file20 >> remove_spec_char20 >> download_file24 >> unzip_file24 >> mv_file24 >> remove_spec_char24 >> download_file28 >> unzip_file28 >> mv_file28 >> remove_spec_char28
 
 
-start_dag >> list_files_rf >> download_file5 
-start_dag >> list_files_rf >> download_file6 
-
-
-#  >> download_file5 >> unzip_file5 >> mv_file5 >> remove_spec_char5
-#  >> download_file6 >> unzip_file6 >> mv_file6 >> remove_spec_char6
-#  >> download_file7 >> unzip_file7 >> mv_file7 >> remove_spec_char7
-#  >> download_file8 >> unzip_file8 >> mv_file8 >> remove_spec_char8
