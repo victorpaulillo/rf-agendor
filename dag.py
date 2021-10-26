@@ -35,7 +35,7 @@ import io
 # Settings 
 default_args = {
  'owner': 'Victor Paulillo',
- 'retries': 1,
+ 'retries': 3,
  'retry_delay': timedelta(minutes=5),
  'email': ['victor.paulilllo@gmail.com'],
  'email_on_failure': True
