@@ -48,7 +48,7 @@ local_tz = pendulum.timezone('America/Sao_Paulo')
 dag = DAG(
     dag_id='test',
     description=f'Test',
-    schedule_interval='0 23 * * *',
+    schedule_interval='0 2 * * *',
     start_date=datetime(2021, 4, 7, tzinfo=local_tz),
     default_args=default_args,
     catchup=False,
