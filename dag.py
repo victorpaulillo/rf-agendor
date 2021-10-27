@@ -243,10 +243,40 @@ def list_files_rf():
     return list_files
 
 
+def delete_files_storage(**kwargs):
+    bucket_name = kwargs.get('bucket_name')
+
+    directory_download = 'download_files'
+    directory_unzip = 'unzip_files'
+    directory_treated = 'unzip_files_treated'
+        
+
+    client = storage.Client()
+    bucket = client.get_bucket(bucket_name)
+    # list all objects in the directory
+    blobs = bucket.list_blobs(prefix=directory_download)
+    for blob in blobs:
+        blob.delete()
+    
+    blobs = bucket.list_blobs(prefix=directory_unzip)
+    for blob in blobs:
+        blob.delete()
+
+    blobs = bucket.list_blobs(prefix=directory_treated)
+    for blob in blobs:
+        blob.delete()
+
+    print(f'Delete files from: {directory_download}, {directory_unzip} and {directory_treated}')
+
+
+
+
+
 # Start the DAG
 start_dag = DummyOperator(task_id='start_dag', dag=dag)
 remove_special_char_phase = DummyOperator(task_id='remove_special_char_phase', dag=dag)
 
+delete_files_storage = PythonOperator(task_id='delete_files_storage',dag=dag,python_callable=delete_files_storage,op_kwargs={"bucket_name":'cnpj_rf'})
 list_files_rf = PythonOperator(task_id='list_files_rf',dag=dag,python_callable=list_files_rf)
 
 
@@ -422,11 +452,14 @@ remove_spec_char39 = PythonOperator(task_id='remove_spec_char39',dag=dag,python_
 remove_spec_char40 = PythonOperator(task_id='remove_spec_char40',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'40'})
 
 
-start_dag >> list_files_rf >> download_file0 >> unzip_file0 >> mv_file0 >> remove_special_char_phase
-start_dag >> list_files_rf >> download_file1 >> unzip_file1 >> mv_file1 >> download_file5 >> unzip_file5 >> mv_file5 >> download_file9 >> unzip_file9 >> mv_file9    >> download_file13 >> unzip_file13 >> mv_file13 >> download_file17 >> unzip_file17 >> mv_file17 >> download_file21 >> unzip_file21 >> mv_file21 >> download_file25 >> unzip_file25 >> mv_file25 >> download_file29 >> unzip_file29 >> mv_file29 >> download_file33 >> unzip_file33 >> mv_file33 >> download_file37 >> unzip_file37 >> mv_file37 >> remove_special_char_phase
-start_dag >> list_files_rf >> download_file2 >> unzip_file2 >> mv_file2 >> download_file6 >> unzip_file6 >> mv_file6 >> download_file10 >> unzip_file10 >> mv_file10 >> download_file14 >> unzip_file14 >> mv_file14 >> download_file18 >> unzip_file18 >> mv_file18 >> download_file22 >> unzip_file22 >> mv_file22 >> download_file26 >> unzip_file26 >> mv_file26 >> download_file30 >> unzip_file30 >> mv_file30 >> download_file34 >> unzip_file34 >> mv_file34 >> download_file38 >> unzip_file38 >> mv_file38 >> remove_special_char_phase
-start_dag >> list_files_rf >> download_file3 >> unzip_file3 >> mv_file3 >> download_file7 >> unzip_file7 >> mv_file7 >> download_file11 >> unzip_file11 >> mv_file11 >> download_file15 >> unzip_file15 >> mv_file15 >> download_file19 >> unzip_file19 >> mv_file19 >> download_file23 >> unzip_file23 >> mv_file23 >> download_file27 >> unzip_file27 >> mv_file27 >> download_file31 >> unzip_file31 >> mv_file31 >> download_file35 >> unzip_file35 >> mv_file35 >> download_file39 >> unzip_file39 >> mv_file39 >> remove_special_char_phase
-start_dag >> list_files_rf >> download_file4 >> unzip_file4 >> mv_file4 >> download_file8 >> unzip_file8 >> mv_file8 >> download_file12 >> unzip_file12 >> mv_file12 >> download_file16 >> unzip_file16 >> mv_file16 >> download_file20 >> unzip_file20 >> mv_file20 >> download_file24 >> unzip_file24 >> mv_file24 >> download_file28 >> unzip_file28 >> mv_file28 >> download_file32 >> unzip_file32 >> mv_file32 >> download_file36 >> unzip_file36 >> mv_file36 >> download_file40 >> unzip_file40 >> mv_file40 >> remove_special_char_phase
+
+start_dag >> delete_files_storage >> list_files_rf
+
+list_files_rf >> download_file0 >> unzip_file0 >> mv_file0 >> remove_special_char_phase
+list_files_rf >> download_file1 >> unzip_file1 >> mv_file1 >> download_file5 >> unzip_file5 >> mv_file5 >> download_file9 >> unzip_file9 >> mv_file9    >> download_file13 >> unzip_file13 >> mv_file13 >> download_file17 >> unzip_file17 >> mv_file17 >> download_file21 >> unzip_file21 >> mv_file21 >> download_file25 >> unzip_file25 >> mv_file25 >> download_file29 >> unzip_file29 >> mv_file29 >> download_file33 >> unzip_file33 >> mv_file33 >> download_file37 >> unzip_file37 >> mv_file37 >> remove_special_char_phase
+list_files_rf >> download_file2 >> unzip_file2 >> mv_file2 >> download_file6 >> unzip_file6 >> mv_file6 >> download_file10 >> unzip_file10 >> mv_file10 >> download_file14 >> unzip_file14 >> mv_file14 >> download_file18 >> unzip_file18 >> mv_file18 >> download_file22 >> unzip_file22 >> mv_file22 >> download_file26 >> unzip_file26 >> mv_file26 >> download_file30 >> unzip_file30 >> mv_file30 >> download_file34 >> unzip_file34 >> mv_file34 >> download_file38 >> unzip_file38 >> mv_file38 >> remove_special_char_phase
+list_files_rf >> download_file3 >> unzip_file3 >> mv_file3 >> download_file7 >> unzip_file7 >> mv_file7 >> download_file11 >> unzip_file11 >> mv_file11 >> download_file15 >> unzip_file15 >> mv_file15 >> download_file19 >> unzip_file19 >> mv_file19 >> download_file23 >> unzip_file23 >> mv_file23 >> download_file27 >> unzip_file27 >> mv_file27 >> download_file31 >> unzip_file31 >> mv_file31 >> download_file35 >> unzip_file35 >> mv_file35 >> download_file39 >> unzip_file39 >> mv_file39 >> remove_special_char_phase
+list_files_rf >> download_file4 >> unzip_file4 >> mv_file4 >> download_file8 >> unzip_file8 >> mv_file8 >> download_file12 >> unzip_file12 >> mv_file12 >> download_file16 >> unzip_file16 >> mv_file16 >> download_file20 >> unzip_file20 >> mv_file20 >> download_file24 >> unzip_file24 >> mv_file24 >> download_file28 >> unzip_file28 >> mv_file28 >> download_file32 >> unzip_file32 >> mv_file32 >> download_file36 >> unzip_file36 >> mv_file36 >> download_file40 >> unzip_file40 >> mv_file40 >> remove_special_char_phase
 
 
 remove_special_char_phase >> remove_spec_char0 >> remove_spec_char1 >> remove_spec_char2 >> remove_spec_char3 >> remove_spec_char4 >> remove_spec_char5 >> remove_spec_char6 >> remove_spec_char7 >> remove_spec_char8 >> remove_spec_char9 >> remove_spec_char10 >> remove_spec_char11 >> remove_spec_char12 >> remove_spec_char13 >> remove_spec_char14 >> remove_spec_char15 >> remove_spec_char16 >> remove_spec_char17 >> remove_spec_char18 >> remove_spec_char19 >> remove_spec_char20 >> remove_spec_char21 >> remove_spec_char22 >> remove_spec_char23 >> remove_spec_char24 >> remove_spec_char25 >> remove_spec_char26 >> remove_spec_char27 >> remove_spec_char28 >> remove_spec_char29 >> remove_spec_char30 >> remove_spec_char31 >> remove_spec_char32 >> remove_spec_char33 >> remove_spec_char34 >> remove_spec_char35 >> remove_spec_char36 >> remove_spec_char37 >> remove_spec_char38 >> remove_spec_char39 >> remove_spec_char40 
