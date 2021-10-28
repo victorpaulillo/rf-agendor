@@ -60,6 +60,8 @@ def download_files(**kwargs):
     file_number = kwargs.get('file_number')
     pubsub_message = ti.xcom_pull(task_ids='list_files_rf')[int(file_number)]
     print(pubsub_message)
+    if pubsub_message == '':
+        break
 
     start_time = datetime.now()
     print(start_time)
@@ -132,6 +134,9 @@ def zipextract(**kwargs):
     bucket_name = kwargs.get('bucket_name')
     file_name_ = ti.xcom_pull(task_ids='list_files_rf')[int(file_number)]
 
+    if file_name_ == '':
+        break
+
     new_bucket_name = bucket_name
     file_name = "download_files/" + file_name_
     file_name_final = file_name_[:-4]
@@ -172,6 +177,9 @@ def mv_blob(**kwargs):
     file_number = kwargs.get('file_number')
     bucket_name = kwargs.get('bucket_name')
     file_name_ = ti.xcom_pull(task_ids='list_files_rf')[int(file_number)]
+    if file_name_ == '':
+        break
+
     new_bucket_name = bucket_name
     file_name_final = file_name_[:-4]
     blob_name = "download_files/" + file_name_ + "/" + file_name_final
@@ -195,6 +203,10 @@ def remove_spec_char(**kwargs):
     file_number = kwargs.get('file_number')
     bucket_name = kwargs.get('bucket_name')
     file_name_ = ti.xcom_pull(task_ids='list_files_rf')[int(file_number)]
+
+    if file_name_ == '':
+        break
+    
     if 'ESTABELE' in file_name_:
 
         file_name_final = file_name_[:-4]
