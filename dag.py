@@ -60,71 +60,73 @@ def download_files(**kwargs):
     file_number = kwargs.get('file_number')
     pubsub_message = ti.xcom_pull(task_ids='list_files_rf')[int(file_number)]
     print(pubsub_message)
+
     if pubsub_message == '':
-        break
+        None
 
-    start_time = datetime.now()
-    print(start_time)
-    url = 'http://200.152.38.155/CNPJ/' + pubsub_message 
-    with requests.get(url, stream=True) as myfile:
-        down_time = datetime.now()
+    else:
+        start_time = datetime.now()
+        print(start_time)
+        url = 'http://200.152.38.155/CNPJ/' + pubsub_message 
+        with requests.get(url, stream=True) as myfile:
+            down_time = datetime.now()
 
-    #open(pubsub_message, 'wb').write(myfile.content)
-        with open(pubsub_message, "wb") as outfile:
-            for chunk in myfile.iter_content(chunk_size=None):  # Let the server decide.
-                outfile.write(chunk)
-    download_time = datetime.now()
+        #open(pubsub_message, 'wb').write(myfile.content)
+            with open(pubsub_message, "wb") as outfile:
+                for chunk in myfile.iter_content(chunk_size=None):  # Let the server decide.
+                    outfile.write(chunk)
+        download_time = datetime.now()
 
-    print('Down time: ', down_time - start_time)
-    print('Download time: ', download_time - start_time)
-    print('Finished downloading')
+        print('Down time: ', down_time - start_time)
+        print('Download time: ', download_time - start_time)
+        print('Finished downloading')
 
-    bucket_name = "cnpj_rf"
-    file_name = pubsub_message
-    destination_bucket_name = "download_files/"
-    destination_blob_name = destination_bucket_name + file_name
-    source_file_name = pubsub_message
-    
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(destination_blob_name)
-    blob.upload_from_filename(source_file_name)
-    upload_time = datetime.now()
+        bucket_name = "cnpj_rf"
+        file_name = pubsub_message
+        destination_bucket_name = "download_files/"
+        destination_blob_name = destination_bucket_name + file_name
+        source_file_name = pubsub_message
+        
+        storage_client = storage.Client()
+        bucket = storage_client.bucket(bucket_name)
+        blob = bucket.blob(destination_blob_name)
+        blob.upload_from_filename(source_file_name)
+        upload_time = datetime.now()
 
-    print('Upload time: ', upload_time-start_time)
-    print("File {} uploaded to {}.".format(source_file_name, destination_blob_name))
+        print('Upload time: ', upload_time-start_time)
+        print("File {} uploaded to {}.".format(source_file_name, destination_blob_name))
 
-    #Insert download file record into etl_jobs table on bigquery
-    # Construct a BigQuery client object.
-    client = bigquery.Client()
+        #Insert download file record into etl_jobs table on bigquery
+        # Construct a BigQuery client object.
+        client = bigquery.Client()
 
-    query = """
-            insert `fiery-marking-325513.rf.etl_jobs` (file_name, download_timestamp)
-            values('""" + pubsub_message + """', timestamp(DATETIME(CURRENT_TIMESTAMP(), "America/Sao_Paulo")))
-    """
-    query_job = client.query(query)  # Make an API request.
+        query = """
+                insert `fiery-marking-325513.rf.etl_jobs` (file_name, download_timestamp)
+                values('""" + pubsub_message + """', timestamp(DATETIME(CURRENT_TIMESTAMP(), "America/Sao_Paulo")))
+        """
+        query_job = client.query(query)  # Make an API request.
 
-    print(f"Inserted record on bigquery etl_jobs table with the query: {query}")
+        print(f"Inserted record on bigquery etl_jobs table with the query: {query}")
 
-    """Publishes messages to a Pub/Sub topic"""
+        """Publishes messages to a Pub/Sub topic"""
 
-    # # TODO(developer)
-    # project_id = "fiery-marking-325513"
-    # topic_id = "downloaded_files"
+        # # TODO(developer)
+        # project_id = "fiery-marking-325513"
+        # topic_id = "downloaded_files"
 
-    # publisher = pubsub_v1.PublisherClient()
-    # topic_path = publisher.topic_path(project_id, topic_id)
+        # publisher = pubsub_v1.PublisherClient()
+        # topic_path = publisher.topic_path(project_id, topic_id)
 
-    # data = str(pubsub_message)
-    # # Data must be a bytestring
-    # data = data.encode("utf-8")
-    # # Add two attributes, origin and username, to the message
-    # future = publisher.publish(
-    #     topic_path, data, origin="python-sample", username="gcp"
-    # )
-    # print(future.result())
+        # data = str(pubsub_message)
+        # # Data must be a bytestring
+        # data = data.encode("utf-8")
+        # # Add two attributes, origin and username, to the message
+        # future = publisher.publish(
+        #     topic_path, data, origin="python-sample", username="gcp"
+        # )
+        # print(future.result())
 
-    # print(f"Published messages with custom attributes to {topic_path}.")
+        # print(f"Published messages with custom attributes to {topic_path}.")
 
     return "Hello {}!".format(pubsub_message)
 
@@ -135,29 +137,30 @@ def zipextract(**kwargs):
     file_name_ = ti.xcom_pull(task_ids='list_files_rf')[int(file_number)]
 
     if file_name_ == '':
-        break
+        None
+    else:
 
-    new_bucket_name = bucket_name
-    file_name = "download_files/" + file_name_
-    file_name_final = file_name_[:-4]
-    new_blob_speacial_character = 'unzip_files_treated/'
+        new_bucket_name = bucket_name
+        file_name = "download_files/" + file_name_
+        file_name_final = file_name_[:-4]
+        new_blob_speacial_character = 'unzip_files_treated/'
 
-    storage_client = storage.Client()
-    bucket = storage_client.get_bucket(bucket_name)
+        storage_client = storage.Client()
+        bucket = storage_client.get_bucket(bucket_name)
 
-    destination_blob_pathname = file_name
+        destination_blob_pathname = file_name
 
-    blob = bucket.blob(file_name)
-    zipbytes = io.BytesIO(blob.download_as_string())
+        blob = bucket.blob(file_name)
+        zipbytes = io.BytesIO(blob.download_as_string())
 
-    if is_zipfile(zipbytes):
-        with ZipFile(zipbytes, 'r') as myzip:
-            for contentfilename in myzip.namelist():
-                contentfile = myzip.read(contentfilename)
-                blob = bucket.blob(file_name + "/" + contentfilename)
-                blob.upload_from_string(contentfile)
-    
-    print(f'File unzipped from {file_name}')
+        if is_zipfile(zipbytes):
+            with ZipFile(zipbytes, 'r') as myzip:
+                for contentfilename in myzip.namelist():
+                    contentfile = myzip.read(contentfilename)
+                    blob = bucket.blob(file_name + "/" + contentfilename)
+                    blob.upload_from_string(contentfile)
+        
+        print(f'File unzipped from {file_name}')
 
 def mv_blob(**kwargs):
     """
@@ -177,26 +180,28 @@ def mv_blob(**kwargs):
     file_number = kwargs.get('file_number')
     bucket_name = kwargs.get('bucket_name')
     file_name_ = ti.xcom_pull(task_ids='list_files_rf')[int(file_number)]
-    if file_name_ == '':
-        break
-
-    new_bucket_name = bucket_name
-    file_name_final = file_name_[:-4]
-    blob_name = "download_files/" + file_name_ + "/" + file_name_final
-    new_blob_name = "unzip_files/" + file_name_final
-
-    storage_client = storage.Client()
-    source_bucket = storage_client.get_bucket(bucket_name)
-    source_blob = source_bucket.blob(blob_name)
-    destination_bucket = storage_client.get_bucket(new_bucket_name)
-
-    # copy to new destination
-    new_blob = source_bucket.copy_blob(
-        source_blob, destination_bucket, new_blob_name)
-    # delete in old destination
-    source_blob.delete()
     
-    print(f'File moved from {source_blob} to {new_blob_name}')
+    if file_name_ == '':
+        None
+
+    else:
+        new_bucket_name = bucket_name
+        file_name_final = file_name_[:-4]
+        blob_name = "download_files/" + file_name_ + "/" + file_name_final
+        new_blob_name = "unzip_files/" + file_name_final
+
+        storage_client = storage.Client()
+        source_bucket = storage_client.get_bucket(bucket_name)
+        source_blob = source_bucket.blob(blob_name)
+        destination_bucket = storage_client.get_bucket(new_bucket_name)
+
+        # copy to new destination
+        new_blob = source_bucket.copy_blob(
+            source_blob, destination_bucket, new_blob_name)
+        # delete in old destination
+        source_blob.delete()
+        
+        print(f'File moved from {source_blob} to {new_blob_name}')
 
 def remove_spec_char(**kwargs):
     ti = kwargs['ti']
@@ -205,29 +210,31 @@ def remove_spec_char(**kwargs):
     file_name_ = ti.xcom_pull(task_ids='list_files_rf')[int(file_number)]
 
     if file_name_ == '':
-        break
-    
-    if 'ESTABELE' in file_name_:
-
-        file_name_final = file_name_[:-4]
-        blob_name = "unzip_files/" + file_name_final
-        new_blob_special_character = "unzip_files_treated/" + file_name_final
-
-        client = storage.Client()
-        bucket = client.get_bucket(bucket_name)
-
-        blob = bucket.get_blob(blob_name)
-        file = blob.download_as_string()
-
-        file_decoded = file.decode("ISO-8859-1")
-        file_upload = re.sub(r"[^a-zA-Z0-9,-@+_ \"\n]", '', str(file_decoded))
-        
-        bucket.blob(new_blob_special_character).upload_from_string(file_upload, 'text/csv')
-        
-        print(f'File moved from {blob_name} to {new_blob_special_character}')
+        None
 
     else:
-        print(f'Did nothing, file is not ESTABELE, it is {file_name_}')
+        if 'ESTABELE' in file_name_:
+
+            file_name_final = file_name_[:-4]
+            blob_name = "unzip_files/" + file_name_final
+            new_blob_special_character = "unzip_files_treated/" + file_name_final
+
+            client = storage.Client()
+            bucket = client.get_bucket(bucket_name)
+
+            blob = bucket.get_blob(blob_name)
+            file = blob.download_as_string()
+
+            file_decoded = file.decode("ISO-8859-1")
+            file_upload = re.sub(r"[^a-zA-Z0-9,-@+_ \"\n]", '', str(file_decoded))
+            
+            bucket.blob(new_blob_special_character).upload_from_string(file_upload, 'text/csv')
+            
+            print(f'File moved from {blob_name} to {new_blob_special_character}')
+
+        else:
+            print(f'Did nothing, file is not ESTABELE, it is {file_name_}')
+
 
 
 def list_files_rf():
