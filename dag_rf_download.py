@@ -4,7 +4,7 @@ import urllib3
 
 from airflow import DAG
 from airflow.operators.dummy_operator import DummyOperator
-# from airflow.operators.bash_operator import BashOperator
+from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 
@@ -56,6 +56,7 @@ dag = DAG(
     default_args=default_args,
     catchup=False,
 )
+
 
     
 def download_files(**kwargs):
