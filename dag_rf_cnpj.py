@@ -324,10 +324,6 @@ on s.cnpj_basico = e.cnpj_basico
 
 """
 
-
-
-
-
 ct_qualificacoes_socios = PythonOperator(task_id='ct_qualificacoes_socios',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":ct_qualificacoes_socios_query})
 ct_paises = PythonOperator(task_id='ct_paises',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":ct_paises_query})
 ct_natureza_juridica = PythonOperator(task_id='ct_natureza_juridica',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":ct_natureza_juridica_query})
@@ -343,12 +339,12 @@ ct_rf_agendor_api = PythonOperator(task_id='ct_rf_agendor_api',dag=dag,python_ca
 insert_into_socios_agg_json = PythonOperator(task_id='insert_into_socios_agg_json',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":insert_into_socios_agg_json_query})
 insert_into_rf_agendor_api = PythonOperator(task_id='insert_into_rf_agendor_api',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":insert_into_rf_agendor_api_query})
 
-
-
 start_dag = DummyOperator(task_id='start_dag', dag=dag)
 create_external_tables = DummyOperator(task_id='create_external_tables', dag=dag)
 create_tables = DummyOperator(task_id='create_tables', dag=dag)
 insert_records = DummyOperator(task_id='insert_records', dag=dag)
+
+#Workflow
 
 start_dag >> create_external_tables >> [ct_qualificacoes_socios, ct_paises, ct_natureza_juridica, ct_municipios, ct_empresas, ct_cnae, ct_estabelecimentos, ct_socios] >> insert_records
 start_dag >> create_tables >> [ct_socios_agg_json, ct_rf_agendor_api] >> insert_records
