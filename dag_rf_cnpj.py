@@ -70,11 +70,6 @@ def remove_spec_char(**kwargs):
 
 
 
-start_dag = DummyOperator(task_id='start_dag', dag=dag)
-
-
-
-
 def values_function():
     values = [0,1,2,3,4,5]
     return values
@@ -91,10 +86,10 @@ push_func = PythonOperator(
 def group_remove_speacial_char(number, **kwargs):
         #load the values if needed in the command you plan to execute
         file_number = "{{ task_instance.xcom_pull(task_ids='push_func') }}"
-        return PythonOperator(task_id='remove_spec_char_{}'.format(number),
+        return (PythonOperator(task_id='remove_spec_char_{}'.format(number),
             dag=dag,python_callable=remove_spec_char,
             op_kwargs={"bucket_name":'cnpj_rf', "file_number":number}
-            )
+            ), '>>')
         
         
 
