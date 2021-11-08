@@ -144,7 +144,11 @@ OPTIONS (
   uris = ['gs://cnpj_rf/unzip_files/*.SOCIOCSV']
 );
 
-
+create or replace table 	`rf-agendor.rf.socios_agg_json`
+(
+  cnpj_basico STRING,
+  socios_json ARRAY<STRING>
+);
 
 create or replace table rf.socios_agg_json as 
 with 
@@ -184,11 +188,14 @@ on s.pais = p.codigo
 )
 
 select cnpj_basico
-  , ARRAY_AGG(TO_JSON_STRING(s)) AS json_data 
+  , ARRAY_AGG(TO_JSON_STRING(s)) AS socios_json 
 from socios as s  --  6.865.797
 group by cnpj_basico
 order by cnpj_basico
 ;
+
+
+
 
 
 
@@ -239,6 +246,8 @@ left join rf.municipios as m
 on e.municipio = m.codigo
 left join rf.natureza_juridica as n
 on n.codigo = emp.natureza_juridica
+left join rf.socios_agg_json as s
+on s.cnpj_basico = e.cnpj_basico
 ;
 
 
