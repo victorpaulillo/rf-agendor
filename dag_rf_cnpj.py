@@ -86,14 +86,16 @@ push_func = PythonOperator(
 def group_remove_speacial_char(number, **kwargs):
         #load the values if needed in the command you plan to execute
         file_number = "{{ task_instance.xcom_pull(task_ids='push_func') }}"
-        return (PythonOperator(task_id='remove_spec_char_{}'.format(number),
+        return PythonOperator(task_id='remove_spec_char_{}'.format(number),
             dag=dag,python_callable=remove_spec_char,
             op_kwargs={"bucket_name":'cnpj_rf', "file_number":number}
-            ), '>>')
+            )
         
+def test(i):
+    return group_remove_speacial_char(i) + ' >> '
         
 
 
 for i in values_function():
-        push_func >> group_remove_speacial_char(i) 
+        push_func >> test(i) 
 
