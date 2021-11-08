@@ -6,6 +6,9 @@ from airflow import DAG
 from airflow.operators.dummy_operator import DummyOperator
 # from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python_operator import PythonOperator
+from airflow.operators import TriggerDagRunOperator
+
+
 #from airflow.operators.postgres_operator import PostgresOperator
 import psycopg2
 
@@ -46,8 +49,8 @@ local_tz = pendulum.timezone('America/Sao_Paulo')
 #--------------------------------------------------------------------------------
 
 dag = DAG(
-    dag_id='test',
-    description=f'Test',
+    dag_id='dag_rf_download',
+    description=f'DAG para Download de dados de CNPJ da Receita Federal',
     schedule_interval='0 22 * * *',
     start_date=datetime(2021, 4, 7, tzinfo=local_tz),
     default_args=default_args,
@@ -294,6 +297,7 @@ def delete_files_storage(**kwargs):
 # Start the DAG
 start_dag = DummyOperator(task_id='start_dag', dag=dag)
 remove_special_char_phase = DummyOperator(task_id='remove_special_char_phase', dag=dag)
+trigger_next_dag_phase = DummyOperator(task_id='trigger_next_dag_phase', dag=dag)
 
 delete_files_storage = PythonOperator(task_id='delete_files_storage',dag=dag,python_callable=delete_files_storage,op_kwargs={"bucket_name":'cnpj_rf'})
 list_files_rf = PythonOperator(task_id='list_files_rf',dag=dag,python_callable=list_files_rf)
@@ -471,6 +475,12 @@ remove_spec_char39 = PythonOperator(task_id='remove_spec_char39',dag=dag,python_
 remove_spec_char40 = PythonOperator(task_id='remove_spec_char40',dag=dag,python_callable=remove_spec_char,op_kwargs={"bucket_name":'cnpj_rf', "file_number":'40'})
 
 
+trigger_dag_rf_cnpj = TriggerDagRunOperator(
+    task_id="trigger_dag_rf_cnpj",
+    trigger_dag_id="dag_rf_cnpj", 
+    dag=dag,
+)
+
 
 start_dag >> delete_files_storage >> list_files_rf
 
@@ -481,5 +491,7 @@ list_files_rf >> download_file3 >> unzip_file3 >> mv_file3 >> download_file7 >> 
 list_files_rf >> download_file4 >> unzip_file4 >> mv_file4 >> download_file8 >> unzip_file8 >> mv_file8 >> download_file12 >> unzip_file12 >> mv_file12 >> download_file16 >> unzip_file16 >> mv_file16 >> download_file20 >> unzip_file20 >> mv_file20 >> download_file24 >> unzip_file24 >> mv_file24 >> download_file28 >> unzip_file28 >> mv_file28 >> download_file32 >> unzip_file32 >> mv_file32 >> download_file36 >> unzip_file36 >> mv_file36 >> download_file40 >> unzip_file40 >> mv_file40 >> remove_special_char_phase
 
 
-remove_special_char_phase >> remove_spec_char0 >> remove_spec_char1 >> remove_spec_char2 >> remove_spec_char3 >> remove_spec_char4 >> remove_spec_char5 >> remove_spec_char6 >> remove_spec_char7 >> remove_spec_char8 >> remove_spec_char9 >> remove_spec_char10 >> remove_spec_char11 >> remove_spec_char12 >> remove_spec_char13 >> remove_spec_char14 >> remove_spec_char15 >> remove_spec_char16 >> remove_spec_char17 >> remove_spec_char18 >> remove_spec_char19 >> remove_spec_char20 >> remove_spec_char21 >> remove_spec_char22 >> remove_spec_char23 >> remove_spec_char24 >> remove_spec_char25 >> remove_spec_char26 >> remove_spec_char27 >> remove_spec_char28 >> remove_spec_char29 >> remove_spec_char30 >> remove_spec_char31 >> remove_spec_char32 >> remove_spec_char33 >> remove_spec_char34 >> remove_spec_char35 >> remove_spec_char36 >> remove_spec_char37 >> remove_spec_char38 >> remove_spec_char39 >> remove_spec_char40 
+remove_special_char_phase >> remove_spec_char0 >> remove_spec_char1 >> remove_spec_char2 >> remove_spec_char3 >> remove_spec_char4 >> remove_spec_char5 >> remove_spec_char6 >> remove_spec_char7 >> remove_spec_char8 >> remove_spec_char9 >> remove_spec_char10 >> remove_spec_char11 >> remove_spec_char12 >> remove_spec_char13 >> remove_spec_char14 >> remove_spec_char15 >> remove_spec_char16 >> remove_spec_char17 >> remove_spec_char18 >> remove_spec_char19 >> remove_spec_char20 >> remove_spec_char21 >> remove_spec_char22 >> remove_spec_char23 >> remove_spec_char24 >> remove_spec_char25 >> remove_spec_char26 >> remove_spec_char27 >> remove_spec_char28 >> remove_spec_char29 >> remove_spec_char30 >> remove_spec_char31 >> remove_spec_char32 >> remove_spec_char33 >> remove_spec_char34 >> remove_spec_char35 >> remove_spec_char36 >> remove_spec_char37 >> remove_spec_char38 >> remove_spec_char39 >> remove_spec_char40 >> trigger_next_dag_phase
+
+trigger_next_dag_phase >> trigger_dag_rf_cnpj
 

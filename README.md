@@ -70,3 +70,26 @@ sudo docker-compose up
 
 Create a firewall rule Open VPC Network > Firewall Rules Create Firewall rules Name: airflow-ingress Priority: 8080 Targets: All instances in the network Source IP ranges: 0.0.0.0/0 Protocols and ports > Check tcp box
 
+
+
+
+O que fazer:
+1. Jogar os dados para o Postgres - Tabela Temp, ai mudar o nome para producao e o da tabela de producao mudar para backup
+2. Formato da data yyy-mm-dd
+3. Converter na api o campo de json de string para json mesmo. Tirar as barrrinhas 
+4. Colocar a função nos padroes da API REST 
+5. CORS autorização - OK
+6. Retirar um monte de codigo repetido por jeito dinamico de gerar operadores: https://stackoverflow.com/questions/41517798/proper-way-to-create-dynamic-workflows-in-airflow
+7. Criar as tabelas para criação de ETL dentro do airflow em uma nova dag, que a dag principal trigga.
+
+
+
+# Pontos de atenção
+E vou mandar aqui uns pontos de atenção:
+- O porte não vem incorreto varias vezes. Aparece muitas vezes NAO INFORMADO, mas o cara tem porte ME, ou outros...
+- O logradouro (endereço) aparece sem o "Rua", "Avenida", "Rodovia", ou qualquer outro prefixo que informe o "tipo de rua". Pode ser algum erro de uma transformação minha. Preciso validar, mas acho que é assim que o dado bem mesmo. Ex.: No site da receita "JD IRACEMA" na base da receita, que estou disponibilizando "IRACEMA"
+- Quando a natureza_juridica é igual "Empresário (Individual)" não vai ter quadro de sócios. Isso está igual ao o que aparece no site da receita consultando na mão
+
+
+
+
