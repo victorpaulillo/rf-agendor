@@ -41,7 +41,8 @@ start_dag = DummyOperator(task_id='start_dag', dag=dag)
 
 
 def values_function():
-     return 5
+    values = [0,1,2,3,4,5]
+    return values
 
 def group_remove_speacial_char(number, **kwargs):
         #load the values if needed in the command you plan to execute
