@@ -1,3 +1,6 @@
+
+
+
 create external table if not exists `rf-agendor.rf.qualificacoes_socios`
 (
   codigo string,
