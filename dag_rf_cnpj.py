@@ -92,7 +92,8 @@ def group_remove_speacial_char(number, **kwargs):
             )
         
 def test(i):
-    return group_remove_speacial_char(i) + ' >> '
+    next = ' >> '
+    return (group_remove_speacial_char(i), next)
         
 
 
