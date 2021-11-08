@@ -351,7 +351,7 @@ create_tables = DummyOperator(task_id='create_tables', dag=dag)
 insert_records = DummyOperator(task_id='insert_records', dag=dag)
 
 start_dag >> create_external_tables >> [ct_qualificacoes_socios, ct_paises, ct_natureza_juridica, ct_municipios, ct_empresas, ct_cnae, ct_estabelecimentos, ct_socios] >> insert_records
-start_dag >> create_tables >> [ct_socios_agg_json] >> insert_records
+start_dag >> create_tables >> [ct_socios_agg_json, ct_rf_agendor_api] >> insert_records
 
 insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_api 
 
