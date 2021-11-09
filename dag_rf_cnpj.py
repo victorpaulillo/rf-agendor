@@ -98,6 +98,16 @@ def bigquery_to_storage():
 
 
 
+# storage_to_postgres
+storage_to_postgres = BashOperator(
+    task_id='storage_to_postgres',
+    bash_command='gcloud sql import csv rf-agendor gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api*.csv \
+                --database=rf \
+                --table=rf_agendor_cadastro_api_tmp',
+)
+
+
+
     
 ct_qualificacoes_socios_query = """
     create external table if not exists `rf-agendor.rf.qualificacoes_socios`
@@ -416,7 +426,7 @@ insert_records = DummyOperator(task_id='insert_records', dag=dag)
 start_dag >> create_external_tables >> [ct_qualificacoes_socios, ct_paises, ct_natureza_juridica, ct_municipios, ct_empresas, ct_cnae, ct_estabelecimentos, ct_socios] >> insert_records
 start_dag >> create_tables >> [ct_socios_agg_json, ct_rf_agendor_cadastro_api] >> insert_records
 
-insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro_api  >> bigquery_to_storage
+insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro_api  >> bigquery_to_storage >> storage_to_postgres
 
 
 
