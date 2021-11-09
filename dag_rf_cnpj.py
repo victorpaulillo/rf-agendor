@@ -429,7 +429,7 @@ insert_into_socios_agg_json = PythonOperator(task_id='insert_into_socios_agg_jso
 insert_into_rf_agendor_cadastro_api = PythonOperator(task_id='insert_into_rf_agendor_cadastro_api',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":insert_into_rf_agendor_cadastro_api_query})
 
 bigquery_to_storage = PythonOperator(task_id='bigquery_to_storage',dag=dag,python_callable=bigquery_to_storage)
-storage_to_postgres = PythonOperator(task_id='bigquery_to_storage',dag=dag,python_callable=bigquery_to_storage)
+storage_to_postgres = PythonOperator(task_id='storage_to_postgres',dag=dag,python_callable=storage_to_postgres)
 
 start_dag = DummyOperator(task_id='start_dag', dag=dag)
 create_external_tables = DummyOperator(task_id='create_external_tables', dag=dag)
