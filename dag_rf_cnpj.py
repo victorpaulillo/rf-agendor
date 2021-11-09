@@ -36,6 +36,7 @@ dag = DAG(
 def bigquery_execution(query):
     client = bigquery.Client()
     query_job = client.query(query)  # Make an API request.
+    query_job.result()  # Waits for job to complete.
     print(f"Query executed: {query}")
 
 # def bigquery_to_postgres(table_name):
@@ -75,15 +76,20 @@ def bigquery_to_storage():
     dataset_id = "rf"
     table_id = "rf_agendor_cadastro_api"
 
-    destination_uri = "gs://{}/{}".format(bucket_name, "rf_agendor_cadastro_api.csv")
+    destination_uri = "gs://{}/{}".format(bucket_name, "rf_agendor_cadastro_api-*.csv")
     dataset_ref = bigquery.DatasetReference(project, dataset_id)
     table_ref = dataset_ref.table(table_id)
+    job_config = bigquery.job.ExtractJobConfig()
+    job_config.compression = bigquery.Compression.GZIP
+
+
 
     extract_job = client.extract_table(
         table_ref,
         destination_uri,
         # Location must match that of the source table.
         location="southamerica-east1",
+        job_config=job_config,
     )  # API request
     extract_job.result()  # Waits for job to complete.
 
