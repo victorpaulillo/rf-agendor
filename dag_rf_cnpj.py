@@ -283,7 +283,7 @@ ct_rf_agendor_cadastro_api_query = """
     capital_social	STRING,
     natureza_juridica	STRING,
     cnpj_basico	STRING,
-    socios_json ARRAY<STRING>
+    socios_json STRING
     );
     """
 
@@ -372,7 +372,7 @@ select e.cnpj_basico || cnpj_ordem || cnpj_dv as cnpj
   , emp.capital_social
   , replace(n.descricao, '�', 'ç') as natureza_juridica
   , s.cnpj_basico
-  , s.socios_json
+  , cast(s.socios_json as string) as socios_json
 
 from rf.estabelecimentos as e
 left join rf.empresas as emp
