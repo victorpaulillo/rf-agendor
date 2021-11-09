@@ -80,8 +80,8 @@ O que fazer:
 4. Colocar a função nos padroes da API REST 
 5. CORS autorização - OK
 6. Retirar um monte de codigo repetido por jeito dinamico de gerar operadores: https://stackoverflow.com/questions/41517798/proper-way-to-create-dynamic-workflows-in-airflow
-7. Criar as tabelas para criação de ETL dentro do airflow em uma nova dag, que a dag principal trigga.
-
+7. Criar as tabelas para criação de ETL dentro do airflow em uma nova dag, que a dag principal trigga. OK
+8. Copiar os dados do bigquery para uma tabela temp no postgres. Ai contar a quantidade de registros dessa tabela temp, se for mais ou igual a tabela de prod, ai faz o rename na de prod, se nao da um alerta
 
 
 # Pontos de atenção
