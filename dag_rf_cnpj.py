@@ -38,31 +38,59 @@ def bigquery_execution(query):
     query_job = client.query(query)  # Make an API request.
     print(f"Query executed: {query}")
 
-def bigquery_to_postgres(table_name):
-    from sqlalchemy import create_engine
-    # Construct a BigQuery client object.
-    bqclient = bigquery.Client()
+# def bigquery_to_postgres(table_name):
+#     from sqlalchemy import create_engine
+#     # Construct a BigQuery client object.
+#     bqclient = bigquery.Client()
 
-    query = """
-        SELECT *
-        FROM {}
-        """.format(table_name)
+#     query = """
+#         SELECT *
+#         FROM {}
+#         """.format(table_name)
+#     print(query)
 
-    print("The query data:")
-    df = (
-        bqclient.query(query)
-        .result()
-        .to_dataframe(
-            # Optionally, explicitly request to use the BigQuery Storage API. As of
-            # google-cloud-bigquery version 1.26.0 and above, the BigQuery Storage
-            # API is used by default.
-            create_bqstorage_client=True,
-        )
-    )
-    print(df.head())
+#     print("The query data:")
+#     df = (
+#         bqclient.query(query)
+#         .result()
+#         .to_dataframe(
+#             # Optionally, explicitly request to use the BigQuery Storage API. As of
+#             # google-cloud-bigquery version 1.26.0 and above, the BigQuery Storage
+#             # API is used by default.
+#             create_bqstorage_client=True,
+#         )
+#     )
+#     print(df.head())
     
-    engine = create_engine('postgresql://postgres:postgres@35.247.200.226:5432/rf')
-    df.to_sql('rf_agendor_cadastro_api_tmp', engine)
+
+#     cnpj_rf/bigquery_to_postgres
+#     engine = create_engine('postgresql://postgres:postgres@35.247.200.226:5432/rf')
+#     df.to_sql('rf_agendor_cadastro_api_tmp', engine)
+
+def bigquery_to_storage():
+    from google.cloud import bigquery
+    client = bigquery.Client()
+    bucket_name = 'cnpj_rf/bigquery_to_postgres'
+    project = "rf-agendor"
+    dataset_id = "rf"
+    table_id = "rf_agendor_cadastro_api"
+
+    destination_uri = "gs://{}/{}".format(bucket_name, "rf_agendor_cadastro_api.csv")
+    dataset_ref = bigquery.DatasetReference(project, dataset_id)
+    table_ref = dataset_ref.table(table_id)
+
+    extract_job = client.extract_table(
+        table_ref,
+        destination_uri,
+        # Location must match that of the source table.
+        location="southamerica-east1",
+    )  # API request
+    extract_job.result()  # Waits for job to complete.
+
+    print(
+        "Exported {}:{}.{} to {}".format(project, dataset_id, table_id, destination_uri)
+    )
+
 
 
     
@@ -369,7 +397,7 @@ ct_rf_agendor_cadastro_api = PythonOperator(task_id='ct_rf_agendor_cadastro_api'
 insert_into_socios_agg_json = PythonOperator(task_id='insert_into_socios_agg_json',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":insert_into_socios_agg_json_query})
 insert_into_rf_agendor_cadastro_api = PythonOperator(task_id='insert_into_rf_agendor_cadastro_api',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":insert_into_rf_agendor_cadastro_api_query})
 
-bigquery_to_postgres_operator = PythonOperator(task_id='bigquery_to_postgres_operator',dag=dag,python_callable=bigquery_to_postgres,op_kwargs={"table_name":"`rf-agendor.rf.rf_agendor_cadastro_api`"})
+bigquery_to_storage = PythonOperator(task_id='bigquery_to_storage',dag=dag,python_callable=bigquery_to_storage)
 
 start_dag = DummyOperator(task_id='start_dag', dag=dag)
 create_external_tables = DummyOperator(task_id='create_external_tables', dag=dag)
@@ -381,7 +409,7 @@ insert_records = DummyOperator(task_id='insert_records', dag=dag)
 start_dag >> create_external_tables >> [ct_qualificacoes_socios, ct_paises, ct_natureza_juridica, ct_municipios, ct_empresas, ct_cnae, ct_estabelecimentos, ct_socios] >> insert_records
 start_dag >> create_tables >> [ct_socios_agg_json, ct_rf_agendor_cadastro_api] >> insert_records
 
-insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro_api  >> bigquery_to_postgres_operator
+insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro_api  >> bigquery_to_storage
 
 
 
