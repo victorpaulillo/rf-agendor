@@ -93,3 +93,4 @@ E vou mandar aqui uns pontos de atenção:
 
 
 
+https://stackoverflow.com/questions/58901438/how-do-i-efficiently-migrate-the-bigquery-tables-to-on-prem-postgres

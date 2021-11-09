@@ -80,7 +80,7 @@ def bigquery_to_storage():
     dataset_ref = bigquery.DatasetReference(project, dataset_id)
     table_ref = dataset_ref.table(table_id)
     job_config = bigquery.job.ExtractJobConfig()
-    job_config.destination_format = bigquery.DestinationFormat.NEWLINE_DELIMITED_JSON
+    job_config.compression = bigquery.Compression.GZIP
 
     extract_job = client.extract_table(
         table_ref,
@@ -94,6 +94,7 @@ def bigquery_to_storage():
     print(
         "Exported {}:{}.{} to {}".format(project, dataset_id, table_id, destination_uri)
     )
+
 
 
 
@@ -281,7 +282,8 @@ ct_rf_agendor_cadastro_api_query = """
     capital_social	STRING,
     natureza_juridica	STRING,
     cnpj_basico	STRING,
-    socios_json ARRAY<STRING>
+    --socios_json ARRAY<STRING>
+    socios_json STRING
     );
     """
 
@@ -370,7 +372,8 @@ select e.cnpj_basico || cnpj_ordem || cnpj_dv as cnpj
   , emp.capital_social
   , replace(n.descricao, '�', 'ç') as natureza_juridica
   , s.cnpj_basico
-  , s.socios_json
+  --, s.socios_json
+  ,  ARRAY_TO_STRING(s.socios_json, ',') as socios_json
 
 from rf.estabelecimentos as e
 left join rf.empresas as emp
