@@ -96,15 +96,29 @@ def bigquery_to_storage():
     )
 
 
+def storage_to_postgres():
+    import requests
+    project_id = ' rf-agendor'
+    instance_id = 'rf-agendor'
+    endpoint = 'https://sqladmin.googleapis.com/v1/projects/{project_id}/instances/{instance_id}/import'.format(project_id=project_id, instance_id=instance_id)
+    
+    # data to be sent to api
+    data = {
+            "importContext":
+            {
+                "fileType": "CSV",
+                "uri": "gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000001.csv",
+                "database": "rf",
+                "csvImportOptions":
+                {
+                    "table": "table_name"
+                }
+            }
+            }
 
-
-# storage_to_postgres
-storage_to_postgres = BashOperator(
-    task_id='storage_to_postgres',
-    bash_command='gcloud sql import csv rf-agendor gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000000.csv \
-                --database=rf \
-                --table=rf_agendor_cadastro_api_tmp',
-)
+    
+    # sending post request and saving response as response object
+    r = requests.post(url = endpoint, data = data)
 
 
 
