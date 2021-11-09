@@ -37,6 +37,34 @@ def bigquery_execution(query):
     client = bigquery.Client()
     query_job = client.query(query)  # Make an API request.
     print(f"Query executed: {query}")
+
+def bigquery_to_postgres(table_name):
+    from sqlalchemy import create_engine
+    # Construct a BigQuery client object.
+    bqclient = bigquery.Client()
+
+    query = """
+        SELECT *
+        FROM {}
+        """.format(table_name)
+
+    print("The query data:")
+    df = (
+        bqclient.query(query)
+        .result()
+        .to_dataframe(
+            # Optionally, explicitly request to use the BigQuery Storage API. As of
+            # google-cloud-bigquery version 1.26.0 and above, the BigQuery Storage
+            # API is used by default.
+            create_bqstorage_client=True,
+        )
+    )
+    print(df.head())
+    
+    engine = create_engine('postgresql://postgres:postgres@35.247.200.226:5432/rf')
+    df.to_sql('rf_agendor_cadastro_api_tmp', engine)
+
+
     
 ct_qualificacoes_socios_query = """
     create external table if not exists `rf-agendor.rf.qualificacoes_socios`
@@ -341,6 +369,8 @@ ct_rf_agendor_api = PythonOperator(task_id='ct_rf_agendor_api',dag=dag,python_ca
 insert_into_socios_agg_json = PythonOperator(task_id='insert_into_socios_agg_json',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":insert_into_socios_agg_json_query})
 insert_into_rf_agendor_cadastro_api = PythonOperator(task_id='insert_into_rf_agendor_cadastro_api',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":insert_into_rf_agendor_cadastro_api_query})
 
+bigquery_to_postgres_operator = PythonOperator(task_id='bigquery_to_postgres_operator',dag=dag,python_callable=bigquery_to_postgres,op_kwargs={"table_name":"rf-agendor.rf.rf_agendor_cadastro_api"})
+
 start_dag = DummyOperator(task_id='start_dag', dag=dag)
 create_external_tables = DummyOperator(task_id='create_external_tables', dag=dag)
 create_tables = DummyOperator(task_id='create_tables', dag=dag)
@@ -351,7 +381,7 @@ insert_records = DummyOperator(task_id='insert_records', dag=dag)
 start_dag >> create_external_tables >> [ct_qualificacoes_socios, ct_paises, ct_natureza_juridica, ct_municipios, ct_empresas, ct_cnae, ct_estabelecimentos, ct_socios] >> insert_records
 start_dag >> create_tables >> [ct_socios_agg_json, ct_rf_agendor_api] >> insert_records
 
-insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro_api 
+insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro_api  >> bigquery_to_postgres_operator
 
 
 
