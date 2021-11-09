@@ -249,7 +249,7 @@ ct_rf_agendor_cadastro_api_query = """
     capital_social	STRING,
     natureza_juridica	STRING,
     cnpj_basico	STRING,
-    socios_json ARRAY<STRING>,
+    socios_json ARRAY<STRING>
     );
     """
 
@@ -369,7 +369,7 @@ ct_rf_agendor_cadastro_api = PythonOperator(task_id='ct_rf_agendor_cadastro_api'
 insert_into_socios_agg_json = PythonOperator(task_id='insert_into_socios_agg_json',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":insert_into_socios_agg_json_query})
 insert_into_rf_agendor_cadastro_api = PythonOperator(task_id='insert_into_rf_agendor_cadastro_api',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":insert_into_rf_agendor_cadastro_api_query})
 
-bigquery_to_postgres_operator = PythonOperator(task_id='bigquery_to_postgres_operator',dag=dag,python_callable=bigquery_to_postgres,op_kwargs={"table_name":"rf-agendor.rf.rf_agendor_cadastro_api"})
+bigquery_to_postgres_operator = PythonOperator(task_id='bigquery_to_postgres_operator',dag=dag,python_callable=bigquery_to_postgres,op_kwargs={"table_name":"`rf-agendor.rf.rf_agendor_cadastro_api`"})
 
 start_dag = DummyOperator(task_id='start_dag', dag=dag)
 create_external_tables = DummyOperator(task_id='create_external_tables', dag=dag)
