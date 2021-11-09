@@ -101,7 +101,7 @@ def bigquery_to_storage():
 # storage_to_postgres
 storage_to_postgres = BashOperator(
     task_id='storage_to_postgres',
-    bash_command='gcloud sql import csv rf-agendor gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api*.csv \
+    bash_command='gcloud sql import csv rf-agendor gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000000.csv \
                 --database=rf \
                 --table=rf_agendor_cadastro_api_tmp',
 )
