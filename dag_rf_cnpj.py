@@ -115,11 +115,10 @@ def storage_to_postgres():
                 }
             }
             }
-
-    
     # sending post request and saving response as response object
     r = requests.post(url = endpoint, data = data)
-
+    print(r.text)
+    
 
 
     
