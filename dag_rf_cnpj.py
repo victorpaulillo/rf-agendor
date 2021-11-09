@@ -273,6 +273,7 @@ insert_into_socios_agg_json_query = """
 
 insert_into_rf_agendor_api_query = """
 insert into `rf-agendor.rf.rf_agendor_api`
+-- insert into `rf-agendor.rf.rf_agendor_api`
 select e.cnpj_basico || cnpj_ordem || cnpj_dv as cnpj
   , case when e.identificador_matriz_filial = '1' then 'Matriz'
       when e.identificador_matriz_filial = '2' then 'Filial'
@@ -309,6 +310,8 @@ select e.cnpj_basico || cnpj_ordem || cnpj_dv as cnpj
   , emp.razao_social
   , emp.capital_social
   , replace(n.descricao, '�', 'ç') as natureza_juridica
+  , s.cnpj_basico
+  , s.socios_json
 
 from rf.estabelecimentos as e
 left join rf.empresas as emp
