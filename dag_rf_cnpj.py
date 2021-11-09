@@ -220,8 +220,8 @@ ct_socios_agg_json_query = """
     );
     """
 
-ct_rf_agendor_api_query = """
-    create or replace table 	`rf-agendor.rf.rf_agendor_api`
+ct_rf_agendor_cadastro_api_query = """
+    create or replace table 	`rf-agendor.rf.rf_agendor_cadastro_api`
     (
     cnpj	STRING,
     matriz_filial	STRING,
@@ -364,7 +364,7 @@ ct_estabelecimentos = PythonOperator(task_id='ct_estabelecimentos',dag=dag,pytho
 ct_socios = PythonOperator(task_id='ct_socios',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":ct_socios_query})
 
 ct_socios_agg_json = PythonOperator(task_id='ct_socios_agg_json',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":ct_socios_agg_json_query})
-ct_rf_agendor_api = PythonOperator(task_id='ct_rf_agendor_api',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":ct_rf_agendor_api_query})
+ct_rf_agendor_cadastro_api = PythonOperator(task_id='ct_rf_agendor_cadastro_api',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":ct_rf_agendor_cadastro_api_query})
 
 insert_into_socios_agg_json = PythonOperator(task_id='insert_into_socios_agg_json',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":insert_into_socios_agg_json_query})
 insert_into_rf_agendor_cadastro_api = PythonOperator(task_id='insert_into_rf_agendor_cadastro_api',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":insert_into_rf_agendor_cadastro_api_query})
@@ -379,7 +379,7 @@ insert_records = DummyOperator(task_id='insert_records', dag=dag)
 #Workflow
 
 start_dag >> create_external_tables >> [ct_qualificacoes_socios, ct_paises, ct_natureza_juridica, ct_municipios, ct_empresas, ct_cnae, ct_estabelecimentos, ct_socios] >> insert_records
-start_dag >> create_tables >> [ct_socios_agg_json, ct_rf_agendor_api] >> insert_records
+start_dag >> create_tables >> [ct_socios_agg_json, ct_rf_agendor_cadastro_api] >> insert_records
 
 insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro_api  >> bigquery_to_postgres_operator
 
