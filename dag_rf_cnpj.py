@@ -152,7 +152,7 @@ def bigquery_to_storage():
 #     socios_json VARCHAR
 # );
 
-gcloud sql import csv rf-agendor gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000001.csv --database=rf --table=rf_agendor_cadastro_api_tmp ;
+# gcloud sql import csv rf-agendor gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000001.csv --database=rf --table=rf_agendor_cadastro_api_tmp ;
 
 
 # BashOperator to list all files on the Google Cloud Storage
