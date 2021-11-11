@@ -163,7 +163,7 @@ def bigquery_to_storage():
 # )
 
 
-def run_script(script, stdin=None):
+def     run_script(script, stdin=None):
     """Returns (stdout, stderr), raises error on non-zero return code"""
     import subprocess
     # Note: by using a list here (['bash', ...]) you avoid quoting issues, as the 
@@ -190,12 +190,18 @@ def run_script(script, stdin=None):
     return output
 
 
-class ScriptException(Exception):
-    def __init__(self, returncode, stdout, stderr, script):
-        self.returncode = returncode
-        self.stdout = stdout
-        self.stderr = stderr
-        Exception().__init__('Error in script')
+def bq_to_postgres_files():
+        
+    from google.cloud import storage
+
+    client = storage.Client()
+    list_files = []
+    for blob in client.list_blobs('cnpj_rf', prefix='bigquery_to_postgres'):
+        print(str(blob))
+        list_files.append(blob)
+    return list_files
+
+
 
 # bq_to_postgres_files = BashOperator(
 #     task_id="bq_to_postgres_files",
@@ -206,8 +212,7 @@ class ScriptException(Exception):
 bq_to_postgres_files = PythonOperator(
     task_id="bq_to_postgres_files",
     dag=dag,
-    python_callable=run_script,
-    op_kwargs={"script":"gsutil ls gs://cnpj_rf/bigquery_to_postgres |  tr '\n' '||'"}
+    python_callable=bq_to_postgres_files,
 )
 
 
