@@ -183,7 +183,7 @@ def run_script(script, stdin=None):
 
     bashCommand = script
     # process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-    process = subprocess.Popen(bashCommand)
+    process = subprocess.Popen(bashCommand, stdout=subprocess.PIPE)
     output, error = process.communicate()
     print(output)
     
