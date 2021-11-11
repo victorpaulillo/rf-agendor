@@ -527,7 +527,7 @@ insert_into_socios_agg_json = PythonOperator(task_id='insert_into_socios_agg_jso
 insert_into_rf_agendor_cadastro_api = PythonOperator(task_id='insert_into_rf_agendor_cadastro_api',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":insert_into_rf_agendor_cadastro_api_query})
 
 bigquery_to_storage = PythonOperator(task_id='bigquery_to_storage',dag=dag,python_callable=bigquery_to_storage)
-storage_to_postgres = PythonOperator(task_id='storage_to_postgres',dag=dag,python_callable=storage_to_postgres)
+# storage_to_postgres = PythonOperator(task_id='storage_to_postgres',dag=dag,python_callable=storage_to_postgres)
 
 start_dag = DummyOperator(task_id='start_dag', dag=dag)
 create_external_tables = DummyOperator(task_id='create_external_tables', dag=dag)
@@ -539,7 +539,8 @@ insert_records = DummyOperator(task_id='insert_records', dag=dag)
 start_dag >> create_external_tables >> [ct_qualificacoes_socios, ct_paises, ct_natureza_juridica, ct_municipios, ct_empresas, ct_cnae, ct_estabelecimentos, ct_socios] >> insert_records
 start_dag >> create_tables >> [ct_socios_agg_json, ct_rf_agendor_cadastro_api] >> insert_records
 
-insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro_api  >> bigquery_to_storage >> storage_to_postgres
+insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro_api  >> bigquery_to_storage 
+# >> storage_to_postgres
 
 
 
