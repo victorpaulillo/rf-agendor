@@ -96,29 +96,128 @@ def bigquery_to_storage():
     )
 
 
-def storage_to_postgres():
-    import requests
-    project_id = ' rf-agendor'
-    instance_id = 'rf-agendor'
-    endpoint = 'https://sqladmin.googleapis.com/v1/projects/{project_id}/instances/{instance_id}/import'.format(project_id=project_id, instance_id=instance_id)
+# def storage_to_postgres():
+#     import requests
+#     project_id = ' rf-agendor'
+#     instance_id = 'rf-agendor'
+#     endpoint = 'https://sqladmin.googleapis.com/v1/projects/{project_id}/instances/{instance_id}/import'.format(project_id=project_id, instance_id=instance_id)
     
-    # data to be sent to api
-    data = {
-            "importContext":
-            {
-                "fileType": "CSV",
-                "uri": "gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000001.csv",
-                "database": "rf",
-                "csvImportOptions":
-                {
-                    "table": "table_name"
-                }
-            }
-            }
-    # sending post request and saving response as response object
-    r = requests.post(url = endpoint, data = data)
-    print(r.text)
-    
+#     # data to be sent to api
+#     data = {
+#             "importContext":
+#             {
+#                 "fileType": "CSV",
+#                 "uri": "gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000001.csv",
+#                 "database": "rf",
+#                 "csvImportOptions":
+#                 {
+#                     "table": "table_name"
+#                 }
+#             }
+#             }
+#     # sending post request and saving response as response object
+#     r = requests.post(url = endpoint, data = data)
+#     print(r.text)
+
+
+
+# create table rf_agendor_cadastro_api_tmp
+#     (
+#     cnpj VARCHAR ,
+#     matriz_filial VARCHAR,
+#     nome_fantasia VARCHAR,
+#     desc_situacao_cadastral VARCHAR,
+#     data_situacao_cadastral VARCHAR,
+#     data_inicio_atividade VARCHAR,
+#     cnae VARCHAR,
+#     nome_cnae_principal VARCHAR,
+#     cnae_fiscal_secundaria VARCHAR,
+#     logradouro VARCHAR,
+#     numero VARCHAR,
+#     complemento VARCHAR,
+#     bairro VARCHAR,
+#     cep VARCHAR,
+#     uf VARCHAR,
+#     nome_municipio VARCHAR,
+#     ddd_1 VARCHAR,
+#     telefone_1 VARCHAR,
+#     ddd_2 VARCHAR,
+#     telefone_2 VARCHAR,
+#     correio_eletronico VARCHAR,
+#     porte VARCHAR,
+#     razao_social VARCHAR,
+#     capital_social VARCHAR,
+#     natureza_juridica VARCHAR,
+#     cnpj_basico VARCHAR,
+#     socios_json VARCHAR
+# );
+
+gcloud sql import csv rf-agendor gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000001.csv --database=rf --table=rf_agendor_cadastro_api_tmp ;
+
+
+# BashOperator to list all files on the Google Cloud Storage
+bq_to_postgres_files = BashOperator(
+    task_id="gcs_files",
+    bash_command=f"gsutil ls gs://cnpj_rf/bigquery_to_postgres |  tr '\n' '||'",
+    xcom_push=True,
+    dag=dag
+)
+
+
+# # Function to join the files found on Google Cloud Storage and add it on one string bash command
+def storage_to_postgres_bash_command(**kwargs):
+
+    ti = kwargs['ti']
+    bq_to_postgres_files = ti.xcom_pull(task_ids='bq_to_postgres_files')
+    print(bq_to_postgres_files)
+    bq_to_postgres_files = bq_to_postgres_files['data']
+
+    # gcs_files=context['templates_dict']['gcs_path_filename']
+    list_files=bq_to_postgres_files.split("|")[1:-1]
+    database='rf'
+    table='rf_agendor_cadastro_api_tmp'
+    gcloud_import_command = ''
+    for file in list_files:
+        import_file = 'gcloud sql import csv rf-agendor {} --database={} --table={} ; '.format(file, database, table)
+        print(import_file)
+        # gcloud_import_command = gcloud_import_command + import_file
+    # return gcloud_import_command[:-2]
+    return import_file
+
+
+storage_to_postgres_bash_command = PythonOperator(
+    task_id='storage_to_postgres_bash_command',
+    dag=dag,
+    python_callable=storage_to_postgres_bash_command,
+    provide_context=True,  
+    templates_dict={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}" },
+    xcom_push=True,
+    )
+
+
+
+# Run the function that join on one string the files found on Google Cloud Storage
+# gcs_files_create_bash_command = PythonOperator(
+#     task_id='gcs_files_create_bash_command',
+#     dag=dag,
+#     python_callable=gcs_files_create_bash_command,
+#     provide_context=True,  
+#     templates_dict={'gcs_path_filename': "{{ ti.xcom_pull(task_ids='gcs_files') }}" },
+#     xcom_push=True,
+#     )
+
+# # Get the result from the join files function
+# xcom_get_import_command = '{{ ti.xcom_pull(task_ids="gcs_files_create_bash_command")}}'
+
+# #BashOperator to import the files from the GCS to Postgres stage table. It runs the bash command string with the multiple files
+# import_files_stage = BashOperator(
+#     task_id="import_files_stage",
+#     bash_command=xcom_get_import_command,
+#     retries=2,
+#     retry_delay=timedelta(minutes=2),
+#     dag=dag
+# )
+
 
 
     

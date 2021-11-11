@@ -71,6 +71,7 @@ sudo docker-compose up
 Create a firewall rule Open VPC Network > Firewall Rules Create Firewall rules Name: airflow-ingress Priority: 8080 Targets: All instances in the network Source IP ranges: 0.0.0.0/0 Protocols and ports > Check tcp box
 
 
+Liberar permissao da Conta de Serviço da Instancia do Postgres no bucket do Google Cloud Storage
 
 
 O que fazer:
@@ -82,6 +83,7 @@ O que fazer:
 6. Retirar um monte de codigo repetido por jeito dinamico de gerar operadores: https://stackoverflow.com/questions/41517798/proper-way-to-create-dynamic-workflows-in-airflow
 7. Criar as tabelas para criação de ETL dentro do airflow em uma nova dag, que a dag principal trigga. OK
 8. Copiar os dados do bigquery para uma tabela temp no postgres. Ai contar a quantidade de registros dessa tabela temp, se for mais ou igual a tabela de prod, ai faz o rename na de prod, se nao da um alerta
+9. Fazer ukm looping paralelo para importar arquivo por arquivo, cada um em uma caixinha, assim se der erro, ele tenta novamente
 
 
 # Pontos de atenção
