@@ -156,11 +156,47 @@ def bigquery_to_storage():
 
 
 # BashOperator to list all files on the Google Cloud Storage
-bq_to_postgres_files = BashOperator(
+# bq_to_postgres_files = BashOperator(
+#     task_id="bq_to_postgres_files",
+#     bash_command=f"gsutil ls gs://cnpj_rf/bigquery_to_postgres |  tr '\n' '||'",
+#     dag=dag
+# )
+
+
+def run_script(script, stdin=None):
+    """Returns (stdout, stderr), raises error on non-zero return code"""
+    import subprocess
+    # Note: by using a list here (['bash', ...]) you avoid quoting issues, as the 
+    # arguments are passed in exactly this order (spaces, quotes, and newlines won't
+    # cause problems):
+    proc = subprocess.Popen(['bash', '-c', script],
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        stdin=subprocess.PIPE)
+    stdout, stderr = proc.communicate()
+    if proc.returncode:
+        raise ScriptException(proc.returncode, stdout, stderr, script)
+    return stdout, stderr
+
+class ScriptException(Exception):
+    def __init__(self, returncode, stdout, stderr, script):
+        self.returncode = returncode
+        self.stdout = stdout
+        self.stderr = stderr
+        Exception().__init__('Error in script')
+
+# bq_to_postgres_files = BashOperator(
+#     task_id="bq_to_postgres_files",
+#     bash_command=f"gsutil ls gs://cnpj_rf/bigquery_to_postgres |  tr '\n' '||'",
+#     dag=dag
+# )
+
+bq_to_postgres_files = PythonOperator(
     task_id="bq_to_postgres_files",
-    bash_command=f"gsutil ls gs://cnpj_rf/bigquery_to_postgres |  tr '\n' '||'",
-    dag=dag
+    dag=dag,
+    python_callable=run_script,
+    op_kwargs={"query":f"gsutil ls gs://cnpj_rf/bigquery_to_postgres |  tr '\n' '||'"}
 )
+
 
 
 # # Function to join the files found on Google Cloud Storage and add it on one string bash command
