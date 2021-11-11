@@ -190,8 +190,9 @@ storage_to_postgres_bash_command = PythonOperator(
     dag=dag,
     python_callable=storage_to_postgres_bash_command,
     provide_context=True,  
-    templates_dict={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}" },
-    xcom_push=True,
+    op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}" }
+    # templates_dict={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}" },
+    # xcom_push=True,
     )
 
 
