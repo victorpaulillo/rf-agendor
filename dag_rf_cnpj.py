@@ -159,7 +159,6 @@ def bigquery_to_storage():
 bq_to_postgres_files = BashOperator(
     task_id="bq_to_postgres_files",
     bash_command=f"gsutil ls gs://cnpj_rf/bigquery_to_postgres |  tr '\n' '||'",
-    xcom_push=True,
     dag=dag
 )
 
