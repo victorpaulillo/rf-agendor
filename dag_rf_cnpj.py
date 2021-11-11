@@ -222,9 +222,9 @@ push_func = PythonOperator(
 def group_bash_command(number, **kwargs):
         #load the values if needed in the command you plan to execute
         file_number = "{{ task_instance.xcom_pull(task_ids='push_func') }}"
-        return PythonOperator(task_id='remove_spec_char_{}'.format(number),
+        return PythonOperator(task_id='remove_spec_char_{}'.format(str(number)),
             dag=dag,python_callable=storage_to_postgres_bash_command,
-            op_kwargs={"file_number":number}
+            op_kwargs={"file_number":str(number)}
             )
         
 def test(i):
