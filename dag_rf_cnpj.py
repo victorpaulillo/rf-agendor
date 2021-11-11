@@ -166,7 +166,9 @@ def bq_to_postgres_files():
         print(str(blob))
         blob_name = blob.name
         list_files.append(blob_name)
-    return list_files
+    len_list_files = len(list_files)
+
+    return list_files, len_list_files
 
 
 bq_to_postgres_files = PythonOperator(
@@ -181,7 +183,8 @@ bq_to_postgres_files = PythonOperator(
 def storage_to_postgres_bash_command(**kwargs):
 
     ti = kwargs['ti']
-    list_files = ti.xcom_pull(task_ids='bq_to_postgres_files')
+    number = kwargs.get('number')
+    list_files = ti.xcom_pull(task_ids='bq_to_postgres_files')[number]
     database='rf'
     table='rf_agendor_cadastro_api_tmp'
     gcloud_import_command = ''
@@ -193,15 +196,45 @@ def storage_to_postgres_bash_command(**kwargs):
     return import_file
 
 
-storage_to_postgres_bash_command = PythonOperator(
-    task_id='storage_to_postgres_bash_command',
-    dag=dag,
-    python_callable=storage_to_postgres_bash_command,
-    provide_context=True,  
-    op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}" }
-    # templates_dict={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}" },
-    # xcom_push=True,
-    )
+# storage_to_postgres_bash_command = PythonOperator(
+#     task_id='storage_to_postgres_bash_command',
+#     dag=dag,
+#     python_callable=storage_to_postgres_bash_command,
+#     provide_context=True,  
+#     op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}" }
+#     # templates_dict={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}" },
+#     # xcom_push=True,
+#     )
+
+
+
+
+def values_function():
+    values = [0,1,2,3,4,5]
+    return values
+
+push_func = PythonOperator(
+        task_id='push_func',
+        provide_context=True,
+        python_callable=values_function,
+        dag=dag)
+
+def group_bash_command(number, **kwargs):
+        #load the values if needed in the command you plan to execute
+        file_number = "{{ task_instance.xcom_pull(task_ids='push_func') }}"
+        return PythonOperator(task_id='remove_spec_char_{}'.format(number),
+            dag=dag,python_callable=storage_to_postgres_bash_command,
+            op_kwargs={"file_number":number}
+            )
+        
+def test(i):
+    next = ' >> '
+    return (group_bash_command(i), next)
+        
+for i in values_function():
+        push_func >> test(i) 
+
+
 
 
 
@@ -586,29 +619,3 @@ insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro
 
 #         else:
 #             print(f'Did nothing, file is not ESTABELE, it is {file_name_}')
-
-# def values_function():
-#     values = [0,1,2,3,4,5]
-#     return values
-
-# push_func = PythonOperator(
-#         task_id='push_func',
-#         provide_context=True,
-#         python_callable=values_function,
-#         dag=dag)
-
-# def group_remove_speacial_char(number, **kwargs):
-#         #load the values if needed in the command you plan to execute
-#         file_number = "{{ task_instance.xcom_pull(task_ids='push_func') }}"
-#         return PythonOperator(task_id='remove_spec_char_{}'.format(number),
-#             dag=dag,python_callable=remove_spec_char,
-#             op_kwargs={"bucket_name":'cnpj_rf', "file_number":number}
-#             )
-        
-# def test(i):
-#     next = ' >> '
-#     return (group_remove_speacial_char(i), next)
-        
-# for i in values_function():
-#         push_func >> test(i) 
-
