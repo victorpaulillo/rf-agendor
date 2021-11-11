@@ -169,10 +169,12 @@ def run_script(script, stdin=None):
     # Note: by using a list here (['bash', ...]) you avoid quoting issues, as the 
     # arguments are passed in exactly this order (spaces, quotes, and newlines won't
     # cause problems):
-    proc = subprocess.Popen(['bash', '-c', script],
+    proc = subprocess.Popen([script],
         stdout=subprocess.PIPE, stderr=subprocess.PIPE,
         stdin=subprocess.PIPE)
     stdout, stderr = proc.communicate()
+
+
     if proc.returncode:
         raise ScriptException(proc.returncode, stdout, stderr, script)
     return stdout, stderr
