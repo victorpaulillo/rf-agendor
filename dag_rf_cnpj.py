@@ -194,7 +194,7 @@ bq_to_postgres_files = PythonOperator(
     task_id="bq_to_postgres_files",
     dag=dag,
     python_callable=run_script,
-    op_kwargs={"query":f"gsutil ls gs://cnpj_rf/bigquery_to_postgres |  tr '\n' '||'"}
+    op_kwargs={"script":f"gsutil ls gs://cnpj_rf/bigquery_to_postgres |  tr '\n' '||'"}
 )
 
 
