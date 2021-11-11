@@ -198,7 +198,8 @@ def bq_to_postgres_files():
     list_files = []
     for blob in client.list_blobs('cnpj_rf', prefix='bigquery_to_postgres'):
         print(str(blob))
-        list_files.append(blob)
+        blob_name = blob.name
+        list_files.append(blob_name)
     return list_files
 
 
