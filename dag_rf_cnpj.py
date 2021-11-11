@@ -155,40 +155,6 @@ def bigquery_to_storage():
 # gcloud sql import csv rf-agendor gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000001.csv --database=rf --table=rf_agendor_cadastro_api_tmp ;
 
 
-# BashOperator to list all files on the Google Cloud Storage
-# bq_to_postgres_files = BashOperator(
-#     task_id="bq_to_postgres_files",
-#     bash_command=f"gsutil ls gs://cnpj_rf/bigquery_to_postgres |  tr '\n' '||'",
-#     dag=dag
-# )
-
-
-def     run_script(script, stdin=None):
-    """Returns (stdout, stderr), raises error on non-zero return code"""
-    import subprocess
-    # Note: by using a list here (['bash', ...]) you avoid quoting issues, as the 
-    # arguments are passed in exactly this order (spaces, quotes, and newlines won't
-    # cause problems):
-    # proc = subprocess.Popen(['bash', '-c', script],
-    #     stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-    #     stdin=subprocess.PIPE)
-    # print(proc)
-    # stdout, stderr = proc.communicate()
-    # print(stdout)
-    # if proc.returncode:
-    #     raise ScriptException(proc.returncode, stdout, stderr, script)
-    # return stdout, stderr
-
-    import subprocess
-
-    bashCommand = script
-    # process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-    process = subprocess.Popen(bashCommand, stdout=subprocess.PIPE)
-    output, error = process.communicate()
-    print(output)
-    
-    return output
-
 
 def bq_to_postgres_files():
         
@@ -203,13 +169,6 @@ def bq_to_postgres_files():
     return list_files
 
 
-
-# bq_to_postgres_files = BashOperator(
-#     task_id="bq_to_postgres_files",
-#     bash_command=f"gsutil ls gs://cnpj_rf/bigquery_to_postgres |  tr '\n' '||'",
-#     dag=dag
-# )
-
 bq_to_postgres_files = PythonOperator(
     task_id="bq_to_postgres_files",
     dag=dag,
@@ -222,12 +181,7 @@ bq_to_postgres_files = PythonOperator(
 def storage_to_postgres_bash_command(**kwargs):
 
     ti = kwargs['ti']
-    bq_to_postgres_files = ti.xcom_pull(task_ids='bq_to_postgres_files')
-    print(bq_to_postgres_files)
-    bq_to_postgres_files = bq_to_postgres_files['data']
-
-    # gcs_files=context['templates_dict']['gcs_path_filename']
-    list_files=bq_to_postgres_files.split("|")[1:-1]
+    list_files = ti.xcom_pull(task_ids='bq_to_postgres_files')
     database='rf'
     table='rf_agendor_cadastro_api_tmp'
     gcloud_import_command = ''
