@@ -182,14 +182,14 @@ def storage_to_postgres_bash_command(**kwargs):
 
     list_files = ti.xcom_pull(task_ids='bq_to_postgres_files')
     print(list_files)
-    list_files = list_files[0][int(number)]
+    file = list_files[0][int(number)]
     
     database='rf'
     table='rf_agendor_cadastro_api_tmp'
     gcloud_import_command = ''
-    for file in list_files:
-        import_file = 'gcloud sql import csv rf-agendor {} --database={} --table={} ; '.format(file, database, table)
-        print(import_file)
+
+    import_file = 'gcloud sql import csv rf-agendor {} --database={} --table={} ; '.format(file, database, table)
+    print(import_file)
         # gcloud_import_command = gcloud_import_command + import_file
     # return gcloud_import_command[:-2]
     return import_file
