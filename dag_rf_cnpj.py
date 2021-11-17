@@ -187,11 +187,6 @@ def storage_to_postgres_bash_command(**kwargs):
     gcloud_import_command = 'gcloud sql import csv rf-agendor {} --database={} --table={} ; '.format(file_name, database, table)
     print(gcloud_import_command)
 
-    import subprocess
-    process = subprocess.Popen(gcloud_import_command, stdout=subprocess.PIPE)
-    output, error = process.communicate()
-    print(output)
-    print(error)
     return gcloud_import_command
 
 
@@ -201,13 +196,12 @@ storage_to_postgres_bash_command = PythonOperator(
     python_callable=storage_to_postgres_bash_command,
     provide_context=True,  
     op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "4" }
- 
     )
 
 xcom_get_import_command = '{{ ti.xcom_pull(task_ids="storage_to_postgres_bash_command")}}'
 
 
-#BashOperator to import the files from the GCS to Postgres stage table. It runs the bash command string with the multiple files
+# BashOperator to import the files from the GCS to Postgres stage table. It runs the bash command string with the multiple files
 import_files_stage = BashOperator(
     task_id="import_files_stage",
     bash_command=xcom_get_import_command,
