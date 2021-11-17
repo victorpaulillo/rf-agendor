@@ -187,15 +187,15 @@ def storage_to_postgres_bash_command(**kwargs):
     gcloud_import_command = 'gcloud sql import csv rf-agendor {} --database={} --table={} ; '.format(file_name, database, table)
     print(gcloud_import_command)
 
-    from subprocess import Popen, PIPE
-    import subprocess
-    splitted_gcloud_import_command = gcloud_import_command.split()
-    splitted_gcloud_import_command.insert(0, "bash")
-    print(splitted_gcloud_import_command)
+    # from subprocess import Popen, PIPE
+    # import subprocess
+    # splitted_gcloud_import_command = gcloud_import_command.split()
+    # splitted_gcloud_import_command.insert(0, "bash")
+    # print(splitted_gcloud_import_command)
 
-    process = subprocess.Popen(gcloud_import_command.split(), stdout=PIPE, stderr=PIPE)
+    # process = subprocess.Popen(gcloud_import_command.split(), stdout=PIPE, stderr=PIPE)
 
-    output, error = process.communicate()
+    # output, error = process.communicate()
 
     return gcloud_import_command
 
