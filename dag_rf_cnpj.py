@@ -177,8 +177,13 @@ def bq_to_postgres_files():
 def storage_to_postgres_bash_command(**kwargs):
 
     ti = kwargs['ti']
-    number = int(kwargs.get('number'))
-    list_files = ti.xcom_pull(task_ids='bq_to_postgres_files')[number]
+    number = kwargs.get('number')
+    print(number)
+
+    list_files = ti.xcom_pull(task_ids='bq_to_postgres_files')
+    print(list_files)
+    list_files = list_files[int(number)]
+    
     database='rf'
     table='rf_agendor_cadastro_api_tmp'
     gcloud_import_command = ''
