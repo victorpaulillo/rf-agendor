@@ -203,7 +203,7 @@ def storage_to_postgres_bash_command(**kwargs):
             }
     }
     url = 'https://sqladmin.googleapis.com/v1/projects/{project_id}/instances/{instance_id}/import'.format(project_id=project_id,instance_id=instance_id)
-    r = requests.post('http://httpbin.org/post', json={"key": "value"})
+    r = requests.post(url, json=json)
     r.status_code
 
     r.json()
