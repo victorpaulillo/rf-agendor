@@ -568,7 +568,7 @@ bq_to_postgres_files = PythonOperator(task_id='bq_to_postgres_files',dag=dag,pyt
 
 
 
-storage_to_postgres_bash_command_0 = PythonOperator(task_id='storage_to_postgres_bash_command_0',dag=dag,python_callable=storage_to_postgres_bash_command,op_kwargs={"number":"0"})
+storage_to_postgres_0 = PythonOperator(task_id='storage_to_postgres_0',dag=dag,python_callable=storage_to_postgres_bash_command,op_kwargs={"number":"0"})
 # storage_to_postgres_bash_command_1 = PythonOperator(task_id='storage_to_postgres_bash_command_1',dag=dag,python_callable=storage_to_postgres_bash_command,op_kwargs={"number":"1"})
 # storage_to_postgres_bash_command_2 = PythonOperator(task_id='storage_to_postgres_bash_command_2',dag=dag,python_callable=storage_to_postgres_bash_command,op_kwargs={"number":"2"})
 # storage_to_postgres_bash_command_3 = PythonOperator(task_id='storage_to_postgres_bash_command_3',dag=dag,python_callable=storage_to_postgres_bash_command,op_kwargs={"number":"3"})
@@ -592,7 +592,7 @@ start_dag >> create_tables >> [ct_socios_agg_json, ct_rf_agendor_cadastro_api] >
 
 insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro_api  >> bq_to_postgres_files >> storage_upload_files
 
-storage_upload_files > [storage_to_postgres_bash_command_0]
+storage_upload_files > [storage_to_postgres_0]
 # , storage_to_postgres_bash_command_1, storage_to_postgres_bash_command_2, storage_to_postgres_bash_command_3, storage_to_postgres_bash_command_4, storage_to_postgres_bash_command_5, storage_to_postgres_bash_command_6, storage_to_postgres_bash_command_7]
 # >> storage_to_postgres
 
