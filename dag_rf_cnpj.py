@@ -182,7 +182,7 @@ def storage_to_postgres_bash_command(**kwargs):
 
     list_files = ti.xcom_pull(task_ids='bq_to_postgres_files')
     print(list_files)
-    list_files = list_files[int(number)]
+    list_files = list_files[0][int(number)]
     
     database='rf'
     table='rf_agendor_cadastro_api_tmp'
