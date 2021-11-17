@@ -187,39 +187,52 @@ def storage_to_postgres_bash_command(**kwargs):
     gcloud_import_command = 'gcloud sql import csv rf-agendor {} --database={} --table={} ; '.format(file_name, database, table)
     print(gcloud_import_command)
 
-    # from subprocess import Popen, PIPE
-    # import subprocess
-    # splitted_gcloud_import_command = gcloud_import_command.split()
-    # splitted_gcloud_import_command.insert(0, "bash")
-    # print(splitted_gcloud_import_command)
+    import requests
+    project_id='rf-agendor'
+    instance_id='rf-agendor'
+    json = {
+            "importContext":
+            {
+                "fileType": "CSV",
+                "uri": "gs://cnpj_rf/{file_name}".format(file_name=file_name),
+                "database": "rf",
+                "csvImportOptions":
+                {
+                    "table": "{table}".format(table=table)
+            }
+            }
+    }
+    url = 'https://sqladmin.googleapis.com/v1/projects/{project_id}/instances/{instance_id}/import'.format(project_id=project_id,instance_id=instance_id)
+    r = requests.post('http://httpbin.org/post', json={"key": "value"})
+    r.status_code
 
-    # process = subprocess.Popen(gcloud_import_command.split(), stdout=PIPE, stderr=PIPE)
-
-    # output, error = process.communicate()
+    r.json()
+    print(r.json())
+    print(r.status_code)
 
     return gcloud_import_command
 
 
-storage_to_postgres_bash_command = PythonOperator(
-    task_id='storage_to_postgres_bash_command',
-    dag=dag,
-    python_callable=storage_to_postgres_bash_command,
-    provide_context=True,  
-    op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "4" }
-    )
+# storage_to_postgres_bash_command = PythonOperator(
+#     task_id='storage_to_postgres_bash_command',
+#     dag=dag,
+#     python_callable=storage_to_postgres_bash_command,
+#     provide_context=True,  
+#     op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "4" }
+#     )
 
-xcom_get_import_command = '{{ ti.xcom_pull(task_ids="storage_to_postgres_bash_command")}}' 
+# # xcom_get_import_command = '{{ ti.xcom_pull(task_ids="storage_to_postgres_bash_command")}}' 
 
 
 
-# BashOperator to import the files from the GCS to Postgres stage table. It runs the bash command string with the multiple files
-import_files_stage = BashOperator(
-    task_id="import_files_stage",
-    bash_command=xcom_get_import_command,
-    retries=2,
-    retry_delay=timedelta(minutes=2),
-    dag=dag
-)
+# # BashOperator to import the files from the GCS to Postgres stage table. It runs the bash command string with the multiple files
+# import_files_stage = BashOperator(
+#     task_id="import_files_stage",
+#     bash_command=xcom_get_import_command,
+#     retries=2,
+#     retry_delay=timedelta(minutes=2),
+#     dag=dag
+# )
 
 
 # def values_function():
