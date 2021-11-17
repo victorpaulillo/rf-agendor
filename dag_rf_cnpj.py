@@ -177,7 +177,7 @@ bq_to_postgres_files = PythonOperator(
     python_callable=bq_to_postgres_files,
 )
 
-
+# list_storage_files = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
 
 # # Function to join the files found on Google Cloud Storage and add it on one string bash command
 def storage_to_postgres_bash_command(**kwargs):
@@ -209,30 +209,32 @@ def storage_to_postgres_bash_command(**kwargs):
 
 
 
-def values_function():
-    values = [0,1,2,3,4,5]
-    return values
+# def values_function():
+#     values = [0,1,2,3,4,5]
+#     return values
 
-push_func = PythonOperator(
-        task_id='push_func',
-        provide_context=True,
-        python_callable=values_function,
-        dag=dag)
+# push_func = PythonOperator(
+#         task_id='push_func',
+#         provide_context=True,
+#         python_callable=values_function,
+#         dag=dag)
 
-def group_bash_command(number, **kwargs):
-        #load the values if needed in the command you plan to execute
-        file_number = "{{ task_instance.xcom_pull(task_ids='push_func') }}"
-        return PythonOperator(task_id='remove_spec_char_{}'.format(str(number)),
-            dag=dag,python_callable=storage_to_postgres_bash_command,
-            op_kwargs={"file_number":str(number)}
-            )
+# def group_bash_command(number, **kwargs):
+#         print('lala')
+#         #load the values if needed in the command you plan to execute
+#         file_number = "{{ task_instance.xcom_pull(task_ids='push_func') }}"
+#         print('lala')
+#         return PythonOperator(task_id='remove_spec_char_{}'.format(str(number)),
+#             dag=dag,python_callable=storage_to_postgres_bash_command,
+#             op_kwargs={"file_number":str(number)}
+#             )
         
-def test(i):
-    next = ' >> '
-    return (group_bash_command(i), next)
+# def test(i):
+#     next = ' >> '
+#     return (group_bash_command(i), next)
         
-for i in values_function():
-        push_func >> test(i) 
+# for i in values_function():
+#         push_func >> test(i) 
 
 
 
@@ -568,20 +570,31 @@ ct_rf_agendor_cadastro_api = PythonOperator(task_id='ct_rf_agendor_cadastro_api'
 insert_into_socios_agg_json = PythonOperator(task_id='insert_into_socios_agg_json',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":insert_into_socios_agg_json_query})
 insert_into_rf_agendor_cadastro_api = PythonOperator(task_id='insert_into_rf_agendor_cadastro_api',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":insert_into_rf_agendor_cadastro_api_query})
 
-bigquery_to_storage = PythonOperator(task_id='bigquery_to_storage',dag=dag,python_callable=bigquery_to_storage)
+bigquery_to_storage_0 = PythonOperator(task_id='bigquery_to_storage',dag=dag,python_callable=bigquery_to_storage,op_kwargs={"number":"0"})
+bigquery_to_storage_1 = PythonOperator(task_id='bigquery_to_storage',dag=dag,python_callable=bigquery_to_storage,op_kwargs={"number":"1"})
+bigquery_to_storage_2 = PythonOperator(task_id='bigquery_to_storage',dag=dag,python_callable=bigquery_to_storage,op_kwargs={"number":"2"})
+bigquery_to_storage_3 = PythonOperator(task_id='bigquery_to_storage',dag=dag,python_callable=bigquery_to_storage,op_kwargs={"number":"3"})
+bigquery_to_storage_4 = PythonOperator(task_id='bigquery_to_storage',dag=dag,python_callable=bigquery_to_storage,op_kwargs={"number":"4"})
+bigquery_to_storage_5 = PythonOperator(task_id='bigquery_to_storage',dag=dag,python_callable=bigquery_to_storage,op_kwargs={"number":"5"})
+bigquery_to_storage_6 = PythonOperator(task_id='bigquery_to_storage',dag=dag,python_callable=bigquery_to_storage,op_kwargs={"number":"6"})
+bigquery_to_storage_7 = PythonOperator(task_id='bigquery_to_storage',dag=dag,python_callable=bigquery_to_storage,op_kwargs={"number":"7"})
+
 # storage_to_postgres = PythonOperator(task_id='storage_to_postgres',dag=dag,python_callable=storage_to_postgres)
 
 start_dag = DummyOperator(task_id='start_dag', dag=dag)
 create_external_tables = DummyOperator(task_id='create_external_tables', dag=dag)
 create_tables = DummyOperator(task_id='create_tables', dag=dag)
 insert_records = DummyOperator(task_id='insert_records', dag=dag)
+storage_upload_files = DummyOperator(task_id='storage_upload_files', dag=dag)
 
 #Workflow
 
 start_dag >> create_external_tables >> [ct_qualificacoes_socios, ct_paises, ct_natureza_juridica, ct_municipios, ct_empresas, ct_cnae, ct_estabelecimentos, ct_socios] >> insert_records
 start_dag >> create_tables >> [ct_socios_agg_json, ct_rf_agendor_cadastro_api] >> insert_records
 
-insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro_api  >> bigquery_to_storage 
+insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro_api  >> storage_upload_files
+
+storage_upload_files > [bigquery_to_storage_0, bigquery_to_storage_1, bigquery_to_storage_2, bigquery_to_storage_3, bigquery_to_storage_4, bigquery_to_storage_5, bigquery_to_storage_6, bigquery_to_storage_7]
 # >> storage_to_postgres
 
 
