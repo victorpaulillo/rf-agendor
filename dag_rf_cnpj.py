@@ -213,13 +213,13 @@ def storage_to_postgres_bash_command(**kwargs):
     return gcloud_import_command
 
 
-# storage_to_postgres_bash_command = PythonOperator(
-#     task_id='storage_to_postgres_bash_command',
-#     dag=dag,
-#     python_callable=storage_to_postgres_bash_command,
-#     provide_context=True,  
-#     op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "4" }
-#     )
+storage_to_postgres_bash_command = PythonOperator(
+    task_id='storage_to_postgres_bash_command',
+    dag=dag,
+    python_callable=storage_to_postgres_bash_command,
+    provide_context=True,  
+    op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "4" }
+    )
 
 # # xcom_get_import_command = '{{ ti.xcom_pull(task_ids="storage_to_postgres_bash_command")}}' 
 
