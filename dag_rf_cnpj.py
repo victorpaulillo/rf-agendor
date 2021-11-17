@@ -171,12 +171,6 @@ def bq_to_postgres_files():
     return list_files, len_list_files
 
 
-bq_to_postgres_files = PythonOperator(
-    task_id="bq_to_postgres_files",
-    dag=dag,
-    python_callable=bq_to_postgres_files,
-)
-
 # list_storage_files = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
 
 # # Function to join the files found on Google Cloud Storage and add it on one string bash command
@@ -571,6 +565,8 @@ insert_into_socios_agg_json = PythonOperator(task_id='insert_into_socios_agg_jso
 insert_into_rf_agendor_cadastro_api = PythonOperator(task_id='insert_into_rf_agendor_cadastro_api',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":insert_into_rf_agendor_cadastro_api_query})
 
 bq_to_postgres_files = PythonOperator(task_id='bq_to_postgres_files',dag=dag,python_callable=bq_to_postgres_files)
+
+
 
 storage_to_postgres_bash_command_0 = PythonOperator(task_id='storage_to_postgres_bash_command_0',dag=dag,python_callable=storage_to_postgres_bash_command,op_kwargs={"number":"0"})
 storage_to_postgres_bash_command_1 = PythonOperator(task_id='storage_to_postgres_bash_command_1',dag=dag,python_callable=storage_to_postgres_bash_command,op_kwargs={"number":"1"})
