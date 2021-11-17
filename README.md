@@ -73,6 +73,10 @@ Create a firewall rule Open VPC Network > Firewall Rules Create Firewall rules N
 
 Liberar permissao da Conta de Serviço da Instancia do Postgres no bucket do Google Cloud Storage
 
+Instalar as bibliotecas nos dockers:
+sudo docker exec 83fbd314c5ad         pip install subprocess.run
+sudo docker exec 83fbd314c5ad         pip install pandas
+
 
 O que fazer:
 1. Jogar os dados para o Postgres - Tabela Temp, ai mudar o nome para producao e o da tabela de producao mudar para backup

@@ -188,6 +188,7 @@ def storage_to_postgres_bash_command(**kwargs):
     print(gcloud_import_command)
 
     from subprocess import Popen, PIPE
+    import subprocess
 
     print(gcloud_import_command.split())
 
