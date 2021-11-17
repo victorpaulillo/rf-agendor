@@ -180,10 +180,11 @@ def storage_to_postgres_bash_command(**kwargs):
 
     list_files = ti.xcom_pull(task_ids='bq_to_postgres_files')
     file = list_files[0][int(number)]
+    file_name = 'gs://cnpj_rf/' + file
     database='rf'
     table='rf_agendor_cadastro_api_tmp'
 
-    gcloud_import_command = 'gcloud sql import csv rf-agendor {} --database={} --table={} ; '.format(file, database, table)
+    gcloud_import_command = 'gcloud sql import csv rf-agendor {} --database={} --table={} ; '.format(file_name, database, table)
     print(gcloud_import_command)
     gcloud_import_command 
 
@@ -195,7 +196,7 @@ storage_to_postgres_bash_command = PythonOperator(
     dag=dag,
     python_callable=storage_to_postgres_bash_command,
     provide_context=True,  
-    op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "3" }
+    op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "4" }
  
     )
 
