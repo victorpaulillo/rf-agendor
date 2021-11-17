@@ -209,6 +209,7 @@ def storage_to_postgres_bash_command(**kwargs):
     r.json()
     print(r.json())
     print(r.status_code)
+    print(r.text)
 
     return gcloud_import_command
 
