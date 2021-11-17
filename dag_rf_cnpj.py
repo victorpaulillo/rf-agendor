@@ -570,14 +570,16 @@ ct_rf_agendor_cadastro_api = PythonOperator(task_id='ct_rf_agendor_cadastro_api'
 insert_into_socios_agg_json = PythonOperator(task_id='insert_into_socios_agg_json',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":insert_into_socios_agg_json_query})
 insert_into_rf_agendor_cadastro_api = PythonOperator(task_id='insert_into_rf_agendor_cadastro_api',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":insert_into_rf_agendor_cadastro_api_query})
 
-bigquery_to_storage_0 = PythonOperator(task_id='bigquery_to_storage',dag=dag,python_callable=bigquery_to_storage,op_kwargs={"number":"0"})
-bigquery_to_storage_1 = PythonOperator(task_id='bigquery_to_storage',dag=dag,python_callable=bigquery_to_storage,op_kwargs={"number":"1"})
-bigquery_to_storage_2 = PythonOperator(task_id='bigquery_to_storage',dag=dag,python_callable=bigquery_to_storage,op_kwargs={"number":"2"})
-bigquery_to_storage_3 = PythonOperator(task_id='bigquery_to_storage',dag=dag,python_callable=bigquery_to_storage,op_kwargs={"number":"3"})
-bigquery_to_storage_4 = PythonOperator(task_id='bigquery_to_storage',dag=dag,python_callable=bigquery_to_storage,op_kwargs={"number":"4"})
-bigquery_to_storage_5 = PythonOperator(task_id='bigquery_to_storage',dag=dag,python_callable=bigquery_to_storage,op_kwargs={"number":"5"})
-bigquery_to_storage_6 = PythonOperator(task_id='bigquery_to_storage',dag=dag,python_callable=bigquery_to_storage,op_kwargs={"number":"6"})
-bigquery_to_storage_7 = PythonOperator(task_id='bigquery_to_storage',dag=dag,python_callable=bigquery_to_storage,op_kwargs={"number":"7"})
+bq_to_postgres_files = PythonOperator(task_id='bq_to_postgres_files',dag=dag,python_callable=bq_to_postgres_files)
+
+storage_to_postgres_bash_command_0 = PythonOperator(task_id='storage_to_postgres_bash_command_0',dag=dag,python_callable=storage_to_postgres_bash_command,op_kwargs={"number":"0"})
+storage_to_postgres_bash_command_1 = PythonOperator(task_id='storage_to_postgres_bash_command_1',dag=dag,python_callable=storage_to_postgres_bash_command,op_kwargs={"number":"1"})
+storage_to_postgres_bash_command_2 = PythonOperator(task_id='storage_to_postgres_bash_command_2',dag=dag,python_callable=storage_to_postgres_bash_command,op_kwargs={"number":"2"})
+storage_to_postgres_bash_command_3 = PythonOperator(task_id='storage_to_postgres_bash_command_3',dag=dag,python_callable=storage_to_postgres_bash_command,op_kwargs={"number":"3"})
+storage_to_postgres_bash_command_4 = PythonOperator(task_id='storage_to_postgres_bash_command_4',dag=dag,python_callable=storage_to_postgres_bash_command,op_kwargs={"number":"4"})
+storage_to_postgres_bash_command_5 = PythonOperator(task_id='storage_to_postgres_bash_command_5',dag=dag,python_callable=storage_to_postgres_bash_command,op_kwargs={"number":"5"})
+storage_to_postgres_bash_command_6 = PythonOperator(task_id='storage_to_postgres_bash_command_6',dag=dag,python_callable=storage_to_postgres_bash_command,op_kwargs={"number":"6"})
+storage_to_postgres_bash_command_7 = PythonOperator(task_id='storage_to_postgres_bash_command_7',dag=dag,python_callable=storage_to_postgres_bash_command,op_kwargs={"number":"7"})
 
 # storage_to_postgres = PythonOperator(task_id='storage_to_postgres',dag=dag,python_callable=storage_to_postgres)
 
@@ -592,9 +594,9 @@ storage_upload_files = DummyOperator(task_id='storage_upload_files', dag=dag)
 start_dag >> create_external_tables >> [ct_qualificacoes_socios, ct_paises, ct_natureza_juridica, ct_municipios, ct_empresas, ct_cnae, ct_estabelecimentos, ct_socios] >> insert_records
 start_dag >> create_tables >> [ct_socios_agg_json, ct_rf_agendor_cadastro_api] >> insert_records
 
-insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro_api  >> storage_upload_files
+insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro_api  >> bq_to_postgres_files >> storage_upload_files
 
-storage_upload_files > [bigquery_to_storage_0, bigquery_to_storage_1, bigquery_to_storage_2, bigquery_to_storage_3, bigquery_to_storage_4, bigquery_to_storage_5, bigquery_to_storage_6, bigquery_to_storage_7]
+storage_upload_files > [storage_to_postgres_bash_command_0, storage_to_postgres_bash_command_1, storage_to_postgres_bash_command_2, storage_to_postgres_bash_command_3, storage_to_postgres_bash_command_4, storage_to_postgres_bash_command_5, storage_to_postgres_bash_command_6, storage_to_postgres_bash_command_7]
 # >> storage_to_postgres
 
 
