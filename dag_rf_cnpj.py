@@ -175,24 +175,19 @@ def bq_to_postgres_files():
 
 # # Function to join the files found on Google Cloud Storage and add it on one string bash command
 def storage_to_postgres_bash_command(**kwargs):
-
     ti = kwargs['ti']
     number = kwargs.get('number')
-    print(number)
 
     list_files = ti.xcom_pull(task_ids='bq_to_postgres_files')
-    print(list_files)
     file = list_files[0][int(number)]
-    
     database='rf'
     table='rf_agendor_cadastro_api_tmp'
-    gcloud_import_command = ''
 
-    import_file = 'gcloud sql import csv rf-agendor {} --database={} --table={} ; '.format(file, database, table)
-    print(import_file)
-        # gcloud_import_command = gcloud_import_command + import_file
-    # return gcloud_import_command[:-2]
-    return import_file
+    gcloud_import_command = 'gcloud sql import csv rf-agendor {} --database={} --table={} ; '.format(file, database, table)
+    print(gcloud_import_command)
+    gcloud_import_command 
+
+    return gcloud_import_command
 
 
 storage_to_postgres_bash_command = PythonOperator(
@@ -201,11 +196,19 @@ storage_to_postgres_bash_command = PythonOperator(
     python_callable=storage_to_postgres_bash_command,
     provide_context=True,  
     op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "3" }
-    # templates_dict={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}" },
-    # xcom_push=True,
+ 
     )
 
+xcom_get_import_command = '{{ ti.xcom_pull(task_ids="storage_to_postgres_bash_command")}}'
 
+#BashOperator to import the files from the GCS to Postgres stage table. It runs the bash command string with the multiple files
+import_files_stage = BashOperator(
+    task_id="import_files_stage",
+    bash_command=xcom_get_import_command,
+    retries=2,
+    retry_delay=timedelta(minutes=2),
+    dag=dag
+)
 
 
 # def values_function():
