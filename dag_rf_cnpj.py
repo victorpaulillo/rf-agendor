@@ -200,11 +200,13 @@ storage_to_postgres_bash_command = PythonOperator(
  
     )
 
+xcom_get_import_command = '{{ ti.xcom_pull(task_ids="storage_to_postgres_bash_command")}}'
+
 
 #BashOperator to import the files from the GCS to Postgres stage table. It runs the bash command string with the multiple files
 import_files_stage = BashOperator(
     task_id="import_files_stage",
-    bash_command='ti.xcom_pull(task_ids="storage_to_postgres_bash_command")',
+    bash_command=xcom_get_import_command,
     retries=2,
     retry_delay=timedelta(minutes=2),
     dag=dag
