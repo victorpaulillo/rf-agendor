@@ -177,7 +177,7 @@ def bq_to_postgres_files():
 def storage_to_postgres_bash_command(**kwargs):
 
     ti = kwargs['ti']
-    number = kwargs.get('number')
+    number = int(kwargs.get('number'))
     list_files = ti.xcom_pull(task_ids='bq_to_postgres_files')[number]
     database='rf'
     table='rf_agendor_cadastro_api_tmp'
@@ -195,7 +195,7 @@ storage_to_postgres_bash_command = PythonOperator(
     dag=dag,
     python_callable=storage_to_postgres_bash_command,
     provide_context=True,  
-    op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": 3 }
+    op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "3" }
     # templates_dict={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}" },
     # xcom_push=True,
     )
