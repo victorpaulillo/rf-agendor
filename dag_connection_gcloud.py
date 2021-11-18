@@ -25,7 +25,7 @@ dag = DAG(
     dag_id='dag_connection_gcloud',
     description=f'DAG para criar uma conexao com o CLI do gcloud',
     schedule_interval=None,
-    start_date=None,
+    start_date=datetime(2021, 4, 7, tzinfo=local_tz),
     default_args=default_args,
     catchup=False,
 )
