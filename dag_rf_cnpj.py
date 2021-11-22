@@ -196,15 +196,66 @@ def storage_to_postgres_bash_command(**kwargs):
     
     print(output)
     print(error)
-    
+
     print('Completed loading the file {} on postgres at database={} and table={}'.format(file_name, database, table))
     return output, error
+
+def storage_to_postgres_bash_command_v2(**kwargs):
+    from pprint import pprint
+
+    from googleapiclient import discovery
+    from oauth2client.client import GoogleCredentials
+
+    credentials = GoogleCredentials.get_application_default()
+
+    service = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
+
+    # Project ID of the project that contains the instance.
+    project = 'rf-agendor'  # TODO: Update placeholder value.
+
+    # Cloud SQL instance ID. This does not include the project ID.
+    instance = 'rf-agendor'  # TODO: Update placeholder value.
+    table='rf_agendor_cadastro_api_tmp'
+    file_name='gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000021.csv'
+
+
+    instances_import_request_body = {
+        
+                "importContext":
+                {
+                    "fileType": "CSV",
+                    # "uri": "gs://cnpj_rf/{file_name}".format(file_name=file_name),
+                    "uri": file_name,
+                    "database": "rf",
+                    "csvImportOptions":
+                    {
+                        "table": "{table}".format(table=table)
+                }
+                }
+        
+    }
+
+    request = service.instances().import_(project=project, instance=instance, body=instances_import_request_body)
+    response = request.execute()
+
+    # TODO: Change code below to process the `response` dict:
+    pprint(response)
 
 
 storage_to_postgres_bash_command = PythonOperator(
     task_id='storage_to_postgres_bash_command',
     dag=dag,
     python_callable=storage_to_postgres_bash_command,
+    provide_context=True,
+    # op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "7" }
+
+    )
+
+
+storage_to_postgres_bash_command_v2 = PythonOperator(
+    task_id='storage_to_postgres_bash_command_v2',
+    dag=dag,
+    python_callable=storage_to_postgres_bash_command_v2,
     provide_context=True,
     # op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "7" }
 
