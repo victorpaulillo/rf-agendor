@@ -121,36 +121,36 @@ def bigquery_to_storage():
 
 
 
-create table rf_agendor_cadastro_api_tmp_1
-    (
-    cnpj VARCHAR ,
-    matriz_filial VARCHAR,
-    nome_fantasia VARCHAR,
-    desc_situacao_cadastral VARCHAR,
-    data_situacao_cadastral VARCHAR,
-    data_inicio_atividade VARCHAR,
-    cnae VARCHAR,
-    nome_cnae_principal VARCHAR,
-    cnae_fiscal_secundaria VARCHAR,
-    logradouro VARCHAR,
-    numero VARCHAR,
-    complemento VARCHAR,
-    bairro VARCHAR,
-    cep VARCHAR,
-    uf VARCHAR,
-    nome_municipio VARCHAR,
-    ddd_1 VARCHAR,
-    telefone_1 VARCHAR,
-    ddd_2 VARCHAR,
-    telefone_2 VARCHAR,
-    correio_eletronico VARCHAR,
-    porte VARCHAR,
-    razao_social VARCHAR,
-    capital_social VARCHAR,
-    natureza_juridica VARCHAR,
-    cnpj_basico VARCHAR,
-    socios_json VARCHAR
-);
+# create table rf_agendor_cadastro_api_tmp_1
+#     (
+#     cnpj VARCHAR ,
+#     matriz_filial VARCHAR,
+#     nome_fantasia VARCHAR,
+#     desc_situacao_cadastral VARCHAR,
+#     data_situacao_cadastral VARCHAR,
+#     data_inicio_atividade VARCHAR,
+#     cnae VARCHAR,
+#     nome_cnae_principal VARCHAR,
+#     cnae_fiscal_secundaria VARCHAR,
+#     logradouro VARCHAR,
+#     numero VARCHAR,
+#     complemento VARCHAR,
+#     bairro VARCHAR,
+#     cep VARCHAR,
+#     uf VARCHAR,
+#     nome_municipio VARCHAR,
+#     ddd_1 VARCHAR,
+#     telefone_1 VARCHAR,
+#     ddd_2 VARCHAR,
+#     telefone_2 VARCHAR,
+#     correio_eletronico VARCHAR,
+#     porte VARCHAR,
+#     razao_social VARCHAR,
+#     capital_social VARCHAR,
+#     natureza_juridica VARCHAR,
+#     cnpj_basico VARCHAR,
+#     socios_json VARCHAR
+# );
 
 # gcloud sql import csv rf-agendor gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000001.csv --database=rf --table=rf_agendor_cadastro_api_tmp ;
 
