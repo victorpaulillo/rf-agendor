@@ -121,7 +121,7 @@ def bigquery_to_storage():
 
 
 
-# create table rf_agendor_cadastro_api_tmp_1
+# create table rf_agendor_cadastro_api_tmp_3
 #     (
 #     cnpj VARCHAR ,
 #     matriz_filial VARCHAR,
@@ -203,7 +203,7 @@ def bq_to_postgres_files():
 def storage_to_postgres_bash_command(**kwargs):
     from pprint import pprint
 
-    from googleapiclient import discovery
+    from googleapi  import discovery
     from oauth2client.client import GoogleCredentials
 
     ti = kwargs['ti']
