@@ -186,7 +186,7 @@ def storage_to_postgres_bash_command(**kwargs):
     table='rf_agendor_cadastro_api_tmp'
     file_name='gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000019.csv'
 
-    gcloud_import_command = 'gcloud --quiet sql import csv rf-agendor {} --database={} --table={} ; '.format(file_name, database, table)
+    gcloud_import_command = 'gcloud sql import csv rf-agendor {} --database={} --table={} ; '.format(file_name, database, table)
 
     print(gcloud_import_command)
     
