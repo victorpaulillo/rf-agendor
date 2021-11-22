@@ -232,14 +232,14 @@ def storage_to_postgres_bash_command_v2(**kwargs):
                         "table": "{table}".format(table=table)
                 }
                 }
-        
     }
 
     request = service.instances().import_(project=project, instance=instance, body=instances_import_request_body)
     response = request.execute()
 
     # TODO: Change code below to process the `response` dict:
-    pprint(response)
+    pprint(response.text)
+    return response.text
 
 
 storage_to_postgres_bash_command = PythonOperator(

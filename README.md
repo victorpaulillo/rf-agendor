@@ -76,6 +76,7 @@ Liberar permissao da Conta de Serviço da Instancia do Postgres no bucket do Goo
 Instalar as bibliotecas nos dockers:
 sudo docker exec 83fbd314c5ad         pip install subprocess.run
 sudo docker exec 83fbd314c5ad         pip install pandas
+sudo docker exec 83fbd314c5ad         pip install oauth2client
 
 sudo adduser airflow
 
