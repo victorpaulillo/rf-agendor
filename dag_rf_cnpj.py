@@ -175,51 +175,36 @@ def bq_to_postgres_files():
 
 # # Function to join the files found on Google Cloud Storage and add it on one string bash command
 def storage_to_postgres_bash_command(**kwargs):
-    ti = kwargs['ti']
-    number = kwargs.get('number')
-
-    list_files = ti.xcom_pull(task_ids='bq_to_postgres_files')
-    file = list_files[0][int(number)]
-    file_name = 'gs://cnpj_rf/' + file
+    import subprocess
+    # ti = kwargs['ti']
+    # number = kwargs.get('number')
+    # list_files = ti.xcom_pull(task_ids='bq_to_postgres_files')
+    # file = list_files[0][int(number)]
+    # file_name = 'gs://cnpj_rf/' + file
+    # file_name = kwargs.get('file_name')
     database='rf'
     table='rf_agendor_cadastro_api_tmp'
+    file_name='gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000019.csv'
 
-    gcloud_import_command = 'gcloud sql import csv rf-agendor {} --database={} --table={} ; '.format(file_name, database, table)
+    gcloud_import_command = 'gcloud --quiet sql import csv rf-agendor {} --database={} --table={} ; '.format(file_name, database, table)
+
     print(gcloud_import_command)
-
-    import requests
-    project_id='rf-agendor'
-    instance_id='rf-agendor'
-    json = {
-            "importContext":
-            {
-                "fileType": "CSV",
-                "uri": "gs://cnpj_rf/{file_name}".format(file_name=file_name),
-                "database": "rf",
-                "csvImportOptions":
-                {
-                    "table": "{table}".format(table=table)
-            }
-            }
-    }
-    url = 'https://sqladmin.googleapis.com/v1/projects/{project_id}/instances/{instance_id}/import'.format(project_id=project_id,instance_id=instance_id)
-    r = requests.post(url, json=json)
-    r.status_code
-
-    r.json()
-    print(r.json())
-    print(r.status_code)
-    print(r.text)
-
-    return gcloud_import_command
+    
+    bashCommand = gcloud_import_command
+    process = subprocess.Popen(bashCommand, shell = True, stdout=subprocess.PIPE)
+    output, error = process.communicate()
+    
+    print('Completed loading the file {} on postgres at database={} and table={}'.format(file_name, database, table))
+    return output, error
 
 
 storage_to_postgres_bash_command = PythonOperator(
     task_id='storage_to_postgres_bash_command',
     dag=dag,
     python_callable=storage_to_postgres_bash_command,
-    provide_context=True,  
-    op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "6" }
+    provide_context=True,
+    # op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "7" }
+
     )
 
 # # xcom_get_import_command = '{{ ti.xcom_pull(task_ids="storage_to_postgres_bash_command")}}' 
@@ -623,7 +608,7 @@ storage_upload_files = DummyOperator(task_id='storage_upload_files', dag=dag)
 start_dag >> create_external_tables >> [ct_qualificacoes_socios, ct_paises, ct_natureza_juridica, ct_municipios, ct_empresas, ct_cnae, ct_estabelecimentos, ct_socios] >> insert_records
 start_dag >> create_tables >> [ct_socios_agg_json, ct_rf_agendor_cadastro_api] >> insert_records
 
-insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro_api  >> bq_to_postgres_files >> storage_upload_files
+insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro_api  >> bq_to_postgres_files >> storage_upload_files >> storage_to_postgres_bash_command
 
 # storage_upload_files > [storage_to_postgres_0]
 # , storage_to_postgres_bash_command_1, storage_to_postgres_bash_command_2, storage_to_postgres_bash_command_3, storage_to_postgres_bash_command_4, storage_to_postgres_bash_command_5, storage_to_postgres_bash_command_6, storage_to_postgres_bash_command_7]
