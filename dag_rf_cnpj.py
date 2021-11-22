@@ -174,37 +174,44 @@ def bq_to_postgres_files():
 # list_storage_files = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
 
 # # Function to join the files found on Google Cloud Storage and add it on one string bash command
-def storage_to_postgres_bash_command(**kwargs):
-    import subprocess
-    # ti = kwargs['ti']
-    # number = kwargs.get('number')
-    # list_files = ti.xcom_pull(task_ids='bq_to_postgres_files')
-    # file = list_files[0][int(number)]
-    # file_name = 'gs://cnpj_rf/' + file
-    # file_name = kwargs.get('file_name')
-    database='rf'
-    table='rf_agendor_cadastro_api_tmp'
-    file_name='gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000019.csv'
+# def storage_to_postgres_bash_command(**kwargs):
+#     import subprocess
+#     # ti = kwargs['ti']
+#     # number = kwargs.get('number')
+#     # list_files = ti.xcom_pull(task_ids='bq_to_postgres_files')
+#     # file = list_files[0][int(number)]
+#     # file_name = 'gs://cnpj_rf/' + file
+#     # file_name = kwargs.get('file_name')
+#     database='rf'
+#     table='rf_agendor_cadastro_api_tmp'
+#     file_name='gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000019.csv'
 
-    gcloud_import_command = 'gcloud sql import csv rf-agendor {} --database={} --table={} ; '.format(file_name, database, table)
+#     gcloud_import_command = 'gcloud sql import csv rf-agendor {} --database={} --table={} ; '.format(file_name, database, table)
 
-    print(gcloud_import_command)
+#     print(gcloud_import_command)
     
-    bashCommand = gcloud_import_command
-    process = subprocess.Popen(bashCommand, shell = True, stdout=subprocess.PIPE)
-    output, error = process.communicate()
+#     bashCommand = gcloud_import_command
+#     process = subprocess.Popen(bashCommand, shell = True, stdout=subprocess.PIPE)
+#     output, error = process.communicate()
     
-    print(output)
-    print(error)
+#     print(output)
+#     print(error)
 
-    print('Completed loading the file {} on postgres at database={} and table={}'.format(file_name, database, table))
-    return output, error
+#     print('Completed loading the file {} on postgres at database={} and table={}'.format(file_name, database, table))
+#     return output, error
 
 def storage_to_postgres_bash_command_v2(**kwargs):
     from pprint import pprint
 
     from googleapiclient import discovery
     from oauth2client.client import GoogleCredentials
+
+    ti = kwargs['ti']
+    number = kwargs.get('number')
+    list_files = ti.xcom_pull(task_ids='bq_to_postgres_files')
+    file = list_files[0][int(number)]
+    file_name = 'gs://cnpj_rf/' + file
+    file_name = kwargs.get('file_name')
 
     credentials = GoogleCredentials.get_application_default()
 
@@ -216,7 +223,7 @@ def storage_to_postgres_bash_command_v2(**kwargs):
     # Cloud SQL instance ID. This does not include the project ID.
     instance = 'rf-agendor'  # TODO: Update placeholder value.
     table='rf_agendor_cadastro_api_tmp'
-    file_name='gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000021.csv'
+    # file_name='gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000021.csv'
 
 
     instances_import_request_body = {
@@ -247,19 +254,19 @@ storage_to_postgres_bash_command = PythonOperator(
     dag=dag,
     python_callable=storage_to_postgres_bash_command,
     provide_context=True,
-    # op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "7" }
+    op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "7" }
 
     )
 
 
-storage_to_postgres_bash_command_v2 = PythonOperator(
-    task_id='storage_to_postgres_bash_command_v2',
-    dag=dag,
-    python_callable=storage_to_postgres_bash_command_v2,
-    provide_context=True,
-    # op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "7" }
+# storage_to_postgres_bash_command_v2 = PythonOperator(
+#     task_id='storage_to_postgres_bash_command_v2',
+#     dag=dag,
+#     python_callable=storage_to_postgres_bash_command_v2,
+#     provide_context=True,
+#     # op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "7" }
 
-    )
+#     )
 
 # # xcom_get_import_command = '{{ ti.xcom_pull(task_ids="storage_to_postgres_bash_command")}}' 
 
