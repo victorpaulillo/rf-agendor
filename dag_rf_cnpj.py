@@ -238,8 +238,8 @@ def storage_to_postgres_bash_command_v2(**kwargs):
     response = request.execute()
 
     # TODO: Change code below to process the `response` dict:
-    pprint(response.text)
-    return response.text
+    pprint(response)
+    return response
 
 
 storage_to_postgres_bash_command = PythonOperator(
