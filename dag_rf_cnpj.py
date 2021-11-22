@@ -194,6 +194,9 @@ def storage_to_postgres_bash_command(**kwargs):
     process = subprocess.Popen(bashCommand, shell = True, stdout=subprocess.PIPE)
     output, error = process.communicate()
     
+    print(output)
+    print(error)
+    
     print('Completed loading the file {} on postgres at database={} and table={}'.format(file_name, database, table))
     return output, error
 
