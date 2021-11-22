@@ -200,7 +200,7 @@ def bq_to_postgres_files():
 #     print('Completed loading the file {} on postgres at database={} and table={}'.format(file_name, database, table))
 #     return output, error
 
-def storage_to_postgres_bash_command_v2(**kwargs):
+def storage_to_postgres_bash_command(**kwargs):
     from pprint import pprint
 
     from googleapiclient import discovery
