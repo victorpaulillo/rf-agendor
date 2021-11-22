@@ -203,7 +203,7 @@ def bq_to_postgres_files():
 def storage_to_postgres_bash_command(**kwargs):
     from pprint import pprint
 
-    from googleapi  import discovery
+    from googleapiclient import discovery
     from oauth2client.client import GoogleCredentials
 
     ti = kwargs['ti']
