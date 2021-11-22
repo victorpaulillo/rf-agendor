@@ -121,36 +121,36 @@ def bigquery_to_storage():
 
 
 
-# create table rf_agendor_cadastro_api_tmp
-#     (
-#     cnpj VARCHAR ,
-#     matriz_filial VARCHAR,
-#     nome_fantasia VARCHAR,
-#     desc_situacao_cadastral VARCHAR,
-#     data_situacao_cadastral VARCHAR,
-#     data_inicio_atividade VARCHAR,
-#     cnae VARCHAR,
-#     nome_cnae_principal VARCHAR,
-#     cnae_fiscal_secundaria VARCHAR,
-#     logradouro VARCHAR,
-#     numero VARCHAR,
-#     complemento VARCHAR,
-#     bairro VARCHAR,
-#     cep VARCHAR,
-#     uf VARCHAR,
-#     nome_municipio VARCHAR,
-#     ddd_1 VARCHAR,
-#     telefone_1 VARCHAR,
-#     ddd_2 VARCHAR,
-#     telefone_2 VARCHAR,
-#     correio_eletronico VARCHAR,
-#     porte VARCHAR,
-#     razao_social VARCHAR,
-#     capital_social VARCHAR,
-#     natureza_juridica VARCHAR,
-#     cnpj_basico VARCHAR,
-#     socios_json VARCHAR
-# );
+create table rf_agendor_cadastro_api_tmp_1
+    (
+    cnpj VARCHAR ,
+    matriz_filial VARCHAR,
+    nome_fantasia VARCHAR,
+    desc_situacao_cadastral VARCHAR,
+    data_situacao_cadastral VARCHAR,
+    data_inicio_atividade VARCHAR,
+    cnae VARCHAR,
+    nome_cnae_principal VARCHAR,
+    cnae_fiscal_secundaria VARCHAR,
+    logradouro VARCHAR,
+    numero VARCHAR,
+    complemento VARCHAR,
+    bairro VARCHAR,
+    cep VARCHAR,
+    uf VARCHAR,
+    nome_municipio VARCHAR,
+    ddd_1 VARCHAR,
+    telefone_1 VARCHAR,
+    ddd_2 VARCHAR,
+    telefone_2 VARCHAR,
+    correio_eletronico VARCHAR,
+    porte VARCHAR,
+    razao_social VARCHAR,
+    capital_social VARCHAR,
+    natureza_juridica VARCHAR,
+    cnpj_basico VARCHAR,
+    socios_json VARCHAR
+);
 
 # gcloud sql import csv rf-agendor gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000001.csv --database=rf --table=rf_agendor_cadastro_api_tmp ;
 
@@ -222,7 +222,7 @@ def storage_to_postgres_bash_command(**kwargs):
 
     # Cloud SQL instance ID. This does not include the project ID.
     instance = 'rf-agendor'  # TODO: Update placeholder value.
-    table='rf_agendor_cadastro_api_tmp'
+    table='rf_agendor_cadastro_api_tmp_{}'.format(number)
     # file_name='gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000021.csv'
 
 
@@ -249,15 +249,33 @@ def storage_to_postgres_bash_command(**kwargs):
     return response
 
 
-storage_to_postgres_bash_command = PythonOperator(
-    task_id='storage_to_postgres_bash_command',
+storage_to_postgres_bash_command_1 = PythonOperator(
+    task_id='storage_to_postgres_bash_command_1',
     dag=dag,
     python_callable=storage_to_postgres_bash_command,
     provide_context=True,
-    op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "7" }
+    op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "1" }
 
     )
 
+
+storage_to_postgres_bash_command_2 = PythonOperator(
+    task_id='storage_to_postgres_bash_command_2',
+    dag=dag,
+    python_callable=storage_to_postgres_bash_command,
+    provide_context=True,
+    op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "2" }
+
+    )
+    
+storage_to_postgres_bash_command_3 = PythonOperator(
+    task_id='storage_to_postgres_bash_command_3',
+    dag=dag,
+    python_callable=storage_to_postgres_bash_command,
+    provide_context=True,
+    op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "3" }
+
+    )
 
 # storage_to_postgres_bash_command_v2 = PythonOperator(
 #     task_id='storage_to_postgres_bash_command_v2',
@@ -669,9 +687,9 @@ storage_upload_files = DummyOperator(task_id='storage_upload_files', dag=dag)
 start_dag >> create_external_tables >> [ct_qualificacoes_socios, ct_paises, ct_natureza_juridica, ct_municipios, ct_empresas, ct_cnae, ct_estabelecimentos, ct_socios] >> insert_records
 start_dag >> create_tables >> [ct_socios_agg_json, ct_rf_agendor_cadastro_api] >> insert_records
 
-insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro_api  >> bq_to_postgres_files >> storage_upload_files >> storage_to_postgres_bash_command
+insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro_api  >> bq_to_postgres_files >> storage_upload_files 
 
-# storage_upload_files > [storage_to_postgres_0]
+storage_upload_files > [storage_to_postgres_bash_command_1, storage_to_postgres_bash_command_2, storage_to_postgres_bash_command_3]
 # , storage_to_postgres_bash_command_1, storage_to_postgres_bash_command_2, storage_to_postgres_bash_command_3, storage_to_postgres_bash_command_4, storage_to_postgres_bash_command_5, storage_to_postgres_bash_command_6, storage_to_postgres_bash_command_7]
 # >> storage_to_postgres
 
