@@ -39,14 +39,15 @@ def bigquery_execution(query):
     query_job.result()  # Waits for job to complete.
     print(f"Query executed: {query}")
 
-# def bigquery_to_postgres(table_name):
-#     from sqlalchemy import create_engine
+# def bigquery_to_postgres():
+#     # from sqlalchemy import create_engine
 #     # Construct a BigQuery client object.
 #     bqclient = bigquery.Client()
-
+#     table_name = 'rf-agendor.rf.rf_agendor_cadastro_api'
 #     query = """
 #         SELECT *
 #         FROM {}
+#         limit 100
 #         """.format(table_name)
 #     print(query)
 
@@ -94,6 +95,41 @@ def bigquery_to_storage():
     print(
         "Exported {}:{}.{} to {}".format(project, dataset_id, table_id, destination_uri)
     )
+
+
+# Define function using copy_from_dataFile to insert the dataframe.
+def copy_from_dataFile(conn):
+    import os
+    import psycopg2
+    from google.cloud import storage
+#  Here we are going save the dataframe on disk as a csv file, load # the csv file and use copy_from() to copy it to the table
+    # tmp_df = '../Learn Python Data Access/iris_temp.csv'
+    # df.to_csv(tmp_df, header=False,index = False)
+    # f = open(tmp_df, 'r')
+    
+    client = storage.Client()
+    # get bucket with name
+    bucket = client.get_bucket('cnpj_rf')
+    # get bucket data as blob
+    blob = bucket.get_blob('cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000000.csv')
+    # convert to string
+    csv_file = blob.download_as_string()
+    table = 'rf_agendor_cadastro_api_tmp'
+    conn = psycopg2.connect(
+        host="35.247.200.226",
+        database="rf",
+        user="postgres",
+        password="postgres")
+            
+    cursor = conn.cursor()
+    try:
+        cursor.copy_from(csv_file, table, sep=",")
+        print("Data inserted using copy_from_datafile() successfully....")
+    except (Exception, psycopg2.DatabaseError) as err:
+        # pass exception to function
+        print(err)
+        cursor.close()
+
 
 
 # def storage_to_postgres():
