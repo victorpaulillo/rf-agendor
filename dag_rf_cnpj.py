@@ -98,7 +98,7 @@ def bigquery_to_storage():
 
 
 # Define function using copy_from_dataFile to insert the dataframe.
-def copy_from_dataFile(conn):
+def copy_from_dataFile():
     import os
     import psycopg2
     from google.cloud import storage
@@ -129,6 +129,17 @@ def copy_from_dataFile(conn):
         # pass exception to function
         print(err)
         cursor.close()
+
+
+
+copy_from_dataFile = PythonOperator(
+    task_id='copy_from_dataFile',
+    dag=dag,
+    python_callable=copy_from_dataFile,
+    provide_context=True
+
+    )
+
 
 
 
