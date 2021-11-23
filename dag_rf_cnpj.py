@@ -173,7 +173,7 @@ def bq_to_postgres_files():
 
 # list_storage_files = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
 
-# # Function to join the files found on Google Cloud Storage and add it on one string bash command
+# Function to join the files found on Google Cloud Storage and add it on one string bash command
 # def storage_to_postgres_bash_command(**kwargs):
 #     import subprocess
 #     # ti = kwargs['ti']
@@ -247,6 +247,41 @@ def storage_to_postgres_bash_command(**kwargs):
     # TODO: Change code below to process the `response` dict:
     pprint(response)
     return response
+
+
+
+def append_storage_files(**kwargs):
+    import subprocess
+
+    gcloud_append_files = 'gsutil cat gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000000.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000001.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000002.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000003.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000004.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000005.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000006.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000007.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000008.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000009.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000010.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000011.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000012.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000013.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000014.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000015.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000016.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000017.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000018.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000019.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000020.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000021.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000022.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000023.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000024.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000025.csvgs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000026.csvgs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000027.csvgs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000028.csv> lala.csv'
+
+    print(gcloud_append_files)
+    
+    process = subprocess.Popen(gcloud_append_files, shell = True, stdout=subprocess.PIPE)
+    output, error = process.communicate()
+    print(output)
+    print(error)
+    print('Completed appending the files')
+
+
+    gcloud_copping_appended_file_storage = 'gsutil cp lala.csv gs://cnpj_rf/bigquery_to_postgres/lala.csv'
+
+    process = subprocess.Popen(gcloud_copping_appended_file_storage, shell = True, stdout=subprocess.PIPE)
+    output, error = process.communicate()
+    print(output)
+    print(error)
+    print('Completed coping the appended file to storage')
+
+
+    return 'Success!'
+
+append_storage_files = PythonOperator(
+    task_id='append_storage_files',
+    dag=dag,
+    python_callable=append_storage_files,
+    provide_context=True,
+    # op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "1" }
+    )
 
 
 storage_to_postgres_bash_command_1 = PythonOperator(
