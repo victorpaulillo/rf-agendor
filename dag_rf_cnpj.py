@@ -111,7 +111,7 @@ def copy_from_dataFile():
     # get bucket with name
     bucket = client.get_bucket('cnpj_rf')
     # get bucket data as blob
-    blob = bucket.get_blob('cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000000.csv')
+    blob = bucket.get_blob('bigquery_to_postgres/bigquery_to_postgres_rf_agendor_cadastro_api-000000000000_v.csv')
     # convert to string
     csv_file = blob.download_as_string()
     table = 'rf_agendor_cadastro_api_tmp'
