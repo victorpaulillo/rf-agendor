@@ -104,4 +104,4 @@ E vou mandar aqui uns pontos de atenção:
 
 https://medium.com/google-cloud/apache-airflow-how-to-add-a-connection-to-google-cloud-with-cli-af2cc8df138d
 
-
+https://medium.com/analytics-vidhya/part-4-pandas-dataframe-to-postgresql-using-python-8ffdb0323c09

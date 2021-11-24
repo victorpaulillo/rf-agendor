@@ -99,7 +99,6 @@ def bigquery_to_storage():
 
 # Define function using copy_from_dataFile to insert the dataframe.
 def copy_from_dataFile():
-    import os
     import psycopg2
     from google.cloud import storage
 #  Here we are going save the dataframe on disk as a csv file, load # the csv file and use copy_from() to copy it to the table
@@ -148,7 +147,7 @@ copy_from_dataFile = PythonOperator(
 #     project_id = ' rf-agendor'
 #     instance_id = 'rf-agendor'
 #     endpoint = 'https://sqladmin.googleapis.com/v1/projects/{project_id}/instances/{instance_id}/import'.format(project_id=project_id, instance_id=instance_id)
-    
+                
 #     # data to be sent to api
 #     data = {
 #             "importContext":
@@ -259,7 +258,7 @@ def storage_to_postgres_bash_command(**kwargs):
     file = list_files[0][int(number)]
     file_name = 'gs://cnpj_rf/' + file
     file_name = kwargs.get('file_name')
-
+    print(file_name)
     credentials = GoogleCredentials.get_application_default()
 
     service = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
@@ -288,6 +287,7 @@ def storage_to_postgres_bash_command(**kwargs):
                 }
     }
 
+    print(instances_import_request_body)
     request = service.instances().import_(project=project, instance=instance, body=instances_import_request_body)
     response = request.execute()
 
