@@ -254,9 +254,13 @@ def storage_to_postgres_bash_command(**kwargs):
 
     ti = kwargs['ti']
     number = kwargs.get('number')
+    print(number)
     list_files = ti.xcom_pull(task_ids='bq_to_postgres_files')
+    print(list_files)
     file = list_files[0][int(number)]
+    print(file)
     file_name = 'gs://cnpj_rf/' + file
+    print(file_name)
     file_name = kwargs.get('file_name')
     print(file_name)
     credentials = GoogleCredentials.get_application_default()
@@ -269,7 +273,7 @@ def storage_to_postgres_bash_command(**kwargs):
     # Cloud SQL instance ID. This does not include the project ID.
     instance = 'rf-agendor'  # TODO: Update placeholder value.
     table='rf_agendor_cadastro_api_tmp_{}'.format(number)
-    # file_name='gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000021.csv'
+    file_name='gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000021.csv'
 
 
     instances_import_request_body = {
