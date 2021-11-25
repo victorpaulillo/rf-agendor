@@ -103,11 +103,11 @@ def compose_file():
     from google.cloud import storage
 
     """Concatenate source blobs into destination blob."""
-    bucket_name = 'cnpj_rf/bigquery_to_postgres'
+    bucket_name = 'cnpj_rf'
 
-    first_blob_name = "rf_agendor_cadastro_api-000000000001.csv"
-    second_blob_name = "rf_agendor_cadastro_api-000000000002.csv"
-    destination_blob_name = "rf_agendor_cadastro_api_composed.csv"
+    first_blob_name = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000001.csv"
+    second_blob_name = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000002.csv"
+    destination_blob_name = "bigquery_to_postgres/rf_agendor_cadastro_api_composed.csv"
 
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
