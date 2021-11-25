@@ -334,13 +334,13 @@ def storage_to_postgres_bash_command(**kwargs):
     from googleapiclient import discovery
     from oauth2client.client import GoogleCredentials
 
-    ti = kwargs['ti']
-    number = kwargs.get('number')
-    print(number)
-    list_files = ti.xcom_pull(task_ids='list_storage_files')
-    print(list_files)
-    file = list_files[0][int(number)]
-    print(file)
+    # ti = kwargs['ti']
+    # number = kwargs.get('number')
+    # print(number)
+    # list_files = ti.xcom_pull(task_ids='list_storage_files')
+    # print(list_files)
+    # file = list_files[0][int(number)]
+    # print(file)
     # file_name = 'gs://cnpj_rf/' + file
     # print(file_name)
     # file_name = kwargs.get('file_name')
