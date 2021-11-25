@@ -97,47 +97,47 @@ def bigquery_to_storage():
     )
 
 
-# Define function using copy_from_dataFile to insert the dataframe.
-def copy_from_dataFile():
-    import psycopg2
-    from google.cloud import storage
-#  Here we are going save the dataframe on disk as a csv file, load # the csv file and use copy_from() to copy it to the table
-    # tmp_df = '../Learn Python Data Access/iris_temp.csv'
-    # df.to_csv(tmp_df, header=False,index = False)
-    # f = open(tmp_df, 'r')
+# # Define function using copy_from_dataFile to insert the dataframe.
+# def copy_from_dataFile():
+#     import psycopg2
+#     from google.cloud import storage
+# #  Here we are going save the dataframe on disk as a csv file, load # the csv file and use copy_from() to copy it to the table
+#     # tmp_df = '../Learn Python Data Access/iris_temp.csv'
+#     # df.to_csv(tmp_df, header=False,index = False)
+#     # f = open(tmp_df, 'r')
     
-    client = storage.Client()
-    # get bucket with name
-    bucket = client.get_bucket('cnpj_rf')
-    # get bucket data as blob
-    blob = bucket.get_blob('bigquery_to_postgres/bigquery_to_postgres_rf_agendor_cadastro_api-000000000000_v.csv')
-    # convert to string
-    csv_file = blob.download_as_string()
-    table = 'rf_agendor_cadastro_api_tmp'
-    conn = psycopg2.connect(
-        host="35.247.200.226",
-        database="rf",
-        user="postgres",
-        password="postgres")
+#     client = storage.Client()
+#     # get bucket with name
+#     bucket = client.get_bucket('cnpj_rf')
+#     # get bucket data as blob
+#     blob = bucket.get_blob('bigquery_to_postgres/bigquery_to_postgres_rf_agendor_cadastro_api-000000000000_v.csv')
+#     # convert to string
+#     csv_file = blob.download_as_string()
+#     table = 'rf_agendor_cadastro_api_tmp'
+#     conn = psycopg2.connect(
+#         host="35.247.200.226",
+#         database="rf",
+#         user="postgres",
+#         password="postgres")
             
-    cursor = conn.cursor()
-    try:
-        cursor.copy_from(csv_file, table, sep=",")
-        print("Data inserted using copy_from_datafile() successfully....")
-    except (Exception, psycopg2.DatabaseError) as err:
-        # pass exception to function
-        print(err)
-        cursor.close()
+#     cursor = conn.cursor()
+#     try:
+#         cursor.copy_from(csv_file, table, sep=",")
+#         print("Data inserted using copy_from_datafile() successfully....")
+#     except (Exception, psycopg2.DatabaseError) as err:
+#         # pass exception to function
+#         print(err)
+#         cursor.close()
 
 
 
-copy_from_dataFile = PythonOperator(
-    task_id='copy_from_dataFile',
-    dag=dag,
-    python_callable=copy_from_dataFile,
-    provide_context=True
+# copy_from_dataFile = PythonOperator(
+#     task_id='copy_from_dataFile',
+#     dag=dag,
+#     python_callable=copy_from_dataFile,
+#     provide_context=True
 
-    )
+#     )
 
 
 
@@ -301,39 +301,46 @@ def storage_to_postgres_bash_command(**kwargs):
 
 
 
-def append_storage_files(**kwargs):
-    import subprocess
+# def append_storage_files(**kwargs):
+#     import subprocess
 
-    gcloud_append_files = 'gsutil cat gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000000.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000001.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000002.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000003.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000004.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000005.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000006.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000007.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000008.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000009.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000010.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000011.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000012.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000013.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000014.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000015.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000016.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000017.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000018.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000019.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000020.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000021.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000022.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000023.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000024.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000025.csvgs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000026.csvgs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000027.csvgs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000028.csv> lala.csv'
+#     gcloud_append_files = 'gsutil cat gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000000.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000001.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000002.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000003.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000004.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000005.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000006.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000007.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000008.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000009.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000010.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000011.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000012.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000013.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000014.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000015.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000016.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000017.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000018.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000019.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000020.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000021.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000022.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000023.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000024.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000025.csvgs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000026.csvgs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000027.csvgs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000028.csv> lala.csv'
 
-    print(gcloud_append_files)
+#     print(gcloud_append_files)
     
-    process = subprocess.Popen(gcloud_append_files, shell = True, stdout=subprocess.PIPE)
-    output, error = process.communicate()
-    print(output)
-    print(error)
-    print('Completed appending the files')
+#     process = subprocess.Popen(gcloud_append_files, shell = True, stdout=subprocess.PIPE)
+#     output, error = process.communicate()
+#     print(output)
+#     print(error)
+#     print('Completed appending the files')
 
 
-    gcloud_copping_appended_file_storage = 'gsutil cp lala.csv gs://cnpj_rf/bigquery_to_postgres/lala.csv'
+#     gcloud_copping_appended_file_storage = 'gsutil cp lala.csv gs://cnpj_rf/bigquery_to_postgres/lala.csv'
 
-    process = subprocess.Popen(gcloud_copping_appended_file_storage, shell = True, stdout=subprocess.PIPE)
-    output, error = process.communicate()
-    print(output)
-    print(error)
-    print('Completed coping the appended file to storage')
+#     process = subprocess.Popen(gcloud_copping_appended_file_storage, shell = True, stdout=subprocess.PIPE)
+#     output, error = process.communicate()
+#     print(output)
+#     print(error)
+#     print('Completed coping the appended file to storage')
 
 
-    return 'Success!'
+#     return 'Success!'
 
-append_storage_files = PythonOperator(
-    task_id='append_storage_files',
+# append_storage_files = PythonOperator(
+#     task_id='append_storage_files',
+#     dag=dag,
+#     python_callable=append_storage_files,
+#     provide_context=True,
+#     # op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "1" }
+#     )
+
+bigquery_to_storage = PythonOperator(
+    task_id='bigquery_to_storage',
     dag=dag,
-    python_callable=append_storage_files,
-    provide_context=True,
-    # op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "1" }
-    )
+    python_callable=bigquery_to_storage,
+    provide_context=True
 
+    )
 
 storage_to_postgres_bash_command_1 = PythonOperator(
     task_id='storage_to_postgres_bash_command_1',
