@@ -78,7 +78,8 @@ def bigquery_to_storage():
     table_id = "rf_agendor_cadastro_api"
 
     # destination_uri = "gs://{}/{}".format(bucket_name, "rf_agendor_cadastro_api-*.csv")
-    destination_uri = ["gs://{}/{}".format(bucket_name, "rf_agendor_cadastro_api-1.csv"), "gs://{}/{}".format(bucket_name, "rf_agendor_cadastro_api-2.csv"), "gs://{}/{}".format(bucket_name, "rf_agendor_cadastro_api-3.csv")]
+    # destination_uri = ["gs://{}/{}".format(bucket_name, "rf_agendor_cadastro_api-1.csv"), "gs://{}/{}".format(bucket_name, "rf_agendor_cadastro_api-2.csv"), "gs://{}/{}".format(bucket_name, "rf_agendor_cadastro_api-3.csv")]]
+    destination_uri = "gs://{}/{}".format(bucket_name, "rf_agendor_cadastro_api.csv")
     dataset_ref = bigquery.DatasetReference(project, dataset_id)
     table_ref = dataset_ref.table(table_id)
     job_config = bigquery.job.ExtractJobConfig()
