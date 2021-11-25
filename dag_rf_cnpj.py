@@ -203,19 +203,18 @@ def bigquery_to_storage():
 
 
 
-# def bq_to_postgres_files():
-        
-#     from google.cloud import storage
+def list_storage_files():
+    from google.cloud import storage
 
-#     client = storage.Client()
-#     list_files = []
-#     for blob in client.list_blobs('cnpj_rf', prefix='bigquery_to_postgres'):
-#         print(str(blob))
-#         blob_name = blob.name
-#         list_files.append(blob_name)
-#     len_list_files = len(list_files)
+    client = storage.Client()
+    list_files = []
+    for blob in client.list_blobs('cnpj_rf', prefix='bigquery_to_postgres'):
+        print(str(blob))
+        blob_name = blob.name
+        list_files.append(blob_name)
+    len_list_files = len(list_files)
 
-#     return list_files, len_list_files
+    return list_files, len_list_files
 
 
 # list_storage_files = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
@@ -256,7 +255,7 @@ def storage_to_postgres_bash_command(**kwargs):
     ti = kwargs['ti']
     number = kwargs.get('number')
     print(number)
-    list_files = ti.xcom_pull(task_ids='bq_to_postgres_files')
+    list_files = ti.xcom_pull(task_ids='list_storage_files')
     print(list_files)
     file = list_files[0][int(number)]
     print(file)
@@ -348,7 +347,7 @@ storage_to_postgres_bash_command_1 = PythonOperator(
     dag=dag,
     python_callable=storage_to_postgres_bash_command,
     provide_context=True,
-    op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "1" }
+    op_kwargs={'data': "{{ ti.xcom_pull(task_ids='list_storage_files') }}", "number": "1" }
 
     )
 
@@ -358,7 +357,7 @@ storage_to_postgres_bash_command_2 = PythonOperator(
     dag=dag,
     python_callable=storage_to_postgres_bash_command,
     provide_context=True,
-    op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "2" }
+    op_kwargs={'data': "{{ ti.xcom_pull(task_ids='list_storage_files') }}", "number": "2" }
 
     )
     
@@ -367,7 +366,7 @@ storage_to_postgres_bash_command_3 = PythonOperator(
     dag=dag,
     python_callable=storage_to_postgres_bash_command,
     provide_context=True,
-    op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "3" }
+    op_kwargs={'data': "{{ ti.xcom_pull(task_ids='list_storage_files') }}", "number": "3" }
 
     )
 
@@ -781,7 +780,7 @@ storage_upload_files = DummyOperator(task_id='storage_upload_files', dag=dag)
 start_dag >> create_external_tables >> [ct_qualificacoes_socios, ct_paises, ct_natureza_juridica, ct_municipios, ct_empresas, ct_cnae, ct_estabelecimentos, ct_socios] >> insert_records
 start_dag >> create_tables >> [ct_socios_agg_json, ct_rf_agendor_cadastro_api] >> insert_records
 
-insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro_api  >> bigquery_to_storage >> storage_upload_files 
+insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro_api  >> bigquery_to_storage >> list_storage_files >> storage_upload_files 
 
 storage_upload_files >> [storage_to_postgres_bash_command_1, storage_to_postgres_bash_command_2, storage_to_postgres_bash_command_3]
 # , storage_to_postgres_bash_command_1, storage_to_postgres_bash_command_2, storage_to_postgres_bash_command_3, storage_to_postgres_bash_command_4, storage_to_postgres_bash_command_5, storage_to_postgres_bash_command_6, storage_to_postgres_bash_command_7]
