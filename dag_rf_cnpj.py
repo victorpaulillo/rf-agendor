@@ -112,7 +112,7 @@ def compose_file():
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     destination = bucket.blob(destination_blob_name)
-    destination.content_type = "text/plain"
+    destination.content_type = "application/octet-stream"
 
     # sources is a list of Blob instances, up to the max of 32 instances per request
     sources = [bucket.get_blob(first_blob_name), bucket.get_blob(second_blob_name)]
