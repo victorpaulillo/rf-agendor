@@ -77,9 +77,7 @@ def bigquery_to_storage():
     dataset_id = "rf"
     table_id = "rf_agendor_cadastro_api"
 
-    destination_uri = "gs://{}/{}".format(bucket_name, "rf_agendor_cadastro_api-*.csv")
-    # destination_uri = ["gs://{}/{}".format(bucket_name, "rf_agendor_cadastro_api-1.csv"), "gs://{}/{}".format(bucket_name, "rf_agendor_cadastro_api-2.csv"), "gs://{}/{}".format(bucket_name, "rf_agendor_cadastro_api-3.csv")]]
-    # destination_uri = "gs://{}/{}".format(bucket_name, "rf_agendor_cadastro_api.csv")
+    destination_uri = "gs://{}/{}".format(bucket_name, "rf_agendor_cadastro_api-*")
     dataset_ref = bigquery.DatasetReference(project, dataset_id)
     table_ref = dataset_ref.table(table_id)
     job_config = bigquery.job.ExtractJobConfig()
@@ -105,9 +103,38 @@ def compose_file():
     """Concatenate source blobs into destination blob."""
     bucket_name = 'cnpj_rf'
 
-    first_blob_name = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000001.csv"
-    second_blob_name = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000002.csv"
-    destination_blob_name = "bigquery_to_postgres/rf_agendor_cadastro_api_composed.csv"
+    first_blob_name = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000001"
+    second_blob_name = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000002"
+    blob0 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000000"
+    blob3 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000003"
+    blob4 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000004"
+    blob5 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000005"
+    blob6 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000006"
+    blob7 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000007"
+    blob8 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000008"
+    blob9 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000009"
+    blob10 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000010"
+    blob11 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000011"
+    blob12 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000012"
+    blob13 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000013"
+    blob14 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000014"
+    blob15 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000015"
+    blob16 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000016"
+    blob17 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000017"
+    blob18 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000018"
+    blob19 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000019"
+    blob20 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000020"
+    blob21 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000021"
+    blob22 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000022"
+    blob23 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000023"
+    blob24 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000024"
+    blob25 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000025"
+    blob26 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000026"
+    blob27 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000027"
+    blob28 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000028"
+    
+
+    destination_blob_name = "bigquery_to_postgres/rf_agendor_cadastro_api_composed"
 
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
@@ -115,7 +142,36 @@ def compose_file():
     destination.content_type = "application/octet-stream"
 
     # sources is a list of Blob instances, up to the max of 32 instances per request
-    sources = [bucket.get_blob(first_blob_name), bucket.get_blob(second_blob_name)]
+    sources = [bucket.get_blob(first_blob_name), bucket.get_blob(second_blob_name),
+               bucket.get_blob(blob0),
+               bucket.get_blob(blob3),
+               bucket.get_blob(blob4),
+               bucket.get_blob(blob5),
+               bucket.get_blob(blob6),
+               bucket.get_blob(blob7),
+               bucket.get_blob(blob8),
+               bucket.get_blob(blob9),
+               bucket.get_blob(blob10),
+               bucket.get_blob(blob11),
+               bucket.get_blob(blob12),
+               bucket.get_blob(blob13),
+               bucket.get_blob(blob14),
+               bucket.get_blob(blob15),
+               bucket.get_blob(blob16),
+               bucket.get_blob(blob17),
+               bucket.get_blob(blob18),
+               bucket.get_blob(blob19),
+               bucket.get_blob(blob20),
+               bucket.get_blob(blob21),
+               bucket.get_blob(blob22),
+               bucket.get_blob(blob23),
+               bucket.get_blob(blob24),
+               bucket.get_blob(blob25),
+               bucket.get_blob(blob26),
+               bucket.get_blob(blob27),
+               bucket.get_blob(blob28)
+               ]
+               
     destination.compose(sources)
 
     text = "New composite object {} in the bucket {} was created by combining {} and {}".format(
@@ -285,8 +341,8 @@ def storage_to_postgres_bash_command(**kwargs):
     print(list_files)
     file = list_files[0][int(number)]
     print(file)
-    file_name = 'gs://cnpj_rf/' + file
-    print(file_name)
+    # file_name = 'gs://cnpj_rf/' + file
+    # print(file_name)
     # file_name = kwargs.get('file_name')
     # print(file_name)
     credentials = GoogleCredentials.get_application_default()
@@ -298,8 +354,9 @@ def storage_to_postgres_bash_command(**kwargs):
 
     # Cloud SQL instance ID. This does not include the project ID.
     instance = 'rf-agendor'  # TODO: Update placeholder value.
-    table='rf_agendor_cadastro_api_tmp_{}'.format(number)
-    # file_name='gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000021.csv'
+    # table='rf_agendor_cadastro_api_tmp_{}'.format(number)
+    table='rf_agendor_cadastro_api_tmp'
+    file_name='gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api_composed.csv'
 
 
     instances_import_request_body = {
@@ -368,7 +425,6 @@ bigquery_to_storage = PythonOperator(
 
     )
 
-compose_file
 compose_file = PythonOperator(
     task_id='compose_file',
     dag=dag,
@@ -382,28 +438,28 @@ storage_to_postgres_bash_command_1 = PythonOperator(
     dag=dag,
     python_callable=storage_to_postgres_bash_command,
     provide_context=True,
-    op_kwargs={'data': "{{ ti.xcom_pull(task_ids='list_storage_files') }}", "number": "1" }
+    # op_kwargs={'data': "{{ ti.xcom_pull(task_ids='list_storage_files') }}", "number": "1" }
 
     )
 
 
-storage_to_postgres_bash_command_2 = PythonOperator(
-    task_id='storage_to_postgres_bash_command_2',
-    dag=dag,
-    python_callable=storage_to_postgres_bash_command,
-    provide_context=True,
-    op_kwargs={'data': "{{ ti.xcom_pull(task_ids='list_storage_files') }}", "number": "2" }
+# storage_to_postgres_bash_command_2 = PythonOperator(
+#     task_id='storage_to_postgres_bash_command_2',
+#     dag=dag,
+#     python_callable=storage_to_postgres_bash_command,
+#     provide_context=True,
+#     op_kwargs={'data': "{{ ti.xcom_pull(task_ids='list_storage_files') }}", "number": "2" }
 
-    )
+#     )
     
-storage_to_postgres_bash_command_3 = PythonOperator(
-    task_id='storage_to_postgres_bash_command_3',
-    dag=dag,
-    python_callable=storage_to_postgres_bash_command,
-    provide_context=True,
-    op_kwargs={'data': "{{ ti.xcom_pull(task_ids='list_storage_files') }}", "number": "3" }
+# storage_to_postgres_bash_command_3 = PythonOperator(
+#     task_id='storage_to_postgres_bash_command_3',
+#     dag=dag,
+#     python_callable=storage_to_postgres_bash_command,
+#     provide_context=True,
+#     op_kwargs={'data': "{{ ti.xcom_pull(task_ids='list_storage_files') }}", "number": "3" }
 
-    )
+#     )
 
 # storage_to_postgres_bash_command_v2 = PythonOperator(
 #     task_id='storage_to_postgres_bash_command_v2',
@@ -817,7 +873,9 @@ start_dag >> create_tables >> [ct_socios_agg_json, ct_rf_agendor_cadastro_api] >
 
 insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro_api  >> bigquery_to_storage >> list_storage_files >> storage_upload_files 
 
-storage_upload_files >> [storage_to_postgres_bash_command_1, storage_to_postgres_bash_command_2, storage_to_postgres_bash_command_3]
+# storage_upload_files >> [storage_to_postgres_bash_command_1, storage_to_postgres_bash_command_2, storage_to_postgres_bash_command_3]
+storage_upload_files >> [storage_to_postgres_bash_command_1]
+
 # , storage_to_postgres_bash_command_1, storage_to_postgres_bash_command_2, storage_to_postgres_bash_command_3, storage_to_postgres_bash_command_4, storage_to_postgres_bash_command_5, storage_to_postgres_bash_command_6, storage_to_postgres_bash_command_7]
 # >> storage_to_postgres
 
