@@ -171,7 +171,7 @@ def compose_file():
                bucket.get_blob(blob27),
                bucket.get_blob(blob28)
                ]
-               
+
     destination.compose(sources)
 
     text = "New composite object {} in the bucket {} was created by combining {} and {}".format(
@@ -356,7 +356,7 @@ def storage_to_postgres_bash_command(**kwargs):
     instance = 'rf-agendor'  # TODO: Update placeholder value.
     # table='rf_agendor_cadastro_api_tmp_{}'.format(number)
     table='rf_agendor_cadastro_api_tmp'
-    file_name='gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api_composed.csv'
+    file_name='gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api_composed'
 
 
     instances_import_request_body = {
