@@ -754,7 +754,7 @@ ct_rf_agendor_cadastro_api = PythonOperator(task_id='ct_rf_agendor_cadastro_api'
 insert_into_socios_agg_json = PythonOperator(task_id='insert_into_socios_agg_json',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":insert_into_socios_agg_json_query})
 insert_into_rf_agendor_cadastro_api = PythonOperator(task_id='insert_into_rf_agendor_cadastro_api',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":insert_into_rf_agendor_cadastro_api_query})
 
-bq_to_postgres_files = PythonOperator(task_id='bq_to_postgres_files',dag=dag,python_callable=bq_to_postgres_files)
+list_storage_files = PythonOperator(task_id='list_storage_files',dag=dag,python_callable=list_storage_files)
 
 
 
