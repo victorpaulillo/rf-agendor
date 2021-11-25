@@ -107,7 +107,7 @@ def compose_file():
 
     first_blob_name = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000001.csv"
     second_blob_name = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000002.csv"
-    destination_blob_name = "bigquery_to_postgres/rf_agendor_cadastro_api_composed_v2.csv"
+    destination_blob_name = "bigquery_to_postgres/rf_agendor_cadastro_api_composed.csv"
 
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
