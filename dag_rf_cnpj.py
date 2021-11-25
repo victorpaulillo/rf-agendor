@@ -370,6 +370,15 @@ bigquery_to_storage = PythonOperator(
 
     )
 
+compose_file
+compose_file = PythonOperator(
+    task_id='compose_file',
+    dag=dag,
+    python_callable=compose_file,
+    provide_context=True
+
+    )
+
 storage_to_postgres_bash_command_1 = PythonOperator(
     task_id='storage_to_postgres_bash_command_1',
     dag=dag,
