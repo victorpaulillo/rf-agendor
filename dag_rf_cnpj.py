@@ -77,9 +77,9 @@ def bigquery_to_storage():
     dataset_id = "rf"
     table_id = "rf_agendor_cadastro_api"
 
-    # destination_uri = "gs://{}/{}".format(bucket_name, "rf_agendor_cadastro_api-*.csv")
+    destination_uri = "gs://{}/{}".format(bucket_name, "rf_agendor_cadastro_api-*.csv")
     # destination_uri = ["gs://{}/{}".format(bucket_name, "rf_agendor_cadastro_api-1.csv"), "gs://{}/{}".format(bucket_name, "rf_agendor_cadastro_api-2.csv"), "gs://{}/{}".format(bucket_name, "rf_agendor_cadastro_api-3.csv")]]
-    destination_uri = "gs://{}/{}".format(bucket_name, "rf_agendor_cadastro_api.csv")
+    # destination_uri = "gs://{}/{}".format(bucket_name, "rf_agendor_cadastro_api.csv")
     dataset_ref = bigquery.DatasetReference(project, dataset_id)
     table_ref = dataset_ref.table(table_id)
     job_config = bigquery.job.ExtractJobConfig()
@@ -97,6 +97,33 @@ def bigquery_to_storage():
     print(
         "Exported {}:{}.{} to {}".format(project, dataset_id, table_id, destination_uri)
     )
+
+
+def compose_file(bucket_name, first_blob_name, second_blob_name, destination_blob_name):
+    from google.cloud import storage
+
+    """Concatenate source blobs into destination blob."""
+    bucket_name = 'cnpj_rf/bigquery_to_postgres'
+
+    first_blob_name = "rf_agendor_cadastro_api-000000000001.csv"
+    second_blob_name = "rf_agendor_cadastro_api-000000000002.csv"
+    destination_blob_name = "rf_agendor_cadastro_api_composed.csv"
+
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    destination = bucket.blob(destination_blob_name)
+    destination.content_type = "text/plain"
+
+    # sources is a list of Blob instances, up to the max of 32 instances per request
+    sources = [bucket.get_blob(first_blob_name), bucket.get_blob(second_blob_name)]
+    destination.compose(sources)
+
+    print(
+        "New composite object {} in the bucket {} was created by combining {} and {}".format(
+            destination_blob_name, bucket_name, first_blob_name, second_blob_name
+        )
+    )
+    return destination
 
 
 # # Define function using copy_from_dataFile to insert the dataframe.
