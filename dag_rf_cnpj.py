@@ -99,7 +99,7 @@ def bigquery_to_storage():
     )
 
 
-def compose_file(bucket_name, first_blob_name, second_blob_name, destination_blob_name):
+def compose_file():
     from google.cloud import storage
 
     """Concatenate source blobs into destination blob."""
