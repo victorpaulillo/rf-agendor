@@ -118,12 +118,10 @@ def compose_file():
     sources = [bucket.get_blob(first_blob_name), bucket.get_blob(second_blob_name)]
     destination.compose(sources)
 
-    print(
-        "New composite object {} in the bucket {} was created by combining {} and {}".format(
-            destination_blob_name, bucket_name, first_blob_name, second_blob_name
-        )
-    )
-    return destination
+    text = "New composite object {} in the bucket {} was created by combining {} and {}".format(
+            destination_blob_name, bucket_name, first_blob_name, second_blob_name)
+    
+    return text
 
 
 # # Define function using copy_from_dataFile to insert the dataframe.
