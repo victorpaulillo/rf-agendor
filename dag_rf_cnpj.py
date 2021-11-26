@@ -372,11 +372,11 @@ def validation_no_records_postgres_bq():
     print(qt_postgres)
 
     if qt_postgres >= qt_bq:
-        'Success!'
+        print('The number of records on postgres table is greater than on big query table')
     else:
         raise Exception("The number of records on postgres table is less than on big query table, bq={bq} and postgres={postgres} ".format(bq=qt_bq, postgres=qt_postgres))
 
-    return qt_bq, qt_postgres
+    return 'Table loaded Successfully!'
 
 
 
