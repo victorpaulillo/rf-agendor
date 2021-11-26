@@ -335,6 +335,11 @@ def validation_no_records_postgres_bq():
     import pandas as pd
     import psycopg2
 
+    # Wait 30 minutes each retry to see if the file has been loaded on the postgres stage table
+    import time
+    time.sleep(1800)
+
+
     bqclient = bigquery.Client()
 
     # Download query results.
