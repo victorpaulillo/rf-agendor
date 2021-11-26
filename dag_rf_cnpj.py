@@ -406,10 +406,9 @@ def insert_tmp_table_postgres():
                 matriz_filial,
                 nome_fantasia,
                 desc_situacao_cadastral,
-                --TO_DATE(date data_situacao_cadastral, 'YYYYMMDD') as data_situacao_cadastral,
-                --TO_DATE(date data_inicio_atividade, 'YYYYMMDD') as data_inicio_atividade,
-                cast(data_situacao_cadastral as date) as data_situacao_cadastral,
-                cast(data_inicio_atividade as date) as data_inicio_atividade,
+                TO_DATE(date data_situacao_cadastral, 'YYYYMMDD') as data_situacao_cadastral,
+                TO_DATE(date data_inicio_atividade, 'YYYYMMDD') as data_inicio_atividade,
+                
                 cnae,
                 nome_cnae_principal,
                 cnae_fiscal_secundaria,
