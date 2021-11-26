@@ -365,7 +365,7 @@ def create_tmp_table_postgres():
                 correio_eletronico VARCHAR,
                 porte VARCHAR,
                 razao_social VARCHAR,
-                capital_social NUMERIC,
+                capital_social VARCHAR,
                 natureza_juridica VARCHAR,
                 cnpj_basico VARCHAR,
                 socios_json VARCHAR
@@ -425,7 +425,7 @@ def insert_tmp_table_postgres():
                 correio_eletronico,
                 porte,
                 razao_social,
-                capital_social::real as capital_social,
+                capital_social,
                 natureza_juridica ,
                 cnpj_basico ,
                 socios_json 
