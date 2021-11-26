@@ -569,61 +569,55 @@ def validation_no_records_postgres_bq():
 
     return 'Table loaded Successfully!'
 
+def validation_final_no_records_postgres_bq():
+    from google.cloud import bigquery
+    import pandas as pd
+    import psycopg2
 
+    bqclient = bigquery.Client()
 
+    # Download query results.
+    query_bq = """
+        select count(1) as qt
+        from `rf-agendor.rf.rf_agendor_cadastro_api`
+    """
+    df_bq = (
+        bqclient.query(query_bq)
+        .result()
+        .to_dataframe(
+            # Optionally, explicitly request to use the BigQuery Storage API. As of
+            # google-cloud-bigquery version 1.26.0 and above, the BigQuery Storage
+            # API is used by default.
+            create_bqstorage_client=True,
+        )
+    )
+    qt_bq = df_bq.qt[0]  
+    print(qt_bq)
 
-# def validation_final_no_records_postgres_bq():
-#     from google.cloud import bigquery
-#     import pandas as pd
-#     import psycopg2
+    conn = psycopg2.connect(host="35.247.200.226", database="rf", user="postgres", password="postgres")
 
-#     bqclient = bigquery.Client()
+    query_postgres = """
+        select count(1) as qt
+        from rf_agendor_cadastro_api_tmp
+    """
 
-#     # Download query results.
-#     query_bq = """
-#         select count(1) as qt
-#         from `rf-agendor.rf.rf_agendor_cadastro_api`
-#     """
-#     df_bq = (
-#         bqclient.query(query_bq)
-#         .result()
-#         .to_dataframe(
-#             # Optionally, explicitly request to use the BigQuery Storage API. As of
-#             # google-cloud-bigquery version 1.26.0 and above, the BigQuery Storage
-#             # API is used by default.
-#             create_bqstorage_client=True,
-#         )
-#     )
-#     qt_bq = df_bq.qt[0]  
-#     print(qt_bq)
+    df_postgres = pd.read_sql_query(query_postgres, conn)
+    qt_postgres = df_postgres.qt[0]
+    print(qt_postgres)
 
-#     conn = psycopg2.connect(host="35.247.200.226", database="rf", user="postgres", password="postgres")
+    if qt_postgres == qt_bq:
+        print('The number of records on postgres table {postgres} is equal to bigquery table {bq}'.format(bq=qt_bq, postgres=qt_postgres))
+    else:
+        raise Exception("The number of records on postgres table is different than on bigquery table, bq={bq} and postgres={postgres} ".format(bq=qt_bq, postgres=qt_postgres))
 
-#     query_postgres = """
-#         select count(1) as qt
-#         from rf_agendor_cadastro_api_tmp
-#     """
+    return 'Final table loaded Successfully!'
 
-#     df_postgres = pd.read_sql_query(query_postgres, conn)
-#     qt_postgres = df_postgres.qt[0]
-#     print(qt_postgres)
-
-#     if qt_postgres == qt_bq:
-#         print('The number of records on postgres table {postgres} is equal to bigquery table {bq}'.format(bq=qt_bq, postgres=qt_postgres))
-#     else:
-#         raise Exception("The number of records on postgres table is different than on bigquery table, bq={bq} and postgres={postgres} ".format(bq=qt_bq, postgres=qt_postgres))
-
-#     return 'Final table loaded Successfully!'
-
-
-
-# validation_final_no_records_postgres_bq = PythonOperator(
-#     task_id='validation_final_no_records_postgres_bq',
-#     dag=dag,
-#     python_callable=validation_final_no_records_postgres_bq,
-#     provide_context=True
-
-#     )
+validation_final_no_records_postgres_bq = PythonOperator(
+    task_id='validation_final_no_records_postgres_bq',
+    dag=dag,
+    python_callable=validation_final_no_records_postgres_bq,
+    provide_context=True
+    )
 
     
 ct_qualificacoes_socios_query = """
