@@ -267,11 +267,12 @@ def create_stage_table_postgres():
     conn = None
 
     try:
-        conn = psycopg2.connect(host="35.247.200.226", database="rf", user="postgres", password="postgres")
-        
+        conn = psycopg2.connect(host="35.247.200.226", database="rf", user="postgres", password="postgres", port= '5432')
+
         cur = conn.cursor()
-        drop_tmp_table = """drop table rf_agendor_cadastro_api_tmp;"""
+        drop_tmp_table = """drop table rf_agendor_cadastro_api_stage;"""
         cur.execute(drop_tmp_table)
+        conn.commit()
         print('Table dropped, from statement: {}'.format(drop_tmp_table))
         cur.close()
 
@@ -310,6 +311,7 @@ def create_stage_table_postgres():
             """
         cur.execute(create_table_statement)
         print('Table created from statement: {}'.format(create_table_statement))
+        conn.commit()
         cur.close()
 
     except (Exception, psycopg2.DatabaseError) as error:
@@ -318,7 +320,6 @@ def create_stage_table_postgres():
         if conn is not None:
             conn.close()
             print('Database connection closed.')
-
 
 create_stage_table_postgres = PythonOperator(
     task_id='create_stage_table_postgres',
