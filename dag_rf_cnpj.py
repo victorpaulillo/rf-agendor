@@ -39,35 +39,6 @@ def bigquery_execution(query):
     query_job.result()  # Waits for job to complete.
     print(f"Query executed: {query}")
 
-# def bigquery_to_postgres():
-#     # from sqlalchemy import create_engine
-#     # Construct a BigQuery client object.
-#     bqclient = bigquery.Client()
-#     table_name = 'rf-agendor.rf.rf_agendor_cadastro_api'
-#     query = """
-#         SELECT *
-#         FROM {}
-#         limit 100
-#         """.format(table_name)
-#     print(query)
-
-#     print("The query data:")
-#     df = (
-#         bqclient.query(query)
-#         .result()
-#         .to_dataframe(
-#             # Optionally, explicitly request to use the BigQuery Storage API. As of
-#             # google-cloud-bigquery version 1.26.0 and above, the BigQuery Storage
-#             # API is used by default.
-#             create_bqstorage_client=True,
-#         )
-#     )
-#     print(df.head())
-    
-
-#     cnpj_rf/bigquery_to_postgres
-#     engine = create_engine('postgresql://postgres:postgres@35.247.200.226:5432/rf')
-#     df.to_sql('rf_agendor_cadastro_api_tmp', engine)
 
 def bigquery_to_storage():
     from google.cloud import bigquery
@@ -98,6 +69,17 @@ def bigquery_to_storage():
 
 
 def compose_file():
+    # ti = kwargs['ti']
+    # number = kwargs.get('number')
+    # print(number)
+    # list_files = ti.xcom_pull(task_ids='list_storage_files')
+    # print(list_files)
+    # file = list_files[0][int(number)]
+    # print(file)
+    # file_name = 'gs://cnpj_rf/' + file
+    # print(file_name)
+    # file_name = kwargs.get('file_name')
+    # print(file_name)
     from google.cloud import storage
 
     """Concatenate source blobs into destination blob."""
@@ -180,75 +162,6 @@ def compose_file():
     return text
 
 
-# # Define function using copy_from_dataFile to insert the dataframe.
-# def copy_from_dataFile():
-#     import psycopg2
-#     from google.cloud import storage
-# #  Here we are going save the dataframe on disk as a csv file, load # the csv file and use copy_from() to copy it to the table
-#     # tmp_df = '../Learn Python Data Access/iris_temp.csv'
-#     # df.to_csv(tmp_df, header=False,index = False)
-#     # f = open(tmp_df, 'r')
-    
-#     client = storage.Client()
-#     # get bucket with name
-#     bucket = client.get_bucket('cnpj_rf')
-#     # get bucket data as blob
-#     blob = bucket.get_blob('bigquery_to_postgres/bigquery_to_postgres_rf_agendor_cadastro_api-000000000000_v.csv')
-#     # convert to string
-#     csv_file = blob.download_as_string()
-#     table = 'rf_agendor_cadastro_api_tmp'
-#     conn = psycopg2.connect(
-#         host="35.247.200.226",
-#         database="rf",
-#         user="postgres",
-#         password="postgres")
-            
-#     cursor = conn.cursor()
-#     try:
-#         cursor.copy_from(csv_file, table, sep=",")
-#         print("Data inserted using copy_from_datafile() successfully....")
-#     except (Exception, psycopg2.DatabaseError) as err:
-#         # pass exception to function
-#         print(err)
-#         cursor.close()
-
-
-
-# copy_from_dataFile = PythonOperator(
-#     task_id='copy_from_dataFile',
-#     dag=dag,
-#     python_callable=copy_from_dataFile,
-#     provide_context=True
-
-#     )
-
-
-
-
-# def storage_to_postgres():
-#     import requests
-#     project_id = ' rf-agendor'
-#     instance_id = 'rf-agendor'
-#     endpoint = 'https://sqladmin.googleapis.com/v1/projects/{project_id}/instances/{instance_id}/import'.format(project_id=project_id, instance_id=instance_id)
-                
-#     # data to be sent to api
-#     data = {
-#             "importContext":
-#             {
-#                 "fileType": "CSV",
-#                 "uri": "gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000001.csv",
-#                 "database": "rf",
-#                 "csvImportOptions":
-#                 {
-#                     "table": "table_name"
-#                 }
-#             }
-#             }
-#     # sending post request and saving response as response object
-#     r = requests.post(url = endpoint, data = data)
-#     print(r.text)
-
-
 
 # create table rf_agendor_cadastro_api_tmp_3
 #     (
@@ -281,8 +194,6 @@ def compose_file():
 #     socios_json VARCHAR
 # );
 
-# gcloud sql import csv rf-agendor gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000001.csv --database=rf --table=rf_agendor_cadastro_api_tmp ;
-
 
 
 def list_storage_files():
@@ -299,52 +210,13 @@ def list_storage_files():
     return list_files, len_list_files
 
 
-# list_storage_files = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
-
-# Function to join the files found on Google Cloud Storage and add it on one string bash command
-# def storage_to_postgres_bash_command(**kwargs):
-#     import subprocess
-#     # ti = kwargs['ti']
-#     # number = kwargs.get('number')
-#     # list_files = ti.xcom_pull(task_ids='bq_to_postgres_files')
-#     # file = list_files[0][int(number)]
-#     # file_name = 'gs://cnpj_rf/' + file
-#     # file_name = kwargs.get('file_name')
-#     database='rf'
-#     table='rf_agendor_cadastro_api_tmp'
-#     file_name='gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000019.csv'
-
-#     gcloud_import_command = 'gcloud sql import csv rf-agendor {} --database={} --table={} ; '.format(file_name, database, table)
-
-#     print(gcloud_import_command)
-    
-#     bashCommand = gcloud_import_command
-#     process = subprocess.Popen(bashCommand, shell = True, stdout=subprocess.PIPE)
-#     output, error = process.communicate()
-    
-#     print(output)
-#     print(error)
-
-#     print('Completed loading the file {} on postgres at database={} and table={}'.format(file_name, database, table))
-#     return output, error
-
 def storage_to_postgres_bash_command(**kwargs):
     from pprint import pprint
 
     from googleapiclient import discovery
     from oauth2client.client import GoogleCredentials
 
-    # ti = kwargs['ti']
-    # number = kwargs.get('number')
-    # print(number)
-    # list_files = ti.xcom_pull(task_ids='list_storage_files')
-    # print(list_files)
-    # file = list_files[0][int(number)]
-    # print(file)
-    # file_name = 'gs://cnpj_rf/' + file
-    # print(file_name)
-    # file_name = kwargs.get('file_name')
-    # print(file_name)
+
     credentials = GoogleCredentials.get_application_default()
 
     service = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
@@ -355,7 +227,7 @@ def storage_to_postgres_bash_command(**kwargs):
     # Cloud SQL instance ID. This does not include the project ID.
     instance = 'rf-agendor'  # TODO: Update placeholder value.
     # table='rf_agendor_cadastro_api_tmp_{}'.format(number)
-    table='rf_agendor_cadastro_api_tmp'
+    table='rf_agendor_cadastro_api_stage'
     file_name='gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api_composed'
 
 
@@ -364,7 +236,6 @@ def storage_to_postgres_bash_command(**kwargs):
                 "importContext":
                 {
                     "fileType": "CSV",
-                    # "uri": "gs://cnpj_rf/{file_name}".format(file_name=file_name),
                     "uri": file_name,
                     "database": "rf",
                     "csvImportOptions":
@@ -384,39 +255,6 @@ def storage_to_postgres_bash_command(**kwargs):
 
 
 
-# def append_storage_files(**kwargs):
-#     import subprocess
-
-#     gcloud_append_files = 'gsutil cat gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000000.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000001.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000002.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000003.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000004.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000005.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000006.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000007.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000008.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000009.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000010.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000011.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000012.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000013.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000014.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000015.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000016.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000017.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000018.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000019.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000020.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000021.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000022.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000023.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000024.csv gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000025.csvgs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000026.csvgs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000027.csvgs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api-000000000028.csv> lala.csv'
-
-#     print(gcloud_append_files)
-    
-#     process = subprocess.Popen(gcloud_append_files, shell = True, stdout=subprocess.PIPE)
-#     output, error = process.communicate()
-#     print(output)
-#     print(error)
-#     print('Completed appending the files')
-
-
-#     gcloud_copping_appended_file_storage = 'gsutil cp lala.csv gs://cnpj_rf/bigquery_to_postgres/lala.csv'
-
-#     process = subprocess.Popen(gcloud_copping_appended_file_storage, shell = True, stdout=subprocess.PIPE)
-#     output, error = process.communicate()
-#     print(output)
-#     print(error)
-#     print('Completed coping the appended file to storage')
-
-
-#     return 'Success!'
-
-# append_storage_files = PythonOperator(
-#     task_id='append_storage_files',
-#     dag=dag,
-#     python_callable=append_storage_files,
-#     provide_context=True,
-#     # op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "1" }
-#     )
-
 bigquery_to_storage = PythonOperator(
     task_id='bigquery_to_storage',
     dag=dag,
@@ -433,8 +271,8 @@ compose_file = PythonOperator(
 
     )
 
-storage_to_postgres_bash_command_1 = PythonOperator(
-    task_id='storage_to_postgres_bash_command_1',
+storage_to_postgres_bash_command = PythonOperator(
+    task_id='storage_to_postgres_bash_command',
     dag=dag,
     python_callable=storage_to_postgres_bash_command,
     provide_context=True,
@@ -442,102 +280,126 @@ storage_to_postgres_bash_command_1 = PythonOperator(
 
     )
 
+def create_stage_table_postgres():
+    """ Connect to the PostgreSQL database server """
+    import psycopg2
+    conn = None
 
-# storage_to_postgres_bash_command_2 = PythonOperator(
-#     task_id='storage_to_postgres_bash_command_2',
-#     dag=dag,
-#     python_callable=storage_to_postgres_bash_command,
-#     provide_context=True,
-#     op_kwargs={'data': "{{ ti.xcom_pull(task_ids='list_storage_files') }}", "number": "2" }
-
-#     )
-    
-# storage_to_postgres_bash_command_3 = PythonOperator(
-#     task_id='storage_to_postgres_bash_command_3',
-#     dag=dag,
-#     python_callable=storage_to_postgres_bash_command,
-#     provide_context=True,
-#     op_kwargs={'data': "{{ ti.xcom_pull(task_ids='list_storage_files') }}", "number": "3" }
-
-#     )
-
-# storage_to_postgres_bash_command_v2 = PythonOperator(
-#     task_id='storage_to_postgres_bash_command_v2',
-#     dag=dag,
-#     python_callable=storage_to_postgres_bash_command_v2,
-#     provide_context=True,
-#     # op_kwargs={'data': "{{ ti.xcom_pull(task_ids='bq_to_postgres_files') }}", "number": "7" }
-
-#     )
-
-# # xcom_get_import_command = '{{ ti.xcom_pull(task_ids="storage_to_postgres_bash_command")}}' 
-
-
-
-# # BashOperator to import the files from the GCS to Postgres stage table. It runs the bash command string with the multiple files
-# import_files_stage = BashOperator(
-#     task_id="import_files_stage",
-#     bash_command=xcom_get_import_command,
-#     retries=2,
-#     retry_delay=timedelta(minutes=2),
-#     dag=dag
-# )
-
-
-# def values_function():
-#     values = [0,1,2,3,4,5]
-#     return values
-
-# push_func = PythonOperator(
-#         task_id='push_func',
-#         provide_context=True,
-#         python_callable=values_function,
-#         dag=dag)
-
-# def group_bash_command(number, **kwargs):
-#         print('lala')
-#         #load the values if needed in the command you plan to execute
-#         file_number = "{{ task_instance.xcom_pull(task_ids='push_func') }}"
-#         print('lala')
-#         return PythonOperator(task_id='remove_spec_char_{}'.format(str(number)),
-#             dag=dag,python_callable=storage_to_postgres_bash_command,
-#             op_kwargs={"file_number":str(number)}
-#             )
+    try:
+        conn = psycopg2.connect(host="35.247.200.226", database="rf", user="postgres", password="postgres")
         
-# def test(i):
-#     next = ' >> '
-#     return (group_bash_command(i), next)
-        
-# for i in values_function():
-#         push_func >> test(i) 
+        cur = conn.cursor()
+        drop_tmp_table = """drop table rf_agendor_cadastro_api_tmp;"""
+        cur.execute(drop_tmp_table)
+        print('Table dropped, from statement: {}'.format(drop_tmp_table))
+        cur.close()
+
+        cur = conn.cursor()
+        create_table_statement = """
+            create table rf_agendor_cadastro_api_stage
+                (
+                cnpj VARCHAR ,
+                matriz_filial VARCHAR,
+                nome_fantasia VARCHAR,
+                desc_situacao_cadastral VARCHAR,
+                data_situacao_cadastral VARCHAR,
+                data_inicio_atividade VARCHAR,
+                cnae VARCHAR,
+                nome_cnae_principal VARCHAR,
+                cnae_fiscal_secundaria VARCHAR,
+                logradouro VARCHAR,
+                numero VARCHAR,
+                complemento VARCHAR,
+                bairro VARCHAR,
+                cep VARCHAR,
+                uf VARCHAR,
+                nome_municipio VARCHAR,
+                ddd_1 VARCHAR,
+                telefone_1 VARCHAR,
+                ddd_2 VARCHAR,
+                telefone_2 VARCHAR,
+                correio_eletronico VARCHAR,
+                porte VARCHAR,
+                razao_social VARCHAR,
+                capital_social VARCHAR,
+                natureza_juridica VARCHAR,
+                cnpj_basico VARCHAR,
+                socios_json VARCHAR
+            );
+            """
+        cur.execute(create_table_statement)
+        print('Table created from statement: {}'.format(create_table_statement))
+        cur.close()
+
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+            print('Database connection closed.')
+
+
+create_stage_table_postgres = PythonOperator(
+    task_id='create_stage_table_postgres',
+    dag=dag,
+    python_callable=create_stage_table_postgres,
+    provide_context=True
+
+    )
+
+
+def validation_no_records_postgres_bq():
+    from google.cloud import bigquery
+    import pandas as pd
+    import psycopg2
+
+    bqclient = bigquery.Client()
+
+    # Download query results.
+    query_bq = """
+        select count(1) as qt
+        from `rf-agendor.rf.rf_agendor_cadastro_api`
+    """
+    df_bq = (
+        bqclient.query(query_bq)
+        .result()
+        .to_dataframe(
+            # Optionally, explicitly request to use the BigQuery Storage API. As of
+            # google-cloud-bigquery version 1.26.0 and above, the BigQuery Storage
+            # API is used by default.
+            create_bqstorage_client=True,
+        )
+    )
+    qt_bq = df_bq.qt[0]  
+    print(qt_bq)
+
+    conn = psycopg2.connect(host="35.247.200.226", database="rf", user="postgres", password="postgres")
+
+    query_postgres = """
+        select count(1) as qt
+        from rf_agendor_cadastro_api_tmp
+    """
+
+    df_postgres = pd.read_sql_query(query_postgres, conn)
+    qt_postgres = df_postgres.qt[0]
+    print(qt_postgres)
+
+    if qt_postgres >= qt_bq:
+        'Success!'
+    else:
+        'Fail!'
+
+    return qt_bq, qt_postgres
 
 
 
+validation_no_records_postgres_bq = PythonOperator(
+    task_id='validation_no_records_postgres_bq',
+    dag=dag,
+    python_callable=validation_no_records_postgres_bq,
+    provide_context=True
 
-
-# Run the function that join on one string the files found on Google Cloud Storage
-# gcs_files_create_bash_command = PythonOperator(
-#     task_id='gcs_files_create_bash_command',
-#     dag=dag,
-#     python_callable=gcs_files_create_bash_command,
-#     provide_context=True,  
-#     templates_dict={'gcs_path_filename': "{{ ti.xcom_pull(task_ids='gcs_files') }}" },
-#     xcom_push=True,
-#     )
-
-# # Get the result from the join files function
-# xcom_get_import_command = '{{ ti.xcom_pull(task_ids="gcs_files_create_bash_command")}}'
-
-# #BashOperator to import the files from the GCS to Postgres stage table. It runs the bash command string with the multiple files
-# import_files_stage = BashOperator(
-#     task_id="import_files_stage",
-#     bash_command=xcom_get_import_command,
-#     retries=2,
-#     retry_delay=timedelta(minutes=2),
-#     dag=dag
-# )
-
-
+    )
 
     
 ct_qualificacoes_socios_query = """
@@ -848,23 +710,12 @@ insert_into_rf_agendor_cadastro_api = PythonOperator(task_id='insert_into_rf_age
 list_storage_files = PythonOperator(task_id='list_storage_files',dag=dag,python_callable=list_storage_files)
 
 
-
-# storage_to_postgres_0 = PythonOperator(task_id='storage_to_postgres_0',dag=dag,python_callable=storage_to_postgres_bash_command,op_kwargs={"number":"0"})
-# storage_to_postgres_bash_command_1 = PythonOperator(task_id='storage_to_postgres_bash_command_1',dag=dag,python_callable=storage_to_postgres_bash_command,op_kwargs={"number":"1"})
-# storage_to_postgres_bash_command_2 = PythonOperator(task_id='storage_to_postgres_bash_command_2',dag=dag,python_callable=storage_to_postgres_bash_command,op_kwargs={"number":"2"})
-# storage_to_postgres_bash_command_3 = PythonOperator(task_id='storage_to_postgres_bash_command_3',dag=dag,python_callable=storage_to_postgres_bash_command,op_kwargs={"number":"3"})
-# storage_to_postgres_bash_command_4 = PythonOperator(task_id='storage_to_postgres_bash_command_4',dag=dag,python_callable=storage_to_postgres_bash_command,op_kwargs={"number":"4"})
-# storage_to_postgres_bash_command_5 = PythonOperator(task_id='storage_to_postgres_bash_command_5',dag=dag,python_callable=storage_to_postgres_bash_command,op_kwargs={"number":"5"})
-# storage_to_postgres_bash_command_6 = PythonOperator(task_id='storage_to_postgres_bash_command_6',dag=dag,python_callable=storage_to_postgres_bash_command,op_kwargs={"number":"6"})
-# storage_to_postgres_bash_command_7 = PythonOperator(task_id='storage_to_postgres_bash_command_7',dag=dag,python_callable=storage_to_postgres_bash_command,op_kwargs={"number":"7"})
-
-# storage_to_postgres = PythonOperator(task_id='storage_to_postgres',dag=dag,python_callable=storage_to_postgres)
-
 start_dag = DummyOperator(task_id='start_dag', dag=dag)
 create_external_tables = DummyOperator(task_id='create_external_tables', dag=dag)
 create_tables = DummyOperator(task_id='create_tables', dag=dag)
 insert_records = DummyOperator(task_id='insert_records', dag=dag)
 storage_upload_files = DummyOperator(task_id='storage_upload_files', dag=dag)
+
 
 #Workflow
 
@@ -873,44 +724,6 @@ start_dag >> create_tables >> [ct_socios_agg_json, ct_rf_agendor_cadastro_api] >
 
 insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro_api  >> bigquery_to_storage >> list_storage_files >> storage_upload_files 
 
-# storage_upload_files >> [storage_to_postgres_bash_command_1, storage_to_postgres_bash_command_2, storage_to_postgres_bash_command_3]
-storage_upload_files >> [storage_to_postgres_bash_command_1]
-
-# , storage_to_postgres_bash_command_1, storage_to_postgres_bash_command_2, storage_to_postgres_bash_command_3, storage_to_postgres_bash_command_4, storage_to_postgres_bash_command_5, storage_to_postgres_bash_command_6, storage_to_postgres_bash_command_7]
-# >> storage_to_postgres
+storage_upload_files >> create_stage_table_postgres >> storage_to_postgres_bash_command >> validation_no_records_postgres_bq
 
 
-
-
-
-# def remove_spec_char(**kwargs):
-#     ti = kwargs['ti']
-#     file_number = kwargs.get('file_number')
-#     bucket_name = kwargs.get('bucket_name')
-#     file_name_ = ti.xcom_pull(task_ids='list_files_rf')[int(file_number)]
-
-#     if file_name_ == '':
-#         None
-
-#     else:
-#         if 'ESTABELE' in file_name_:
-
-#             file_name_final = file_name_[:-4]
-#             blob_name = "unzip_files/" + file_name_final
-#             new_blob_special_character = "unzip_files_treated/" + file_name_final
-
-#             client = storage.Client()
-#             bucket = client.get_bucket(bucket_name)
-
-#             blob = bucket.get_blob(blob_name)
-#             file = blob.download_as_string()
-
-#             file_decoded = file.decode("ISO-8859-1")
-#             file_upload = re.sub(r"[^a-zA-Z0-9,-@+_ \"\n]", '', str(file_decoded))
-            
-#             bucket.blob(new_blob_special_character).upload_from_string(file_upload, 'text/csv')
-            
-#             print(f'File moved from {blob_name} to {new_blob_special_character}')
-
-#         else:
-#             print(f'Did nothing, file is not ESTABELE, it is {file_name_}')

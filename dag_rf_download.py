@@ -10,7 +10,6 @@ from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 
 
 #from airflow.operators.postgres_operator import PostgresOperator
-import psycopg2
 
 # from scripts.scripts import download_files
 # from scripts.scripts import zipextract
