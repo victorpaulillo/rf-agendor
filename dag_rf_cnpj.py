@@ -425,7 +425,7 @@ def insert_tmp_table_postgres():
                 correio_eletronico,
                 porte,
                 razao_social,
-                cast(capital_social as float) as capital_social,
+                capital_social::double precision as capital_social,
                 natureza_juridica ,
                 cnpj_basico ,
                 socios_json 
