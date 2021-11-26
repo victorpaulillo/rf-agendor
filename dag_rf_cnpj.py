@@ -41,14 +41,30 @@ def bigquery_execution(query):
 
 
 def bigquery_to_storage():
+    # First we will delete all files from storage, to not duplicate any file
+    from google.cloud import storage
+    bucket_name = 'cnpj_rf'
+    directory_name = 'bigquery_to_postgres'
+
+    client = storage.Client()
+    bucket = client.get_bucket(bucket_name)
+    # list all objects in the directory
+    blobs = bucket.list_blobs(prefix=directory_name)
+    for blob in blobs:
+        blob.delete()
+
+    print('All files deleted from folder {}'.format(directory_name))
+
+    # Now we are loading the big query table into storage
+
     from google.cloud import bigquery
     client = bigquery.Client()
-    bucket_name = 'cnpj_rf/bigquery_to_postgres'
+    bucket_file_name = 'cnpj_rf/bigquery_to_postgres'
     project = "rf-agendor"
     dataset_id = "rf"
     table_id = "rf_agendor_cadastro_api"
 
-    destination_uri = "gs://{}/{}".format(bucket_name, "rf_agendor_cadastro_api-*")
+    destination_uri = "gs://{}/{}".format(bucket_file_name, "rf_agendor_cadastro_api-*")
     dataset_ref = bigquery.DatasetReference(project, dataset_id)
     table_ref = dataset_ref.table(table_id)
     job_config = bigquery.job.ExtractJobConfig()
@@ -160,41 +176,6 @@ def compose_file():
             destination_blob_name, bucket_name, first_blob_name, second_blob_name)
     
     return text
-
-
-
-# create table rf_agendor_cadastro_api_tmp_3
-#     (
-#     cnpj VARCHAR ,
-#     matriz_filial VARCHAR,
-#     nome_fantasia VARCHAR,
-#     desc_situacao_cadastral VARCHAR,
-#     data_situacao_cadastral VARCHAR,
-#     data_inicio_atividade VARCHAR,
-#     cnae VARCHAR,
-#     nome_cnae_principal VARCHAR,
-#     cnae_fiscal_secundaria VARCHAR,
-#     logradouro VARCHAR,
-#     numero VARCHAR,
-#     complemento VARCHAR,
-#     bairro VARCHAR,
-#     cep VARCHAR,
-#     uf VARCHAR,
-#     nome_municipio VARCHAR,
-#     ddd_1 VARCHAR,
-#     telefone_1 VARCHAR,
-#     ddd_2 VARCHAR,
-#     telefone_2 VARCHAR,
-#     correio_eletronico VARCHAR,
-#     porte VARCHAR,
-#     razao_social VARCHAR,
-#     capital_social VARCHAR,
-#     natureza_juridica VARCHAR,
-#     cnpj_basico VARCHAR,
-#     socios_json VARCHAR
-# );
-
-
 
 def list_storage_files():
     from google.cloud import storage
