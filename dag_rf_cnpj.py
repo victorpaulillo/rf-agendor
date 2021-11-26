@@ -485,6 +485,39 @@ drop_prod_table_postgres = PythonOperator(
     )
 
 
+
+def drop_stage_table_postgres():
+    """ Connect to the PostgreSQL database server """
+    import psycopg2
+    conn = None
+
+    try:
+        conn = psycopg2.connect(host="35.247.200.226", database="rf", user="postgres", password="postgres", port= '5432')
+
+        cur = conn.cursor()
+        drop_tmp_table = """drop table rf_agendor_cadastro_api_stage;"""
+        cur.execute(drop_tmp_table)
+        conn.commit()
+        print('Table dropped, from statement: {}'.format(drop_tmp_table))
+        cur.close()
+
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+            print('Database connection closed.')
+
+
+
+drop_stage_table_postgres = PythonOperator(
+    task_id='drop_stage_table_postgres',
+    dag=dag,
+    python_callable=drop_stage_table_postgres,
+    provide_context=True
+    )
+
+
 def rename_tmp_to_prod_table_postgres():
     """ Connect to the PostgreSQL database server """
     import psycopg2
@@ -517,6 +550,41 @@ rename_tmp_to_prod_table_postgres = PythonOperator(
     python_callable=rename_tmp_to_prod_table_postgres,
     provide_context=True
     )
+
+
+
+def create_index_tmp_table_postgres():
+    """ Connect to the PostgreSQL database server """
+    import psycopg2
+    conn = None
+
+    try:
+        conn = psycopg2.connect(host="35.247.200.226", database="rf", user="postgres", password="postgres", port= '5432')
+
+        cur = conn.cursor()
+        rename_table_statement = """
+            CREATE UNIQUE INDEX cnpj_idx ON rf_agendor_cadastro_api_tmp (cnpj);
+            ;
+            """
+        cur.execute(rename_table_statement)
+        print('Index created for the tmp table using the statement: {}'.format(rename_table_statement))
+        conn.commit()
+        cur.close()
+
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+            print('Database connection closed.')
+
+create_index_tmp_table_postgres = PythonOperator(
+    task_id='create_index_tmp_table_postgres',
+    dag=dag,
+    python_callable=create_index_tmp_table_postgres,
+    provide_context=True
+    )
+
 
 
 
@@ -952,7 +1020,7 @@ start_dag >> create_external_tables >> [ct_qualificacoes_socios, ct_paises, ct_n
 start_dag >> create_tables >> [ct_socios_agg_json, ct_rf_agendor_cadastro_api] >> insert_records
 
 insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro_api  >> bigquery_to_storage >> list_storage_files >> compose_file >> storage_upload_files 
-storage_upload_files >> create_stage_table_postgres >> storage_to_postgres_bash_command >> validation_no_records_postgres_bq >> create_tmp_table_postgres >> insert_tmp_table_postgres >> validation_final_no_records_postgres_bq >> drop_prod_table_postgres >> rename_tmp_to_prod_table_postgres
+storage_upload_files >> create_stage_table_postgres >> storage_to_postgres_bash_command >> validation_no_records_postgres_bq >> create_tmp_table_postgres >> insert_tmp_table_postgres >> create_index_tmp_table_postgres >> validation_final_no_records_postgres_bq >> drop_prod_table_postgres >> rename_tmp_to_prod_table_postgres >> drop_stage_table_postgres
 
 # storage_upload_files >> create_stage_table_postgres >> storage_to_postgres_bash_command >> validation_no_records_postgres_bq 
 
