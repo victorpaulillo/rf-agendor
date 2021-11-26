@@ -330,192 +330,192 @@ create_stage_table_postgres = PythonOperator(
     )
 
 
-# def create_tmp_table_postgres():
-#     """ Connect to the PostgreSQL database server """
-#     import psycopg2
-#     conn = None
+def create_tmp_table_postgres():
+    """ Connect to the PostgreSQL database server """
+    import psycopg2
+    conn = None
 
-#     try:
-#         conn = psycopg2.connect(host="35.247.200.226", database="rf", user="postgres", password="postgres", port= '5432')
+    try:
+        conn = psycopg2.connect(host="35.247.200.226", database="rf", user="postgres", password="postgres", port= '5432')
 
-#         cur = conn.cursor()
-#         create_table_statement = """
-#             create table rf_agendor_cadastro_api_tmp
-#                 (
-#                 cnpj VARCHAR ,
-#                 matriz_filial VARCHAR,
-#                 nome_fantasia VARCHAR,
-#                 desc_situacao_cadastral DATE,
-#                 data_situacao_cadastral DATE,
-#                 data_inicio_atividade DATE,
-#                 cnae VARCHAR,
-#                 nome_cnae_principal VARCHAR,
-#                 cnae_fiscal_secundaria VARCHAR,
-#                 logradouro VARCHAR,
-#                 numero VARCHAR,
-#                 complemento VARCHAR,
-#                 bairro VARCHAR,
-#                 cep VARCHAR,
-#                 uf VARCHAR,
-#                 nome_municipio VARCHAR,
-#                 ddd_1 VARCHAR,
-#                 telefone_1 VARCHAR,
-#                 ddd_2 VARCHAR,
-#                 telefone_2 VARCHAR,
-#                 correio_eletronico VARCHAR,
-#                 porte VARCHAR,
-#                 razao_social VARCHAR,
-#                 capital_social FLOAT,
-#                 natureza_juridica VARCHAR,
-#                 cnpj_basico VARCHAR,
-#                 socios_json VARCHAR
-#             );
-#             """
-#         cur.execute(create_table_statement)
-#         print('Table created from statement: {}'.format(create_table_statement))
-#         conn.commit()
-#         cur.close()
+        cur = conn.cursor()
+        create_table_statement = """
+            create table rf_agendor_cadastro_api_tmp
+                (
+                cnpj VARCHAR ,
+                matriz_filial VARCHAR,
+                nome_fantasia VARCHAR,
+                desc_situacao_cadastral DATE,
+                data_situacao_cadastral DATE,
+                data_inicio_atividade DATE,
+                cnae VARCHAR,
+                nome_cnae_principal VARCHAR,
+                cnae_fiscal_secundaria VARCHAR,
+                logradouro VARCHAR,
+                numero VARCHAR,
+                complemento VARCHAR,
+                bairro VARCHAR,
+                cep VARCHAR,
+                uf VARCHAR,
+                nome_municipio VARCHAR,
+                ddd_1 VARCHAR,
+                telefone_1 VARCHAR,
+                ddd_2 VARCHAR,
+                telefone_2 VARCHAR,
+                correio_eletronico VARCHAR,
+                porte VARCHAR,
+                razao_social VARCHAR,
+                capital_social FLOAT,
+                natureza_juridica VARCHAR,
+                cnpj_basico VARCHAR,
+                socios_json VARCHAR
+            );
+            """
+        cur.execute(create_table_statement)
+        print('Table created from statement: {}'.format(create_table_statement))
+        conn.commit()
+        cur.close()
 
-#     except (Exception, psycopg2.DatabaseError) as error:
-#         print(error)
-#     finally:
-#         if conn is not None:
-#             conn.close()
-#             print('Database connection closed.')
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+            print('Database connection closed.')
 
-# create_tmp_table_postgres = PythonOperator(
-#     task_id='create_tmp_table_postgres',
-#     dag=dag,
-#     python_callable=create_tmp_table_postgres,
-#     provide_context=True
-#     )
-
-
-# def insert_tmp_table_postgres():
-#     """ Connect to the PostgreSQL database server """
-#     import psycopg2
-#     conn = None
-
-#     try:
-#         conn = psycopg2.connect(host="35.247.200.226", database="rf", user="postgres", password="postgres", port= '5432')
-
-#         cur = conn.cursor()
-#         insert_data_statement = """
-#             insert into rf_agendor_cadastro_api_tmp
-#             select cnpj,
-#                 matriz_filial,
-#                 nome_fantasia,
-#                 cast(desc_situacao_cadastral as DATE) as desc_situacao_cadastral,
-#                 cast(data_situacao_cadastral as DATE) as data_situacao_cadastral,
-#                 cast(data_inicio_atividade as DATE) as data_inicio_atividade,
-#                 cnae,
-#                 nome_cnae_principal,
-#                 cnae_fiscal_secundaria,
-#                 logradouro,
-#                 numero,
-#                 complemento,
-#                 bairro,
-#                 cep,
-#                 uf,
-#                 nome_municipio,
-#                 ddd_1,
-#                 telefone_1,
-#                 ddd_2,
-#                 telefone_2,
-#                 correio_eletronico,
-#                 porte,
-#                 razao_social,
-#                 cast(capital_social as float) as capital_social,
-#                 natureza_juridica ,
-#                 cnpj_basico ,
-#                 socios_json 
-#             from rf_agendor_cadastro_api_stage
-#             ;
-#             """
-#         cur.execute(insert_data_statement)
-#         print('Table created from statement: {}'.format(insert_data_statement))
-#         conn.commit()
-#         cur.close()
-
-#     except (Exception, psycopg2.DatabaseError) as error:
-#         print(error)
-#     finally:
-#         if conn is not None:
-#             conn.close()
-#             print('Database connection closed.')
-
-# insert_tmp_table_postgres = PythonOperator(
-#     task_id='insert_tmp_table_postgres',
-#     dag=dag,
-#     python_callable=insert_tmp_table_postgres,
-#     provide_context=True
-#     )
+create_tmp_table_postgres = PythonOperator(
+    task_id='create_tmp_table_postgres',
+    dag=dag,
+    python_callable=create_tmp_table_postgres,
+    provide_context=True
+    )
 
 
-# def drop_prod_table_postgres():
-#     """ Connect to the PostgreSQL database server """
-#     import psycopg2
-#     conn = None
+def insert_tmp_table_postgres():
+    """ Connect to the PostgreSQL database server """
+    import psycopg2
+    conn = None
 
-#     try:
-#         conn = psycopg2.connect(host="35.247.200.226", database="rf", user="postgres", password="postgres", port= '5432')
+    try:
+        conn = psycopg2.connect(host="35.247.200.226", database="rf", user="postgres", password="postgres", port= '5432')
 
-#         cur = conn.cursor()
-#         drop_tmp_table = """drop table rf_agendor_cadastro_api;"""
-#         cur.execute(drop_tmp_table)
-#         conn.commit()
-#         print('Table dropped, from statement: {}'.format(drop_tmp_table))
-#         cur.close()
+        cur = conn.cursor()
+        insert_data_statement = """
+            insert into rf_agendor_cadastro_api_tmp
+            select cnpj,
+                matriz_filial,
+                nome_fantasia,
+                cast(desc_situacao_cadastral as DATE) as desc_situacao_cadastral,
+                cast(data_situacao_cadastral as DATE) as data_situacao_cadastral,
+                cast(data_inicio_atividade as DATE) as data_inicio_atividade,
+                cnae,
+                nome_cnae_principal,
+                cnae_fiscal_secundaria,
+                logradouro,
+                numero,
+                complemento,
+                bairro,
+                cep,
+                uf,
+                nome_municipio,
+                ddd_1,
+                telefone_1,
+                ddd_2,
+                telefone_2,
+                correio_eletronico,
+                porte,
+                razao_social,
+                cast(capital_social as float) as capital_social,
+                natureza_juridica ,
+                cnpj_basico ,
+                socios_json 
+            from rf_agendor_cadastro_api_stage
+            ;
+            """
+        cur.execute(insert_data_statement)
+        print('Table created from statement: {}'.format(insert_data_statement))
+        conn.commit()
+        cur.close()
 
-#     except (Exception, psycopg2.DatabaseError) as error:
-#         print(error)
-#     finally:
-#         if conn is not None:
-#             conn.close()
-#             print('Database connection closed.')
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+            print('Database connection closed.')
+
+insert_tmp_table_postgres = PythonOperator(
+    task_id='insert_tmp_table_postgres',
+    dag=dag,
+    python_callable=insert_tmp_table_postgres,
+    provide_context=True
+    )
+
+
+def drop_prod_table_postgres():
+    """ Connect to the PostgreSQL database server """
+    import psycopg2
+    conn = None
+
+    try:
+        conn = psycopg2.connect(host="35.247.200.226", database="rf", user="postgres", password="postgres", port= '5432')
+
+        cur = conn.cursor()
+        drop_tmp_table = """drop table rf_agendor_cadastro_api;"""
+        cur.execute(drop_tmp_table)
+        conn.commit()
+        print('Table dropped, from statement: {}'.format(drop_tmp_table))
+        cur.close()
+
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+            print('Database connection closed.')
 
 
 
-# drop_prod_table_postgres = PythonOperator(
-#     task_id='drop_prod_table_postgres',
-#     dag=dag,
-#     python_callable=drop_prod_table_postgres,
-#     provide_context=True
-#     )
+drop_prod_table_postgres = PythonOperator(
+    task_id='drop_prod_table_postgres',
+    dag=dag,
+    python_callable=drop_prod_table_postgres,
+    provide_context=True
+    )
 
 
-# def rename_tmp_to_prod_table_postgres():
-#     """ Connect to the PostgreSQL database server """
-#     import psycopg2
-#     conn = None
+def rename_tmp_to_prod_table_postgres():
+    """ Connect to the PostgreSQL database server """
+    import psycopg2
+    conn = None
 
-#     try:
-#         conn = psycopg2.connect(host="35.247.200.226", database="rf", user="postgres", password="postgres", port= '5432')
+    try:
+        conn = psycopg2.connect(host="35.247.200.226", database="rf", user="postgres", password="postgres", port= '5432')
 
-#         cur = conn.cursor()
-#         rename_table_statement = """
-#             ALTER TABLE rf_agendor_cadastro_api_tmp
-#             RENAME TO rf_agendor_cadastro_api
-#             ;
-#             """
-#         cur.execute(rename_table_statement)
-#         print('Table created from statement: {}'.format(rename_table_statement))
-#         conn.commit()
-#         cur.close()
+        cur = conn.cursor()
+        rename_table_statement = """
+            ALTER TABLE rf_agendor_cadastro_api_tmp
+            RENAME TO rf_agendor_cadastro_api
+            ;
+            """
+        cur.execute(rename_table_statement)
+        print('Table created from statement: {}'.format(rename_table_statement))
+        conn.commit()
+        cur.close()
 
-#     except (Exception, psycopg2.DatabaseError) as error:
-#         print(error)
-#     finally:
-#         if conn is not None:
-#             conn.close()
-#             print('Database connection closed.')
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+            print('Database connection closed.')
 
-# rename_tmp_to_prod_table_postgres = PythonOperator(
-#     task_id='rename_tmp_to_prod_table_postgres',
-#     dag=dag,
-#     python_callable=rename_tmp_to_prod_table_postgres,
-#     provide_context=True
-#     )
+rename_tmp_to_prod_table_postgres = PythonOperator(
+    task_id='rename_tmp_to_prod_table_postgres',
+    dag=dag,
+    python_callable=rename_tmp_to_prod_table_postgres,
+    provide_context=True
+    )
 
 
 
@@ -950,3 +950,4 @@ insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro
 
 # storage_upload_files >> create_stage_table_postgres >> storage_to_postgres_bash_command >> validation_no_records_postgres_bq 
 # >> create_tmp_table_postgres >> insert_tmp_table_postgres >> validation_final_no_records_postgres_bq >> drop_prod_table_postgres >> rename_tmp_to_prod_table_postgres
+
