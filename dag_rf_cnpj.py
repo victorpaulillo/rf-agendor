@@ -345,7 +345,7 @@ def create_tmp_table_postgres():
                 cnpj VARCHAR ,
                 matriz_filial VARCHAR,
                 nome_fantasia VARCHAR,
-                desc_situacao_cadastral DATE,
+                desc_situacao_cadastral VARCHAR,
                 data_situacao_cadastral DATE,
                 data_inicio_atividade DATE,
                 cnae VARCHAR,
