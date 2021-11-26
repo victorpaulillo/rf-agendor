@@ -359,7 +359,7 @@ def validation_no_records_postgres_bq():
 
     query_postgres = """
         select count(1) as qt
-        from rf_agendor_cadastro_api_tmp
+        from rf_agendor_cadastro_api_stage
     """
 
     df_postgres = pd.read_sql_query(query_postgres, conn)
@@ -369,7 +369,7 @@ def validation_no_records_postgres_bq():
     if qt_postgres >= qt_bq:
         'Success!'
     else:
-        'Fail!'
+        raise Exception("The number of records on postgres table is less than on big query table, bq={bq} and postgres={postgres} ".format(bq=qt_bq, postgres=qt_postgres))
 
     return qt_bq, qt_postgres
 
