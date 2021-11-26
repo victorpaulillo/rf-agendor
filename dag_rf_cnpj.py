@@ -569,6 +569,15 @@ def validation_no_records_postgres_bq():
 
     return 'Table loaded Successfully!'
 
+
+validation_no_records_postgres_bq = PythonOperator(
+    task_id='validation_no_records_postgres_bq',
+    dag=dag,
+    python_callable=validation_no_records_postgres_bq,
+    provide_context=True
+    )
+
+
 def validation_final_no_records_postgres_bq():
     from google.cloud import bigquery
     import pandas as pd
@@ -611,6 +620,7 @@ def validation_final_no_records_postgres_bq():
         raise Exception("The number of records on postgres table is different than on bigquery table, bq={bq} and postgres={postgres} ".format(bq=qt_bq, postgres=qt_postgres))
 
     return 'Final table loaded Successfully!'
+
 
 validation_final_no_records_postgres_bq = PythonOperator(
     task_id='validation_final_no_records_postgres_bq',
