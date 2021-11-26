@@ -941,6 +941,8 @@ start_dag >> create_external_tables >> [ct_qualificacoes_socios, ct_paises, ct_n
 start_dag >> create_tables >> [ct_socios_agg_json, ct_rf_agendor_cadastro_api] >> insert_records
 
 insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro_api  >> bigquery_to_storage >> list_storage_files >> compose_file >> storage_upload_files 
+storage_upload_files >> create_stage_table_postgres >> storage_to_postgres_bash_command >> validation_no_records_postgres_bq 
+
 # storage_upload_files >> create_stage_table_postgres >> storage_to_postgres_bash_command >> validation_no_records_postgres_bq 
 # >> create_tmp_table_postgres >> insert_tmp_table_postgres >> validation_final_no_records_postgres_bq >> drop_prod_table_postgres >> rename_tmp_to_prod_table_postgres
 
