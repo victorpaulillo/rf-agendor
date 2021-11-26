@@ -405,7 +405,7 @@ def insert_tmp_table_postgres():
             select cnpj,
                 matriz_filial,
                 nome_fantasia,
-                TO_DATE(date desc_situacao_cadastral, 'YYYYMMDD') as desc_situacao_cadastral,
+                desc_situacao_cadastral,
                 TO_DATE(date data_situacao_cadastral, 'YYYYMMDD') as data_situacao_cadastral,
                 TO_DATE(date data_inicio_atividade, 'YYYYMMDD') as data_inicio_atividade,
                 cnae,
