@@ -270,7 +270,7 @@ def create_stage_table_postgres():
         conn = psycopg2.connect(host="35.247.200.226", database="rf", user="postgres", password="postgres", port= '5432')
 
         cur = conn.cursor()
-        drop_tmp_table = """drop table rf_agendor_cadastro_api_stage;"""
+        drop_tmp_table = """drop table if exists rf_agendor_cadastro_api_stage;"""
         cur.execute(drop_tmp_table)
         conn.commit()
         print('Table dropped, from statement: {}'.format(drop_tmp_table))
