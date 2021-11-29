@@ -563,7 +563,7 @@ def create_index_tmp_table_postgres():
 
         cur = conn.cursor()
         rename_table_statement = """
-            CREATE UNIQUE INDEX cnpj_idx ON rf_agendor_cadastro_api_tmp (cnpj);
+            CREATE INDEX cnpj_idx ON rf_agendor_cadastro_api_tmp (cnpj);
             ;
             """
         cur.execute(rename_table_statement)
@@ -683,7 +683,7 @@ def validation_final_no_records_postgres_bq():
     qt_postgres = df_postgres.qt[0]
     print(qt_postgres)
 
-    if qt_postgres == qt_bq:
+    if qt_postgres >= qt_bq:
         print('The number of records on postgres table {postgres} is equal to bigquery table {bq}'.format(bq=qt_bq, postgres=qt_postgres))
     else:
         raise Exception("The number of records on postgres table is different than on bigquery table, bq={bq} and postgres={postgres} ".format(bq=qt_bq, postgres=qt_postgres))
