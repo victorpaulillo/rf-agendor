@@ -402,7 +402,7 @@ def insert_tmp_table_postgres():
         cur = conn.cursor()
         insert_data_statement = """
             insert into rf_agendor_cadastro_api_tmp
-            select cnpj,
+            select distinct cnpj,
                 matriz_filial,
                 nome_fantasia,
                 desc_situacao_cadastral,
