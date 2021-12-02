@@ -90,8 +90,10 @@ O que fazer:
 6. Retirar um monte de codigo repetido por jeito dinamico de gerar operadores: https://stackoverflow.com/questions/41517798/proper-way-to-create-dynamic-workflows-in-airflow
 7. Criar as tabelas para criação de ETL dentro do airflow em uma nova dag, que a dag principal trigga. OK
 8. Copiar os dados do bigquery para uma tabela temp no postgres. Ai contar a quantidade de registros dessa tabela temp, se for mais ou igual a tabela de prod, ai faz o rename na de prod, se nao da um alerta
-9. Fazer ukm looping paralelo para importar arquivo por arquivo, cada um em uma caixinha, assim se der erro, ele tenta novamente
+9. Fazer um looping paralelo para importar arquivo por arquivo, cada um em uma caixinha, assim se der erro, ele tenta novamente
 
+10. Trocar o drop prod table, to rename to backup
+11. Tentar ao inves de rename, criar uma hash com os valores de todos os campos. E ai comparar a hash da tabela tmp com a tabela de prod e em seguida inserir os dados que a hash for diferente
 
 # Pontos de atenção
 E vou mandar aqui uns pontos de atenção:
