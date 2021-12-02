@@ -496,7 +496,7 @@ def drop_bkp_table_postgres():
         conn = psycopg2.connect(host="35.247.200.226", database="rf", user="postgres", password="postgres", port= '5432')
 
         cur = conn.cursor()
-        drop_bkp_table = """drop table rf_agendor_cadastro_api_bkp;"""
+        drop_bkp_table = """drop table if exists rf_agendor_cadastro_api_bkp;"""
         
         cur.execute(drop_bkp_table)
         conn.commit()
