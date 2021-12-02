@@ -368,7 +368,8 @@ def create_tmp_table_postgres():
                 capital_social VARCHAR,
                 natureza_juridica VARCHAR,
                 cnpj_basico VARCHAR,
-                socios_json VARCHAR
+                socios_json VARCHAR,
+                hash VARCHAR
             );
             """
         cur.execute(create_table_statement)
@@ -402,35 +403,39 @@ def insert_tmp_table_postgres():
         cur = conn.cursor()
         insert_data_statement = """
             insert into rf_agendor_cadastro_api_tmp
-            select distinct cnpj,
-                matriz_filial,
-                nome_fantasia,
-                desc_situacao_cadastral,
-                data_situacao_cadastral,
-                data_inicio_atividade,
-                cnae,
-                nome_cnae_principal,
-                cnae_fiscal_secundaria,
-                logradouro,
-                numero,
-                complemento,
-                bairro,
-                cep,
-                uf,
-                nome_municipio,
-                ddd_1,
-                telefone_1,
-                ddd_2,
-                telefone_2,
-                correio_eletronico,
-                porte,
-                razao_social,
-                capital_social,
-                natureza_juridica ,
-                cnpj_basico ,
-                socios_json 
-            from rf_agendor_cadastro_api_stage
-            where cnpj is not null
+            select *
+                , md5(rf_agendor::TEXT) as hash
+            from (
+                select distinct cnpj,
+                    matriz_filial,
+                    nome_fantasia,
+                    desc_situacao_cadastral,
+                    data_situacao_cadastral,
+                    data_inicio_atividade,
+                    cnae,
+                    nome_cnae_principal,
+                    cnae_fiscal_secundaria,
+                    logradouro,
+                    numero,
+                    complemento,
+                    bairro,
+                    cep,
+                    uf,
+                    nome_municipio,
+                    ddd_1,
+                    telefone_1,
+                    ddd_2,
+                    telefone_2,
+                    correio_eletronico,
+                    porte,
+                    razao_social,
+                    capital_social,
+                    natureza_juridica ,
+                    cnpj_basico ,
+                    socios_json 
+                from rf_agendor_cadastro_api_stage
+                where cnpj is not null
+                ) as rf_agendor
             ;
             """
         cur.execute(insert_data_statement)
