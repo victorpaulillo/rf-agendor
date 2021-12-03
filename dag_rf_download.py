@@ -102,17 +102,17 @@ def download_files(**kwargs):
 
         #Insert download file record into etl_jobs table on bigquery
         # Construct a BigQuery client object.
-        client = bigquery.Client()
+        # client = bigquery.Client()
 
-        query = """
-                insert `fiery-marking-325513.rf.etl_jobs` (file_name, download_timestamp)
-                values('""" + pubsub_message + """', timestamp(DATETIME(CURRENT_TIMESTAMP(), "America/Sao_Paulo")))
-        """
-        query_job = client.query(query)  # Make an API request.
+        # query = """
+        #         insert `fiery-marking-325513.rf.etl_jobs` (file_name, download_timestamp)
+        #         values('""" + pubsub_message + """', timestamp(DATETIME(CURRENT_TIMESTAMP(), "America/Sao_Paulo")))
+        # """
+        # query_job = client.query(query)  # Make an API request.
 
-        print(f"Inserted record on bigquery etl_jobs table with the query: {query}")
+        # print(f"Inserted record on bigquery etl_jobs table with the query: {query}")
 
-        """Publishes messages to a Pub/Sub topic"""
+        # """Publishes messages to a Pub/Sub topic"""
 
         # # TODO(developer)
         # project_id = "fiery-marking-325513"
