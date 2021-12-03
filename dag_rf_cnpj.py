@@ -368,8 +368,8 @@ def create_tmp_table_postgres():
                 capital_social VARCHAR,
                 natureza_juridica VARCHAR,
                 cnpj_basico VARCHAR,
-                socios_json VARCHAR,
-                hash VARCHAR
+                socios_json VARCHAR
+                --, hash VARCHAR
             );
             """
         cur.execute(create_table_statement)
@@ -404,7 +404,7 @@ def insert_tmp_table_postgres():
         insert_data_statement = """
             insert into rf_agendor_cadastro_api_tmp
             select *
-                , md5(rf_agendor::TEXT) as hash
+                --, md5(rf_agendor::TEXT) as hash
             from (
                 select distinct cnpj,
                     matriz_filial,
