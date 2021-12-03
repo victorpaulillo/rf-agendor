@@ -458,7 +458,7 @@ insert_tmp_table_postgres = PythonOperator(
     )
 
 
-def rename_bkp_prod_table_postgres():
+def rename_prod_to_bkp_table_postgres():
     """ Connect to the PostgreSQL database server """
     import psycopg2
     conn = None
@@ -484,10 +484,10 @@ def rename_bkp_prod_table_postgres():
 
 
 
-rename_bkp_prod_table_postgres = PythonOperator(
-    task_id='rename_bkp_prod_table_postgres',
+rename_prod_to_bkp_table_postgres = PythonOperator(
+    task_id='rename_prod_to_bkp_table_postgres',
     dag=dag,
-    python_callable=rename_bkp_prod_table_postgres,
+    python_callable=rename_prod_to_bkp_table_postgres,
     provide_context=True
     )
 
@@ -1060,7 +1060,7 @@ start_dag >> create_external_tables >> [ct_qualificacoes_socios, ct_paises, ct_n
 start_dag >> create_tables >> [ct_socios_agg_json, ct_rf_agendor_cadastro_api] >> insert_records
 
 insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro_api  >> bigquery_to_storage >> list_storage_files >> compose_file >> storage_upload_files 
-storage_upload_files >> create_stage_table_postgres >> storage_to_postgres_bash_command >> validation_no_records_postgres_bq >> create_tmp_table_postgres >> insert_tmp_table_postgres >> create_index_tmp_table_postgres >> validation_final_no_records_postgres_bq >> drop_bkp_table_postgres >> rename_bkp_prod_table_postgres >> rename_tmp_to_prod_table_postgres >> drop_stage_table_postgres
+storage_upload_files >> create_stage_table_postgres >> storage_to_postgres_bash_command >> validation_no_records_postgres_bq >> create_tmp_table_postgres >> insert_tmp_table_postgres >> create_index_tmp_table_postgres >> validation_final_no_records_postgres_bq >> drop_bkp_table_postgres >> rename_prod_to_bkp_table_postgres >> rename_tmp_to_prod_table_postgres >> drop_stage_table_postgres
 
 # storage_upload_files >> create_stage_table_postgres >> storage_to_postgres_bash_command >> validation_no_records_postgres_bq 
 
