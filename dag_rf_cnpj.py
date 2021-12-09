@@ -434,7 +434,7 @@ def insert_tmp_table_postgres():
                     cnpj_basico ,
                     socios_json 
                 from rf_agendor_cadastro_api_stage
-                where cnpj is not null
+                --where cnpj is not null
                 --) as rf_agendor
             ;
             """
