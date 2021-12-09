@@ -107,3 +107,12 @@ E vou mandar aqui uns pontos de atenção:
 https://medium.com/google-cloud/apache-airflow-how-to-add-a-connection-to-google-cloud-with-cli-af2cc8df138d
 
 https://medium.com/analytics-vidhya/part-4-pandas-dataframe-to-postgresql-using-python-8ffdb0323c09
+
+
+
+
+1. Trocar de SP para os US mais barato
+2. Entender o proque ta com 780 GB de SSD e reduzir - Central 1
+3. Colocar um operador no airflow de listener para quando terminar o comando de inserir o arquivo no postgres. Se possivel a api tem que jogar uma mensagem em uma fila apos terminar.
+
+
