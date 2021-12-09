@@ -206,7 +206,7 @@ def storage_to_postgres_bash_command(**kwargs):
     project = 'rf-agendor'  # TODO: Update placeholder value.
 
     # Cloud SQL instance ID. This does not include the project ID.
-    instance = 'rf-agendor'  # TODO: Update placeholder value.
+    instance = 'rf-agendor-2'  # TODO: Update placeholder value.
     # table='rf_agendor_cadastro_api_tmp_{}'.format(number)
     table='rf_agendor_cadastro_api_stage'
     file_name='gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api_composed'
