@@ -403,9 +403,9 @@ def insert_tmp_table_postgres():
         cur = conn.cursor()
         insert_data_statement = """
             insert into rf_agendor_cadastro_api_tmp
-            select *
+            --select *
                 --, md5(rf_agendor::TEXT) as hash
-            from (
+            --from (
                 select distinct cnpj,
                     matriz_filial,
                     nome_fantasia,
@@ -435,7 +435,7 @@ def insert_tmp_table_postgres():
                     socios_json 
                 from rf_agendor_cadastro_api_stage
                 where cnpj is not null
-                ) as rf_agendor
+                --) as rf_agendor
             ;
             """
         cur.execute(insert_data_statement)
