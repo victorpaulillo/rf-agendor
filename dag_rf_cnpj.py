@@ -60,7 +60,7 @@ def bigquery_to_storage():
     from google.cloud import bigquery
     client = bigquery.Client()
     bucket_file_name = 'cnpj_rf/bigquery_to_postgres'
-    project = "rf-agendor"
+    project = "rf-agendor-335020"
     dataset_id = "rf"
     table_id = "rf_agendor_cadastro_api"
 
@@ -203,10 +203,10 @@ def storage_to_postgres_bash_command(**kwargs):
     service = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
 
     # Project ID of the project that contains the instance.
-    project = 'rf-agendor'  # TODO: Update placeholder value.
+    project = 'rf-agendor-335020'  # TODO: Update placeholder value.
 
     # Cloud SQL instance ID. This does not include the project ID.
-    instance = 'rf-agendor-2'  # TODO: Update placeholder value.
+    instance = 'rf-agendor'  # TODO: Update placeholder value.
     # table='rf_agendor_cadastro_api_tmp_{}'.format(number)
     table='rf_agendor_cadastro_api_stage'
     file_name='gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api_composed'
@@ -645,7 +645,7 @@ def validation_no_records_postgres_bq():
     # Download query results.
     query_bq = """
         select count(1) as qt
-        from `rf-agendor.rf.rf_agendor_cadastro_api`
+        from `rf-agendor-335020.rf.rf_agendor_cadastro_api`
     """
     df_bq = (
         bqclient.query(query_bq)
@@ -697,7 +697,7 @@ def validation_final_no_records_postgres_bq():
     # Download query results.
     query_bq = """
         select count(1) as qt
-        from `rf-agendor.rf.rf_agendor_cadastro_api`
+        from `rf-agendor-335020.rf.rf_agendor_cadastro_api`
     """
     df_bq = (
         bqclient.query(query_bq)
@@ -740,7 +740,7 @@ validation_final_no_records_postgres_bq = PythonOperator(
 
     
 ct_qualificacoes_socios_query = """
-    create external table if not exists `rf-agendor.rf.qualificacoes_socios`
+    create external table if not exists `rf-agendor-335020.rf.qualificacoes_socios`
     (
     codigo string,
     descricao string
@@ -753,7 +753,7 @@ ct_qualificacoes_socios_query = """
     """
 
 ct_paises_query = """
-    create external table if not exists `rf-agendor.rf.paises`
+    create external table if not exists `rf-agendor-335020.rf.paises`
     (
     codigo string,
     descricao string
@@ -766,7 +766,7 @@ ct_paises_query = """
 """
 
 ct_natureza_juridica_query = """
-    create external table if not exists `rf-agendor.rf.natureza_juridica`
+    create external table if not exists `rf-agendor-335020.rf.natureza_juridica`
     (
     codigo string,
     descricao string
@@ -779,7 +779,7 @@ ct_natureza_juridica_query = """
     """
 
 ct_municipios_query = """
-    create external table if not exists `rf-agendor.rf.municipios`
+    create external table if not exists `rf-agendor-335020.rf.municipios`
     (
     codigo string,
     descricao string
@@ -792,7 +792,7 @@ ct_municipios_query = """
 """
 
 ct_empresas_query = """
-    create external table if not exists `rf-agendor.rf.empresas`
+    create external table if not exists `rf-agendor-335020.rf.empresas`
     (
     cnpj_basico string,
     razao_social string,
@@ -810,7 +810,7 @@ ct_empresas_query = """
     """
 
 ct_cnae_query = """
-    create external table if not exists `rf-agendor.rf.cnae`
+    create external table if not exists `rf-agendor-335020.rf.cnae`
     (
     codigo	STRING,
     descricao	STRING
@@ -823,7 +823,7 @@ ct_cnae_query = """
     """
 
 ct_estabelecimentos_query = """
-    create external table if not exists `rf-agendor.rf.estabelecimentos`
+    create external table if not exists `rf-agendor-335020.rf.estabelecimentos`
     (
         cnpj_basico STRING , 
         cnpj_ordem STRING , 
@@ -864,7 +864,7 @@ ct_estabelecimentos_query = """
     """
 
 ct_socios_query = """
-    create external table if not exists `rf-agendor.rf.socios`
+    create external table if not exists `rf-agendor-335020.rf.socios`
     (
     cnpj_basico	STRING,
     identificador_socio	STRING,
@@ -886,7 +886,7 @@ ct_socios_query = """
     """
 
 ct_socios_agg_json_query = """
-    create or replace table 	`rf-agendor.rf.socios_agg_json`
+    create or replace table 	`rf-agendor-335020.rf.socios_agg_json`
     (
     cnpj_basico STRING,
     socios_json ARRAY<STRING>
@@ -894,7 +894,7 @@ ct_socios_agg_json_query = """
     """
 
 ct_rf_agendor_cadastro_api_query = """
-    create or replace table 	`rf-agendor.rf.rf_agendor_cadastro_api`
+    create or replace table 	`rf-agendor-335020.rf.rf_agendor_cadastro_api`
     (
     cnpj	STRING,
     matriz_filial	STRING,
@@ -928,7 +928,7 @@ ct_rf_agendor_cadastro_api_query = """
     """
 
 insert_into_socios_agg_json_query = """
-    insert into `rf-agendor.rf.socios_agg_json`
+    insert into `rf-agendor-335020.rf.socios_agg_json`
     with 
     socios as (
     select s.cnpj_basico
@@ -974,7 +974,7 @@ insert_into_socios_agg_json_query = """
     """
 
 insert_into_rf_agendor_cadastro_api_query = """
-insert into `rf-agendor.rf.rf_agendor_cadastro_api`
+insert into `rf-agendor-335020.rf.rf_agendor_cadastro_api`
 select e.cnpj_basico || cnpj_ordem || cnpj_dv as cnpj
   , case when e.identificador_matriz_filial = '1' then 'Matriz'
       when e.identificador_matriz_filial = '2' then 'Filial'

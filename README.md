@@ -115,4 +115,8 @@ https://medium.com/analytics-vidhya/part-4-pandas-dataframe-to-postgresql-using-
 2. Entender o proque ta com 780 GB de SSD e reduzir - Central 1
 3. Colocar um operador no airflow de listener para quando terminar o comando de inserir o arquivo no postgres. Se possivel a api tem que jogar uma mensagem em uma fila apos terminar.
 
+----
+
+Add Sinalizador no Postgres:
+temp_file_limit: 155055030
 
