@@ -53,7 +53,8 @@ sudo docker exec e10272695a0d         pip install BeautifulSoup4
 Add Sinalizador no Postgres:
 temp_file_limit: 155055030
 
-Create 'rf' schema on biguery
+Create 'rf' schema on biguery (Needs to be on the same regin as the storage bucket)
+Remember to add permissions to the users to access the data (could happend an issue related to that)
 
 
 

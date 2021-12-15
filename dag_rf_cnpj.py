@@ -60,7 +60,7 @@ def bigquery_to_storage():
     from google.cloud import bigquery
     client = bigquery.Client()
     bucket_file_name = 'cnpj_rf_agendor/bigquery_to_postgres'
-    project = "rf-agendor-335020"
+    project = "rf-agendor"
     dataset_id = "rf"
     table_id = "rf_agendor_cadastro_api"
 
