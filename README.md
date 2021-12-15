@@ -1,50 +1,5 @@
 # rf-agendor
 
-#Create a venv
-python -m venv ./venv/
-
-# Activate the venv
-.\venv\Scripts\activate
-
-# See list
-pip list
-
-# Install Flask and libs
-pip install flask
-pip install requests
-
-
-# Create a requirements.txt
-pip freeze > requirements.txt
-
-# Create a .gitignore file - Tell git what do ignore
-
-# Run flask
-flask run
-
-
-# To deploy the container on Cloud Run
-gcloud run deploy
-
-# To run locally, it is necessary to change the name of the main scrip to "app.py"
-
-Kubernetes
-https://medium.com/google-cloud/a-guide-to-deploy-flask-app-on-google-kubernetes-engine-bfbbee5c6fb
-
-
-# Update the Dockerfile according to the medium post
-
-# Build the flask app using the code:
-gcloud builds --project fiery-marking-325513\
-    submit --tag gcr.io/fiery-marking-325513/flask-app:v1 .
-
-# flask-app:v1 
-
-
-
-
-
-
 # README - Infra Airflow
 
 https://www.youtube.com/watch?v=aTaytcxy2Ck
@@ -70,15 +25,23 @@ sudo docker-compose up
 
 Create a firewall rule Open VPC Network > Firewall Rules Create Firewall rules Name: airflow-ingress Priority: 8080 Targets: All instances in the network Source IP ranges: 0.0.0.0/0 Protocols and ports > Check tcp box
 
-
 Liberar permissao da Conta de Serviço da Instancia do Postgres no bucket do Google Cloud Storage
+
+git clone https://github.com/victorpaulillo/rf-agendor.git
 
 Instalar as bibliotecas nos dockers:
 sudo docker exec 83fbd314c5ad         pip install subprocess.run
 sudo docker exec 83fbd314c5ad         pip install pandas
 sudo docker exec 83fbd314c5ad         pip install oauth2client
 
+Add Sinalizador no Postgres:
+temp_file_limit: 155055030
+
 sudo adduser airflow
+
+
+------------------------------------------------------------------------------------
+
 
 
 O que fazer:
@@ -116,7 +79,3 @@ https://medium.com/analytics-vidhya/part-4-pandas-dataframe-to-postgresql-using-
 3. Colocar um operador no airflow de listener para quando terminar o comando de inserir o arquivo no postgres. Se possivel a api tem que jogar uma mensagem em uma fila apos terminar.
 
 ----
-
-Add Sinalizador no Postgres:
-temp_file_limit: 155055030
-

@@ -72,6 +72,7 @@ def download_files(**kwargs):
         start_time = datetime.now()
         print(start_time)
         url = 'http://200.152.38.155/CNPJ/' + pubsub_message 
+        print(url)
         with requests.get(url, stream=True) as myfile:
             down_time = datetime.now()
 
