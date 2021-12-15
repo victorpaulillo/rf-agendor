@@ -30,14 +30,31 @@ Liberar permissao da Conta de Serviço da Instancia do Postgres no bucket do Goo
 git clone https://github.com/victorpaulillo/rf-agendor.git
 
 Instalar as bibliotecas nos dockers:
-sudo docker exec 83fbd314c5ad         pip install subprocess.run
-sudo docker exec 83fbd314c5ad         pip install pandas
-sudo docker exec 83fbd314c5ad         pip install oauth2client
+sudo docker exec 543ca3d1c42c         pip install subprocess.run
+sudo docker exec ae72b080b404         pip install subprocess.run
+sudo docker exec 73abfba5c808         pip install subprocess.run
+sudo docker exec e10272695a0d         pip install subprocess.run
+
+sudo docker exec 543ca3d1c42c         pip install pandas
+sudo docker exec ae72b080b404         pip install pandas
+sudo docker exec 73abfba5c808         pip install pandas
+sudo docker exec e10272695a0d         pip install pandas
+
+sudo docker exec 543ca3d1c42c         pip install oauth2client
+sudo docker exec ae72b080b404         pip install oauth2client
+sudo docker exec 73abfba5c808         pip install oauth2client
+sudo docker exec e10272695a0d         pip install oauth2client
+
+sudo docker exec 543ca3d1c42c         pip install BeautifulSoup4
+sudo docker exec ae72b080b404         pip install BeautifulSoup4
+sudo docker exec 73abfba5c808         pip install BeautifulSoup4
+sudo docker exec e10272695a0d         pip install BeautifulSoup4
 
 Add Sinalizador no Postgres:
 temp_file_limit: 155055030
 
-sudo adduser airflow
+Create 'rf' schema on biguery
+
 
 
 ------------------------------------------------------------------------------------

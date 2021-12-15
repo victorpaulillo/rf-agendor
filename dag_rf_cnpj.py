@@ -43,7 +43,7 @@ def bigquery_execution(query):
 def bigquery_to_storage():
     # First we will delete all files from storage, to not duplicate any file
     from google.cloud import storage
-    bucket_name = 'cnpj_rf'
+    bucket_name = 'cnpj_rf_agendor'
     directory_name = 'bigquery_to_postgres'
 
     client = storage.Client()
@@ -59,7 +59,7 @@ def bigquery_to_storage():
 
     from google.cloud import bigquery
     client = bigquery.Client()
-    bucket_file_name = 'cnpj_rf/bigquery_to_postgres'
+    bucket_file_name = 'cnpj_rf_agendor/bigquery_to_postgres'
     project = "rf-agendor-335020"
     dataset_id = "rf"
     table_id = "rf_agendor_cadastro_api"
@@ -92,14 +92,14 @@ def compose_file():
     # print(list_files)
     # file = list_files[0][int(number)]
     # print(file)
-    # file_name = 'gs://cnpj_rf/' + file
+    # file_name = 'gs://cnpj_rf_agendor/' + file
     # print(file_name)
     # file_name = kwargs.get('file_name')
     # print(file_name)
     from google.cloud import storage
 
     """Concatenate source blobs into destination blob."""
-    bucket_name = 'cnpj_rf'
+    bucket_name = 'cnpj_rf_agendor'
 
     first_blob_name = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000001"
     second_blob_name = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000002"
@@ -182,7 +182,7 @@ def list_storage_files():
 
     client = storage.Client()
     list_files = []
-    for blob in client.list_blobs('cnpj_rf', prefix='bigquery_to_postgres'):
+    for blob in client.list_blobs('cnpj_rf_agendor', prefix='bigquery_to_postgres'):
         print(str(blob))
         blob_name = blob.name
         list_files.append(blob_name)
@@ -209,7 +209,7 @@ def storage_to_postgres_bash_command(**kwargs):
     instance = 'rf-agendor'  # TODO: Update placeholder value.
     # table='rf_agendor_cadastro_api_tmp_{}'.format(number)
     table='rf_agendor_cadastro_api_stage'
-    file_name='gs://cnpj_rf/bigquery_to_postgres/rf_agendor_cadastro_api_composed'
+    file_name='gs://cnpj_rf_agendor/bigquery_to_postgres/rf_agendor_cadastro_api_composed'
 
 
     instances_import_request_body = {
@@ -748,7 +748,7 @@ ct_qualificacoes_socios_query = """
     OPTIONS (
     format = 'CSV',
     field_delimiter = ';',
-    uris = ['gs://cnpj_rf/unzip_files/*.QUALSCSV']
+    uris = ['gs://cnpj_rf_agendor/unzip_files/*.QUALSCSV']
     );
     """
 
@@ -761,7 +761,7 @@ ct_paises_query = """
     OPTIONS (
     format = 'CSV',
     field_delimiter = ';',
-    uris = ['gs://cnpj_rf/unzip_files/*.PAISCSV']
+    uris = ['gs://cnpj_rf_agendor/unzip_files/*.PAISCSV']
     );
 """
 
@@ -774,7 +774,7 @@ ct_natureza_juridica_query = """
     OPTIONS (
     format = 'CSV',
     field_delimiter = ';',
-    uris = ['gs://cnpj_rf/unzip_files/*.NATJUCSV']
+    uris = ['gs://cnpj_rf_agendor/unzip_files/*.NATJUCSV']
     );
     """
 
@@ -787,7 +787,7 @@ ct_municipios_query = """
     OPTIONS (
     format = 'CSV',
     field_delimiter = ';',
-    uris = ['gs://cnpj_rf/unzip_files/*.MUNICCSV']
+    uris = ['gs://cnpj_rf_agendor/unzip_files/*.MUNICCSV']
     );
 """
 
@@ -805,7 +805,7 @@ ct_empresas_query = """
     OPTIONS (
     format = 'CSV',
     field_delimiter = ';',
-    uris = ['gs://cnpj_rf/unzip_files/*.EMPRECSV']
+    uris = ['gs://cnpj_rf_agendor/unzip_files/*.EMPRECSV']
     );
     """
 
@@ -818,7 +818,7 @@ ct_cnae_query = """
     OPTIONS (
     format = 'CSV',
     field_delimiter = ';',
-    uris = ['gs://cnpj_rf/unzip_files/*.CNAECSV']
+    uris = ['gs://cnpj_rf_agendor/unzip_files/*.CNAECSV']
     );
     """
 
@@ -859,7 +859,7 @@ ct_estabelecimentos_query = """
     OPTIONS (
     format = 'CSV',
     field_delimiter = ';',
-    uris = ['gs://cnpj_rf/unzip_files_treated/*.ESTABELE']
+    uris = ['gs://cnpj_rf_agendor/unzip_files_treated/*.ESTABELE']
     );
     """
 
@@ -881,7 +881,7 @@ ct_socios_query = """
     OPTIONS (
     format = 'CSV',
     field_delimiter = ';',
-    uris = ['gs://cnpj_rf/unzip_files/*.SOCIOCSV']
+    uris = ['gs://cnpj_rf_agendor/unzip_files/*.SOCIOCSV']
     );
     """
 
