@@ -60,7 +60,7 @@ def bigquery_to_storage():
     from google.cloud import bigquery
     client = bigquery.Client()
     bucket_file_name = 'cnpj_rf_agendor/bigquery_to_postgres'
-    project = "rf-agendor"
+    project = "rf-agendor-335020"
     dataset_id = "rf"
     table_id = "rf_agendor_cadastro_api"
 
@@ -74,7 +74,7 @@ def bigquery_to_storage():
         table_ref,
         destination_uri,
         # Location must match that of the source table.
-        location="southamerica-east1",
+        location="	us-east1",
         job_config=job_config,
     )  # API request
     extract_job.result()  # Waits for job to complete.
