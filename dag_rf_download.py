@@ -256,7 +256,7 @@ def list_files_rf():
     list_files=[]
     for file in results:
         file_url = file['href']
-        if file_url[0] in ['?', '/', 'L']:
+        if file_url[0] in ['?', '/', 'L', 'a']:
             pass
         else:
             i=i+1
