@@ -53,10 +53,12 @@ sudo docker exec e10272695a0d         pip install BeautifulSoup4
 Add Sinalizador no Postgres:
 temp_file_limit: 155055030
 
-Create 'rf' schema on biguery (Needs to be on the same regin as the storage bucket)
+Create 'rf' schema on biguery (Needs to be on the same region as the storage bucket)
 Remember to add permissions to the users to access the data (could happend an issue related to that)
 
+Enalbe Cloud SQL API Admin https://console.cloud.google.com/apis/library/sqladmin.googleapis.com?project=rf-agendor-335020
 
+Add the Public IP to be able to connect to Cloud SQL Postgres - Connection -> Public 0.0.0.0/0
 
 ------------------------------------------------------------------------------------
 

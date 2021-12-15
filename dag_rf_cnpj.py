@@ -267,7 +267,7 @@ def create_stage_table_postgres():
     conn = None
 
     try:
-        conn = psycopg2.connect(host="34.70.219.22", database="rf", user="postgres", password="postgres", port= '5432')
+        conn = psycopg2.connect(host="35.223.249.231", database="rf", user="postgres", password="postgres", port= '5432')
 
         cur = conn.cursor()
         drop_tmp_table = """drop table if exists rf_agendor_cadastro_api_stage;"""
@@ -336,7 +336,7 @@ def create_tmp_table_postgres():
     conn = None
 
     try:
-        conn = psycopg2.connect(host="34.70.219.22", database="rf", user="postgres", password="postgres", port= '5432')
+        conn = psycopg2.connect(host="35.223.249.231", database="rf", user="postgres", password="postgres", port= '5432')
 
         cur = conn.cursor()
         create_table_statement = """
@@ -398,7 +398,7 @@ def insert_tmp_table_postgres():
     conn = None
 
     try:
-        conn = psycopg2.connect(host="34.70.219.22", database="rf", user="postgres", password="postgres", port= '5432')
+        conn = psycopg2.connect(host="35.223.249.231", database="rf", user="postgres", password="postgres", port= '5432')
 
         cur = conn.cursor()
         insert_data_statement = """
@@ -464,7 +464,7 @@ def rename_prod_to_bkp_table_postgres():
     conn = None
 
     try:
-        conn = psycopg2.connect(host="34.70.219.22", database="rf", user="postgres", password="postgres", port= '5432')
+        conn = psycopg2.connect(host="35.223.249.231", database="rf", user="postgres", password="postgres", port= '5432')
 
         cur = conn.cursor()
         # drop_tmp_table = """drop table rf_agendor_cadastro_api;"""
@@ -498,7 +498,7 @@ def drop_bkp_table_postgres():
     conn = None
 
     try:
-        conn = psycopg2.connect(host="34.70.219.22", database="rf", user="postgres", password="postgres", port= '5432')
+        conn = psycopg2.connect(host="35.223.249.231", database="rf", user="postgres", password="postgres", port= '5432')
 
         cur = conn.cursor()
         drop_bkp_table = """drop table if exists rf_agendor_cadastro_api_bkp;"""
@@ -532,7 +532,7 @@ def drop_stage_table_postgres():
     conn = None
 
     try:
-        conn = psycopg2.connect(host="34.70.219.22", database="rf", user="postgres", password="postgres", port= '5432')
+        conn = psycopg2.connect(host="35.223.249.231", database="rf", user="postgres", password="postgres", port= '5432')
 
         cur = conn.cursor()
         drop_tmp_table = """drop table rf_agendor_cadastro_api_stage;"""
@@ -564,7 +564,7 @@ def rename_tmp_to_prod_table_postgres():
     conn = None
 
     try:
-        conn = psycopg2.connect(host="34.70.219.22", database="rf", user="postgres", password="postgres", port= '5432')
+        conn = psycopg2.connect(host="35.223.249.231", database="rf", user="postgres", password="postgres", port= '5432')
 
         cur = conn.cursor()
         rename_table_statement = """
@@ -599,7 +599,7 @@ def create_index_tmp_table_postgres():
     conn = None
 
     try:
-        conn = psycopg2.connect(host="34.70.219.22", database="rf", user="postgres", password="postgres", port= '5432')
+        conn = psycopg2.connect(host="35.223.249.231", database="rf", user="postgres", password="postgres", port= '5432')
 
         cur = conn.cursor()
         rename_table_statement = """
@@ -660,7 +660,7 @@ def validation_no_records_postgres_bq():
     qt_bq = df_bq.qt[0]  
     print(qt_bq)
 
-    conn = psycopg2.connect(host="34.70.219.22", database="rf", user="postgres", password="postgres")
+    conn = psycopg2.connect(host="35.223.249.231", database="rf", user="postgres", password="postgres")
 
     query_postgres = """
         select count(1) as qt
@@ -712,7 +712,7 @@ def validation_final_no_records_postgres_bq():
     qt_bq = df_bq.qt[0]  
     print(qt_bq)
 
-    conn = psycopg2.connect(host="34.70.219.22", database="rf", user="postgres", password="postgres")
+    conn = psycopg2.connect(host="35.223.249.231", database="rf", user="postgres", password="postgres")
 
     query_postgres = """
         select count(1) as qt
