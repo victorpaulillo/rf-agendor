@@ -74,7 +74,7 @@ def bigquery_to_storage():
         table_ref,
         destination_uri,
         # Location must match that of the source table.
-        location="	us-east1",
+        location="us-east1",
         job_config=job_config,
     )  # API request
     extract_job.result()  # Waits for job to complete.
