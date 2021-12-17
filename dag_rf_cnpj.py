@@ -130,6 +130,7 @@ def compose_file():
     blob26 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000026"
     blob27 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000027"
     blob28 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000028"
+    blob29 = "bigquery_to_postgres/rf_agendor_cadastro_api-000000000029"
     
 
     destination_blob_name = "bigquery_to_postgres/rf_agendor_cadastro_api_composed"
@@ -167,7 +168,8 @@ def compose_file():
                bucket.get_blob(blob25),
                bucket.get_blob(blob26),
                bucket.get_blob(blob27),
-               bucket.get_blob(blob28)
+               bucket.get_blob(blob28),
+               bucket.get_blob(blob29)
                ]
 
     destination.compose(sources)
