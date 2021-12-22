@@ -23,14 +23,13 @@ local_tz = pendulum.timezone('America/Sao_Paulo')
 dag = DAG(
     dag_id='dag_test',
     description=f'DAG para testar o scheduler',
-    schedule_interval=None,
     start_date=datetime(2021, 4, 7, tzinfo=local_tz),
     default_args=default_args,
     catchup=False,
-    schedule_interval= '0 57 9 ? * WED *',
-    user_defined_filters={
-        'localtz': local_tz,
-    },
+    schedule_interval= '0 58 9 ? * WED *',
+    # user_defined_filters={
+    #     'localtz': local_tz,
+    # },
     
 )
 
