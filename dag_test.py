@@ -1,11 +1,7 @@
 from datetime import datetime, timedelta, date
 from airflow import DAG
 from airflow.operators.dummy_operator import DummyOperator
-from airflow.operators.python_operator import PythonOperator
-from airflow.operators.bash_operator import BashOperator
 
-
-from google.cloud import bigquery
 import pendulum
 
 
@@ -17,8 +13,7 @@ default_args = {
  'retries': 5,
  'retry_delay': timedelta(minutes=5),
  'email': ['victor.paulilllo@gmail.com'],
- 'email_on_failure': True,
- 'schedule_interval': '0 52 9 ? * WED *',
+ 'email_on_failure': True
 }
 
 local_tz = pendulum.timezone('America/Sao_Paulo')
@@ -32,6 +27,10 @@ dag = DAG(
     start_date=datetime(2021, 4, 7, tzinfo=local_tz),
     default_args=default_args,
     catchup=False,
+    schedule_interval= '0 57 9 ? * WED *',
+    user_defined_filters={
+        'localtz': local_tz,
+    },
     
 )
 
