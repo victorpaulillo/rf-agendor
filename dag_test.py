@@ -26,11 +26,7 @@ dag = DAG(
     start_date=datetime(2021, 4, 7, tzinfo=local_tz),
     default_args=default_args,
     catchup=False,
-    schedule_interval= '10 10 * * 3',
-    # user_defined_filters={
-    #     'localtz': local_tz,
-    # },
-    
+    schedule_interval= '0 23 * * 3',
 )
 
 
