@@ -50,7 +50,7 @@ local_tz = pendulum.timezone('America/Sao_Paulo')
 dag = DAG(
     dag_id='dag_rf_download',
     description=f'DAG para Download de dados de CNPJ da Receita Federal',
-    schedule_interval= '0 22 * * 1',
+    schedule_interval= '33 14 * * 1',
     # schedule_interval=None,
     start_date=datetime(2021, 4, 7, tzinfo=local_tz),
     default_args=default_args,
