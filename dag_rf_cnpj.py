@@ -140,6 +140,12 @@ def compose_file(**kwargs):
     destination = bucket.blob(destination_blob_name)
     destination.content_type = "application/octet-stream"
 
+    sources = []
+    for file in list_files[0]:
+        bucket_file = bucket.get_blob(file)
+        sources.append(bucket_file)
+        print(sources)
+
     # sources is a list of Blob instances, up to the max of 32 instances per request
     # sources = [bucket.get_blob(first_blob_name), bucket.get_blob(second_blob_name),
     #            bucket.get_blob(blob0),
@@ -172,7 +178,6 @@ def compose_file(**kwargs):
     #            bucket.get_blob(blob29)
     #            ]
 
-    sources = 'lala'
     destination.compose(sources)
 
     text = "New composite object {} in the bucket {} was created by combining files from Receita Federal".format(
