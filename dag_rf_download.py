@@ -9,14 +9,6 @@ from airflow.operators.python_operator import PythonOperator
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 
 
-#from airflow.operators.postgres_operator import PostgresOperator
-
-# from scripts.scripts import download_files
-# from scripts.scripts import zipextract
-# from scripts.scripts import mv_blob
-# from scripts.scripts import remove_special_character
-
-
 # ***** IMPORTANT ******
 # This makes our dag timezone aware
 # Pass the 'local_tz' object to the datetime on the DAG.start_date
@@ -50,7 +42,7 @@ local_tz = pendulum.timezone('America/Sao_Paulo')
 dag = DAG(
     dag_id='dag_rf_download',
     description=f'DAG para Download de dados de CNPJ da Receita Federal',
-    schedule_interval= '0 22 * * 1',
+    schedule_interval= '0 23 * * 2',
     # schedule_interval=None,
     start_date=datetime(2021, 4, 7, tzinfo=local_tz),
     default_args=default_args,
