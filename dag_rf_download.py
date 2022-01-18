@@ -76,7 +76,6 @@ def download_files(**kwargs):
         with requests.get(url, stream=True) as myfile:
             down_time = datetime.now()
 
-        #open(pubsub_message, 'wb').write(myfile.content)
             with open(pubsub_message, "wb") as outfile:
                 for chunk in myfile.iter_content(chunk_size=None):  # Let the server decide.
                     outfile.write(chunk)
@@ -100,38 +99,6 @@ def download_files(**kwargs):
 
         print('Upload time: ', upload_time-start_time)
         print("File {} uploaded to {}.".format(source_file_name, destination_blob_name))
-
-        #Insert download file record into etl_jobs table on bigquery
-        # Construct a BigQuery client object.
-        # client = bigquery.Client()
-
-        # query = """
-        #         insert `fiery-marking-325513.rf.etl_jobs` (file_name, download_timestamp)
-        #         values('""" + pubsub_message + """', timestamp(DATETIME(CURRENT_TIMESTAMP(), "America/Sao_Paulo")))
-        # """
-        # query_job = client.query(query)  # Make an API request.
-
-        # print(f"Inserted record on bigquery etl_jobs table with the query: {query}")
-
-        # """Publishes messages to a Pub/Sub topic"""
-
-        # # TODO(developer)
-        # project_id = "fiery-marking-325513"
-        # topic_id = "downloaded_files"
-
-        # publisher = pubsub_v1.PublisherClient()
-        # topic_path = publisher.topic_path(project_id, topic_id)
-
-        # data = str(pubsub_message)
-        # # Data must be a bytestring
-        # data = data.encode("utf-8")
-        # # Add two attributes, origin and username, to the message
-        # future = publisher.publish(
-        #     topic_path, data, origin="python-sample", username="gcp"
-        # )
-        # print(future.result())
-
-        # print(f"Published messages with custom attributes to {topic_path}.")
 
     return "Hello {}!".format(pubsub_message)
 
