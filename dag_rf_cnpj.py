@@ -271,8 +271,8 @@ def create_tmp_table_postgres():
                 matriz_filial VARCHAR,
                 nome_fantasia VARCHAR,
                 desc_situacao_cadastral VARCHAR,
-                data_situacao_cadastral VARCHAR,
-                data_inicio_atividade VARCHAR,
+                data_situacao_cadastral DATE,
+                data_inicio_atividade DATE,
                 cnae VARCHAR,
                 nome_cnae_principal VARCHAR,
                 cnae_fiscal_secundaria VARCHAR,
@@ -290,11 +290,10 @@ def create_tmp_table_postgres():
                 correio_eletronico VARCHAR,
                 porte VARCHAR,
                 razao_social VARCHAR,
-                capital_social VARCHAR,
+                capital_social FLOAT,
                 natureza_juridica VARCHAR,
                 cnpj_basico VARCHAR,
                 socios_json VARCHAR
-                --, hash VARCHAR
             );
             """
         cur.execute(create_table_statement)
@@ -328,15 +327,12 @@ def insert_tmp_table_postgres():
         cur = conn.cursor()
         insert_data_statement = """
             insert into rf_agendor_cadastro_api_tmp
-            --select *
-                --, md5(rf_agendor::TEXT) as hash
-            --from (
                 select distinct cnpj,
                     matriz_filial,
                     nome_fantasia,
                     desc_situacao_cadastral,
-                    data_situacao_cadastral,
-                    data_inicio_atividade,
+                    cast(data_situacao_cadastral as date) as data_situacao_cadastral,
+                    cast(data_inicio_atividade as date) as data_inicio_atividade,
                     cnae,
                     nome_cnae_principal,
                     cnae_fiscal_secundaria,
@@ -354,13 +350,12 @@ def insert_tmp_table_postgres():
                     correio_eletronico,
                     porte,
                     razao_social,
-                    capital_social,
+                    cast(replace(capital_social, ',', '.') as float) as capital_social,
                     natureza_juridica ,
                     cnpj_basico ,
                     socios_json 
                 from rf_agendor_cadastro_api_stage
-                --where cnpj is not null
-                --) as rf_agendor
+                where cnpj is not null
             ;
             """
         cur.execute(insert_data_statement)
@@ -847,7 +842,6 @@ ct_rf_agendor_cadastro_api_query = """
     capital_social	STRING,
     natureza_juridica	STRING,
     cnpj_basico	STRING,
-    --socios_json ARRAY<STRING>
     socios_json STRING
     );
     """
