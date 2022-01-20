@@ -290,10 +290,11 @@ def create_tmp_table_postgres():
                 correio_eletronico VARCHAR,
                 porte VARCHAR,
                 razao_social VARCHAR,
-                capital_social FLOAT,
+                capital_social VARCHAR,
                 natureza_juridica VARCHAR,
                 cnpj_basico VARCHAR,
-                socios_json VARCHAR
+                socios_json VARCHAR,
+                PRIMARY KEY (cnpj)
             );
             """
         cur.execute(create_table_statement)
@@ -350,7 +351,7 @@ def insert_tmp_table_postgres():
                     correio_eletronico,
                     porte,
                     razao_social,
-                    cast(replace(capital_social, ',', '.') as float) as capital_social,
+                    capital_social,
                     natureza_juridica ,
                     cnpj_basico ,
                     socios_json 
