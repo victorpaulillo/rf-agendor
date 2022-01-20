@@ -325,7 +325,7 @@ def insert_tmp_table_postgres():
         conn = psycopg2.connect(host="35.223.249.231", database="rf", user="postgres", password="postgres", port= '5432')
 
         cur = conn.cursor()
-        insert_data_statement = """
+        insert_data_statement = """    
             insert into rf_agendor_cadastro_api_tmp
                 select distinct cnpj,
                     matriz_filial,
@@ -356,6 +356,7 @@ def insert_tmp_table_postgres():
                     socios_json 
                 from rf_agendor_cadastro_api_stage
                 where cnpj is not null
+                and cnpj <> 'cnpj'
             ;
             """
         cur.execute(insert_data_statement)
