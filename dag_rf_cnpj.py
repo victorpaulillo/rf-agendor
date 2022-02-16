@@ -12,7 +12,7 @@ default_args = {
  'owner': 'Victor Paulillo',
  'retries': 5,
  'retry_delay': timedelta(minutes=5),
- 'email': ['victor.paulilllo@gmail.com'],
+ 'email': ['victor.paulillo@gmail.com'], # devs@agendor.com.br
  'email_on_failure': True
 }
 
