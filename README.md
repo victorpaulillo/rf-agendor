@@ -64,6 +64,7 @@ Create a environment variable on linux with the password of database with the na
 Follow the command below on SSH of Airflow Machine
 DB_PASS='password'
 
+Reference to environment variable: https://linuxize.com/post/how-to-set-and-list-environment-variables-in-linux/
 ------------------------------------------------------------------------------------
 
 
