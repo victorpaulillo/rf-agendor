@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta, date
 from airflow import DAG
 from airflow.operators.dummy_operator import DummyOperator
+from airflow.operators.python_operator import PythonOperator
 
 import pendulum
 
@@ -32,3 +33,20 @@ dag = DAG(
 
 
 start_dag = DummyOperator(task_id='start_dag', dag=dag)
+
+
+import os
+def db_pass():
+    database_url = os.environ.get('DB_PASS')
+    print(database_url)
+    return database_url
+
+bigquery_to_storage = PythonOperator(
+    task_id='db_pass',
+    dag=dag,
+    python_callable=db_pass,
+    provide_context=True
+    )
+
+
+    
