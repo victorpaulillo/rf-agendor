@@ -63,6 +63,7 @@ Add the Public IP to be able to connect to Cloud SQL Postgres - Connection -> Pu
 Create a environment variable on linux with the password of database with the name "DB_PASS"
 Follow the command below on SSH of Airflow Machine
 echo -e "DB_PASS='password'" > /etc/environment
+echo -e DB_PASS=123 > /etc/environment
 
 
 Reference to environment variable: https://linuxize.com/post/how-to-set-and-list-environment-variables-in-linux/
