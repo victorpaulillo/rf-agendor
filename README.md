@@ -59,6 +59,11 @@ Enalbe Cloud SQL API Admin https://console.cloud.google.com/apis/library/sqladmi
 
 Add the Public IP to be able to connect to Cloud SQL Postgres - Connection -> Public 0.0.0.0/0
 
+
+Create a environment variable on linux with the password of database with the name "DB_PASS"
+Follow the command below on SSH of Airflow Machine
+DB_PASS='password'
+
 ------------------------------------------------------------------------------------
 
 
