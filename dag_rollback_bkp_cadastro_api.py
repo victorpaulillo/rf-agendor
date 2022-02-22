@@ -4,8 +4,7 @@ from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import PythonOperator
 
 import pendulum
-
-
+import os
 
 #-------------------------------------------------------------------------------
 # Settings 
@@ -18,6 +17,11 @@ default_args = {
 }
 
 local_tz = pendulum.timezone('America/Sao_Paulo')
+
+# Credentials
+DB_HOST = os.environ.get('DB_HOST')
+DB_USER = os.environ.get('DB_USER')
+DB_PASS = os.environ.get('DB_PASS')
 
 #--------------------------------------------------------------------------------
 
@@ -37,7 +41,7 @@ def drop_error_table_postgres():
     conn = None
 
     try:
-        conn = psycopg2.connect(host="35.247.200.226", database="rf", user="postgres", password="postgres", port= '5432')
+        conn = psycopg2.connect(host=DB_HOST, database="rf", user=DB_USER, password=DB_PASS, port= '5432')
 
         cur = conn.cursor()
         drop_bkp_table = """drop table if exists rf_agendor_cadastro_api_error;"""
@@ -69,7 +73,7 @@ def rename_prod_to_error_postgres():
     conn = None
 
     try:
-        conn = psycopg2.connect(host="35.247.200.226", database="rf", user="postgres", password="postgres", port= '5432')
+        conn = psycopg2.connect(host=DB_HOST, database="rf", user=DB_USER, password=DB_PASS, port= '5432')
 
         cur = conn.cursor()
         # drop_tmp_table = """drop table rf_agendor_cadastro_api;"""
@@ -104,7 +108,7 @@ def rename_rollback_bkp_to_prod_postgres():
     conn = None
 
     try:
-        conn = psycopg2.connect(host="35.247.200.226", database="rf", user="postgres", password="postgres", port= '5432')
+        conn = psycopg2.connect(host=DB_HOST, database="rf", user=DB_USER, password=DB_PASS, port= '5432')
 
         cur = conn.cursor()
         # drop_tmp_table = """drop table rf_agendor_cadastro_api;"""

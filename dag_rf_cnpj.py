@@ -5,6 +5,7 @@ from airflow.operators.python_operator import PythonOperator
 
 from google.cloud import bigquery
 import pendulum
+import os
 
 #-------------------------------------------------------------------------------
 # Settings 
@@ -17,6 +18,14 @@ default_args = {
 }
 
 local_tz = pendulum.timezone('America/Sao_Paulo')
+
+
+# Credentials
+DB_HOST = os.environ.get('DB_HOST')
+DB_USER = os.environ.get('DB_USER')
+DB_PASS = os.environ.get('DB_PASS')
+
+
 
 #--------------------------------------------------------------------------------
 
@@ -193,7 +202,7 @@ def create_stage_table_postgres():
     conn = None
 
     try:
-        conn = psycopg2.connect(host="35.223.249.231", database="rf", user="postgres", password="postgres", port= '5432')
+        conn = psycopg2.connect(host=DB_HOST, database="rf", user=DB_USER, password=DB_PASS, port= '5432')
 
         cur = conn.cursor()
         drop_tmp_table = """drop table if exists rf_agendor_cadastro_api_stage;"""
@@ -261,7 +270,7 @@ def create_tmp_table_postgres():
     conn = None
 
     try:
-        conn = psycopg2.connect(host="35.223.249.231", database="rf", user="postgres", password="postgres", port= '5432')
+        conn = psycopg2.connect(host=DB_HOST, database="rf", user=DB_USER, password=DB_PASS, port= '5432')
 
         cur = conn.cursor()
         create_table_statement = """
@@ -323,7 +332,7 @@ def insert_tmp_table_postgres():
     conn = None
 
     try:
-        conn = psycopg2.connect(host="35.223.249.231", database="rf", user="postgres", password="postgres", port= '5432')
+        conn = psycopg2.connect(host=DB_HOST, database="rf", user=DB_USER, password=DB_PASS, port= '5432')
 
         cur = conn.cursor()
         insert_data_statement = """    
@@ -386,7 +395,7 @@ def rename_prod_to_bkp_table_postgres():
     conn = None
 
     try:
-        conn = psycopg2.connect(host="35.223.249.231", database="rf", user="postgres", password="postgres", port= '5432')
+        conn = psycopg2.connect(host=DB_HOST, database="rf", user=DB_USER, password=DB_PASS, port= '5432')
 
         cur = conn.cursor()
         # drop_tmp_table = """drop table rf_agendor_cadastro_api;"""
@@ -420,7 +429,7 @@ def drop_bkp_table_postgres():
     conn = None
 
     try:
-        conn = psycopg2.connect(host="35.223.249.231", database="rf", user="postgres", password="postgres", port= '5432')
+        conn = psycopg2.connect(host=DB_HOST, database="rf", user=DB_USER, password=DB_PASS, port= '5432')
 
         cur = conn.cursor()
         drop_bkp_table = """drop table if exists rf_agendor_cadastro_api_bkp;"""
@@ -454,7 +463,7 @@ def drop_stage_table_postgres():
     conn = None
 
     try:
-        conn = psycopg2.connect(host="35.223.249.231", database="rf", user="postgres", password="postgres", port= '5432')
+        conn = psycopg2.connect(host=DB_HOST, database="rf", user=DB_USER, password=DB_PASS, port= '5432')
 
         cur = conn.cursor()
         drop_tmp_table = """drop table rf_agendor_cadastro_api_stage;"""
@@ -486,7 +495,7 @@ def rename_tmp_to_prod_table_postgres():
     conn = None
 
     try:
-        conn = psycopg2.connect(host="35.223.249.231", database="rf", user="postgres", password="postgres", port= '5432')
+        conn = psycopg2.connect(host=DB_HOST, database="rf", user=DB_USER, password=DB_PASS, port= '5432')
 
         cur = conn.cursor()
         rename_table_statement = """
@@ -521,7 +530,7 @@ def create_index_tmp_table_postgres():
     conn = None
 
     try:
-        conn = psycopg2.connect(host="35.223.249.231", database="rf", user="postgres", password="postgres", port= '5432')
+        conn = psycopg2.connect(host=DB_HOST, database="rf", user=DB_USER, password=DB_PASS, port= '5432')
 
         cur = conn.cursor()
         rename_table_statement = """
@@ -582,7 +591,7 @@ def validation_no_records_postgres_bq():
     qt_bq = df_bq.qt[0]  
     print(qt_bq)
 
-    conn = psycopg2.connect(host="35.223.249.231", database="rf", user="postgres", password="postgres")
+    conn = psycopg2.connect(host=DB_HOST, database="rf", user=DB_USER, password=DB_PASS, port= '5432')
 
     query_postgres = """
         select count(1) as qt
@@ -634,7 +643,7 @@ def validation_final_no_records_postgres_bq():
     qt_bq = df_bq.qt[0]  
     print(qt_bq)
 
-    conn = psycopg2.connect(host="35.223.249.231", database="rf", user="postgres", password="postgres")
+    conn = psycopg2.connect(host=DB_HOST, database="rf", user=DB_USER, password=DB_PASS)
 
     query_postgres = """
         select count(1) as qt
@@ -657,6 +666,40 @@ validation_final_no_records_postgres_bq = PythonOperator(
     task_id='validation_final_no_records_postgres_bq',
     dag=dag,
     python_callable=validation_final_no_records_postgres_bq,
+    provide_context=True
+    )
+
+
+def grant_access_to_prod_table():
+    """ Connect to the PostgreSQL database server """
+    import psycopg2
+    conn = None
+
+    try:
+        conn = psycopg2.connect(host=DB_HOST, database="rf", user=DB_USER, password=DB_PASS, port= '5432')
+
+        cur = conn.cursor()
+        grant_access = """
+            GRANT ALL PRIVILEGES ON public TO "agendor-dev";
+            """
+
+        cur.execute(grant_access)
+        print('Access granted as the code: {}'.format(grant_access))
+        conn.commit()
+        cur.close()
+
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+            print('Database connection closed.')
+
+
+grant_access_to_prod_table = PythonOperator(
+    task_id='grant_access_to_prod_table',
+    dag=dag,
+    python_callable=grant_access_to_prod_table,
     provide_context=True
     )
 
@@ -981,5 +1024,5 @@ start_dag >> create_external_tables >> [ct_qualificacoes_socios, ct_paises, ct_n
 start_dag >> create_tables >> [ct_socios_agg_json, ct_rf_agendor_cadastro_api] >> insert_records
 
 insert_records >> insert_into_socios_agg_json >> insert_into_rf_agendor_cadastro_api  >> bigquery_to_storage >> list_storage_files >> compose_file >> storage_upload_files 
-storage_upload_files >> create_stage_table_postgres >> storage_to_postgres_bash_command >> validation_no_records_postgres_bq >> create_tmp_table_postgres >> insert_tmp_table_postgres >> create_index_tmp_table_postgres >> validation_final_no_records_postgres_bq >> drop_bkp_table_postgres >> rename_prod_to_bkp_table_postgres >> rename_tmp_to_prod_table_postgres >> drop_stage_table_postgres
+storage_upload_files >> create_stage_table_postgres >> storage_to_postgres_bash_command >> validation_no_records_postgres_bq >> create_tmp_table_postgres >> insert_tmp_table_postgres >> create_index_tmp_table_postgres >> validation_final_no_records_postgres_bq >> drop_bkp_table_postgres >> rename_prod_to_bkp_table_postgres >> rename_tmp_to_prod_table_postgres >> drop_stage_table_postgres >> grant_access_to_prod_table
 

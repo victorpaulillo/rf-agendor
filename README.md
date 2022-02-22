@@ -16,7 +16,8 @@ docker-compose --version
 
 mkdir airflow-docker
 cd airflow-docker
-curl -LfO "https://airflow.apache.org/docs/apache-airflow/2.1.0/docker-compose.yaml"
+# curl -LfO "https://airflow.apache.org/docs/apache-airflow/2.1.0/docker-compose.yaml"
+curl -LfO "https://airflow.apache.org/docs/apache-airflow/2.2.3/docker-compose.yaml"
 mkdir ./dags ./logs ./plugins
 echo -e "AIRFLOW_UID=$(id -u)\nAIRFLOW_GID=0" > .env
 sudo docker-compose up airflow-init
@@ -29,25 +30,29 @@ Liberar permissao da Conta de Serviço da Instancia do Postgres no bucket do Goo
 git clone https://github.com/victorpaulillo/rf-agendor.git
 
 Instalar as bibliotecas nos dockers:
-sudo docker exec d218f3a86859         pip install subprocess.run
-sudo docker exec c4b2b9553bb7         pip install subprocess.run
-sudo docker exec b14e0b08baa9         pip install subprocess.run
-sudo docker exec 080d76b486f9         pip install subprocess.run
+sudo docker exec 68477dbb468d                 pip install subprocess.run
+sudo docker exec e4def1533bf2                 pip install subprocess.run
+sudo docker exec 606d4e76902a                 pip install subprocess.run
+sudo docker exec 346c4eadd9c0                 pip install subprocess.run
+sudo docker exec 09ec29fa9a54                 pip install subprocess.run
 
-sudo docker exec d218f3a86859         pip install pandas
-sudo docker exec c4b2b9553bb7         pip install pandas
-sudo docker exec b14e0b08baa9         pip install pandas
-sudo docker exec 080d76b486f9         pip install pandas
+sudo docker exec 68477dbb468d                 pip install pandas
+sudo docker exec e4def1533bf2                 pip install pandas
+sudo docker exec 606d4e76902a                 pip install pandas
+sudo docker exec 346c4eadd9c0                 pip install pandas
+sudo docker exec 09ec29fa9a54                 pip install pandas
 
-sudo docker exec d218f3a86859         pip install oauth2client
-sudo docker exec c4b2b9553bb7         pip install oauth2client
-sudo docker exec b14e0b08baa9         pip install oauth2client
-sudo docker exec 080d76b486f9         pip install oauth2client
+sudo docker exec 68477dbb468d                 pip install oauth2client
+sudo docker exec e4def1533bf2                 pip install oauth2client
+sudo docker exec 606d4e76902a                 pip install oauth2client
+sudo docker exec 346c4eadd9c0                 pip install oauth2client
+sudo docker exec 09ec29fa9a54                 pip install oauth2client
 
-sudo docker exec d218f3a86859         pip install BeautifulSoup4
-sudo docker exec c4b2b9553bb7         pip install BeautifulSoup4
-sudo docker exec b14e0b08baa9         pip install BeautifulSoup4
-sudo docker exec 080d76b486f9         pip install BeautifulSoup4
+sudo docker exec 68477dbb468d                 pip install BeautifulSoup4
+sudo docker exec e4def1533bf2                 pip install BeautifulSoup4
+sudo docker exec 606d4e76902a                 pip install BeautifulSoup4
+sudo docker exec 346c4eadd9c0                 pip install BeautifulSoup4
+sudo docker exec 09ec29fa9a54                 pip install BeautifulSoup4
 
 Add Sinalizador no Postgres:
 temp_file_limit: 155055030
@@ -55,7 +60,7 @@ temp_file_limit: 155055030
 Create 'rf' schema on biguery (Needs to be on the same region as the storage bucket)
 Remember to add permissions to the users to access the data (could happend an issue related to that)
 
-Enalbe Cloud SQL API Admin https://console.cloud.google.com/apis/library/sqladmin.googleapis.com?project=rf-agendor-335020
+Enable Cloud SQL API Admin https://console.cloud.google.com/apis/library/sqladmin.googleapis.com?project=rf-agendor-335020
 
 Add the Public IP to be able to connect to Cloud SQL Postgres - Connection -> Public 0.0.0.0/0
 
@@ -68,6 +73,8 @@ Follow the command below on SSH of Airflow Machine
     echo -e "DB_PASS='password'" >> /etc/environment
     source /etc/environment
 
+
+--- Fazer mais uma etapa na DAG para dar acesso a tabela GRANT ALL PRIVILEGES ON public TO "agendor-dev";
 
 
 
