@@ -676,11 +676,11 @@ def grant_access_to_prod_table():
     conn = None
 
     
-    # Credentials
-    # import os
-    # DB_HOST = os.environ.get('DB_HOST')
-    # DB_USER = os.environ.get('DB_USER')
-    # DB_PASS = os.environ.get('DB_PASS')
+    #Credentials
+    import os
+    DB_HOST = os.environ.get('DB_HOST')
+    DB_USER = os.environ.get('DB_USER')
+    DB_PASS = os.environ.get('DB_PASS')
 
     print(DB_HOST)
     print(DB_USER)
