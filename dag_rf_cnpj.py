@@ -675,6 +675,10 @@ def grant_access_to_prod_table():
     import psycopg2
     conn = None
 
+    print(DB_HOST)
+    print(DB_USER)
+    print(DB_PASS)
+
     try:
         conn = psycopg2.connect(host=DB_HOST, database="rf", user=DB_USER, password=DB_PASS, port= '5432')
 

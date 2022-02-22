@@ -65,14 +65,14 @@ Enable Cloud SQL API Admin https://console.cloud.google.com/apis/library/sqladmi
 Add the Public IP to be able to connect to Cloud SQL Postgres - Connection -> Public 0.0.0.0/0
 
 
-Create a environment variable on linux with the password of database with the name "DB_PASS"
+Create a environment variable on linux with the password, user and host of database
 Follow the command below on SSH of Airflow Machine
     sudo su
     echo -e "DB_HOST='host'" >> /etc/environment
     echo -e "DB_USER='username'" >> /etc/environment
     echo -e "DB_PASS='password'" >> /etc/environment
     source /etc/environment
-
+And then restart the virtual machine.
 
 --- Fazer mais uma etapa na DAG para dar acesso a tabela GRANT ALL PRIVILEGES ON public TO "agendor-dev";
 
