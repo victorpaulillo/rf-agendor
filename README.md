@@ -76,7 +76,7 @@ And then restart the virtual machine.
 
 --- Fazer mais uma etapa na DAG para dar acesso a tabela GRANT ALL PRIVILEGES ON public TO "agendor-dev";
 
-
+-- Adicionar data de processamento agendor tabela prod
 
 
 ------------------------------------------------------------------------------------
