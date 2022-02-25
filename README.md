@@ -86,12 +86,9 @@ sudo docker exec 606d4e76902a                 pip install BeautifulSoup4
 sudo docker exec 346c4eadd9c0                 pip install BeautifulSoup4
 sudo docker exec 09ec29fa9a54                 pip install BeautifulSoup4
 
-<<<<<<< HEAD
 --- Fazer mais uma etapa na DAG para dar acesso a tabela GRANT ALL PRIVILEGES ON public TO "agendor-dev";
 
-=======
 -- Adicionar data de processamento agendor tabela prod
->>>>>>> 6855572ef98b3f1813c20dbfe8e878d3b3cdc5cd
 
 sudo groupadd docker
 sudo usermod -aG docker $USER
