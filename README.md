@@ -20,39 +20,45 @@ cd airflow-docker
 curl -LfO "https://airflow.apache.org/docs/apache-airflow/2.2.3/docker-compose.yaml"
 mkdir ./dags ./logs ./plugins
 echo -e "AIRFLOW_UID=$(id -u)\nAIRFLOW_GID=0" > .env
+# Change the variables below to the real database credentials
+    echo -e "DB_HOST='host'" >> .env
+    echo -e "DB_USER='username'" >> .env
+    echo -e "DB_PASS='password'" >> .env
+
 sudo docker-compose up airflow-init
 sudo docker-compose up
+
+git clone https://github.com/victorpaulillo/rf-agendor.git
 
 Create a firewall rule Open VPC Network > Firewall Rules Create Firewall rules Name: airflow-ingress Priority: 8080 Targets: All instances in the network Source IP ranges: 0.0.0.0/0 Protocols and ports > Check tcp box
 
 Liberar permissao da Conta de Serviço da Instancia do Postgres no bucket do Google Cloud Storage
 
-git clone https://github.com/victorpaulillo/rf-agendor.git
 
 Instalar as bibliotecas nos dockers:
-sudo docker exec 68477dbb468d                 pip install subprocess.run
-sudo docker exec e4def1533bf2                 pip install subprocess.run
-sudo docker exec 606d4e76902a                 pip install subprocess.run
-sudo docker exec 346c4eadd9c0                 pip install subprocess.run
-sudo docker exec 09ec29fa9a54                 pip install subprocess.run
+sudo docker exec 966af8553d3a                         pip install subprocess.run
+sudo docker exec f91ce42d3a2c                         pip install subprocess.run
+sudo docker exec c6423ba118f6                         pip install subprocess.run
+sudo docker exec 1dac32c8fce9                 pip install subprocess.run
+sudo docker exec 2f5a61383459                         pip install subprocess.run
 
-sudo docker exec 68477dbb468d                 pip install pandas
-sudo docker exec e4def1533bf2                 pip install pandas
-sudo docker exec 606d4e76902a                 pip install pandas
-sudo docker exec 346c4eadd9c0                 pip install pandas
+sudo docker exec 966af8553d3a                         pip install pandas
+sudo docker exec f91ce42d3a2c                         pip install pandas
+sudo docker exec c6423ba118f6                         pip install pandas
+sudo docker exec 2f5a61383459                         pip install pandas
 sudo docker exec 09ec29fa9a54                 pip install pandas
 
-sudo docker exec 68477dbb468d                 pip install oauth2client
-sudo docker exec e4def1533bf2                 pip install oauth2client
-sudo docker exec 606d4e76902a                 pip install oauth2client
-sudo docker exec 346c4eadd9c0                 pip install oauth2client
-sudo docker exec 09ec29fa9a54                 pip install oauth2client
+sudo docker exec 966af8553d3a                         pip install oauth2client
+sudo docker exec f91ce42d3a2c                         pip install oauth2client
+sudo docker exec c6423ba118f6                         pip install oauth2client
+sudo docker exec 1dac32c8fce9                 pip install oauth2client
+sudo docker exec 2f5a61383459                         pip install oauth2client
 
-sudo docker exec 68477dbb468d                 pip install BeautifulSoup4
-sudo docker exec e4def1533bf2                 pip install BeautifulSoup4
-sudo docker exec 606d4e76902a                 pip install BeautifulSoup4
-sudo docker exec 346c4eadd9c0                 pip install BeautifulSoup4
-sudo docker exec 09ec29fa9a54                 pip install BeautifulSoup4
+sudo docker exec 966af8553d3a                         pip install BeautifulSoup4
+sudo docker exec f91ce42d3a2c                         pip install BeautifulSoup4
+sudo docker exec c6423ba118f6                         pip install BeautifulSoup4
+sudo docker exec 1dac32c8fce9                 pip install BeautifulSoup4
+sudo docker exec 2f5a61383459                         pip install BeautifulSoup4
 
 Add Sinalizador no Postgres:
 temp_file_limit: 155055030
@@ -68,16 +74,24 @@ Add the Public IP to be able to connect to Cloud SQL Postgres - Connection -> Pu
 Create a environment variable on linux with the password, user and host of database
 Follow the command below on SSH of Airflow Machine
     sudo su
-    echo -e "DB_HOST='host'" >> /etc/environment
+    echo -e "DB_HOST='host'" > /etc/environment
     echo -e "DB_USER='username'" >> /etc/environment
     echo -e "DB_PASS='password'" >> /etc/environment
     source /etc/environment
 And then restart the virtual machine.
 
+sudo docker exec 68477dbb468d  sudo su echo -e "DB_HOST='host'" > /etc/environment
+sudo docker exec e4def1533bf2                 pip install BeautifulSoup4
+sudo docker exec 606d4e76902a                 pip install BeautifulSoup4
+sudo docker exec 346c4eadd9c0                 pip install BeautifulSoup4
+sudo docker exec 09ec29fa9a54                 pip install BeautifulSoup4
+
 --- Fazer mais uma etapa na DAG para dar acesso a tabela GRANT ALL PRIVILEGES ON public TO "agendor-dev";
 
 
-
+sudo groupadd docker
+sudo usermod -aG docker $USER
+newgrp docker
 
 ------------------------------------------------------------------------------------
 

@@ -302,7 +302,7 @@ def create_tmp_table_postgres():
                 capital_social VARCHAR,
                 natureza_juridica VARCHAR,
                 cnpj_basico VARCHAR,
-                socios_json VARCHAR,
+                socios_json TEXT,
                 PRIMARY KEY (cnpj)
             );
             """
