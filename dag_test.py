@@ -113,10 +113,13 @@ def get_secret(**kwargs):
     #     replication = "MANAGED"
     # else:
     #     raise "Unknown replication {}".format(response.replication)
-    lala = response.data.decode('UTF-8')
+    create_time = response.create_time
+    labels = response.labels
+
+    
     
     # Print data about the secret.
-    print("Got secret {} with replication policy {}, {}".format(response.name, lala, response))
+    print("Got secret {} with replication policy {}, {}".format(response.name, response, create_time, labels))
 
 
 test_secret_manager = PythonOperator(
