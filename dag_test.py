@@ -73,9 +73,9 @@ def get_secret(**kwargs):
 
     # Get the secret.
     response = client.get_secret(name)
-    DB_HOST=name["data"]["DB_HOST"]
-    DB_USER=name["data"]["DB_USER"]
-    DB_PASS=name["data"]["DB_PASS"]
+    DB_HOST=name.LabelsEntry.value["data"]["DB_HOST"]
+    DB_USER=name.LabelsEntry.value["data"]["DB_USER"]
+    DB_PASS=name.LabelsEntry.value["data"]["DB_PASS"]
 
     create_time = response.create_time
     labels = response.labels
