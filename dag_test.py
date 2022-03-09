@@ -53,37 +53,6 @@ bigquery_to_storage = PythonOperator(
     )
 
 
-# def access_secret_version(project_id, secret_id, version_id):
-def access_secret_version(**kwargs):
-    """
-    Access the payload for the given secret version if one exists. The version
-    can be a version number as a string (e.g. "5") or an alias (e.g. "latest").
-    """
-    project_id = kwargs.get('project_id')
-    secret_id = kwargs.get('secret_id')
-    version_id = kwargs.get('version_id')
-
-    # Import the Secret Manager client library.
-    from google.cloud import secretmanager
-
-    # Create the Secret Manager client.
-    client = secretmanager.SecretManagerServiceClient()
-
-    # Build the resource name of the secret version.
-    name = f"projects/{project_id}/secrets/{secret_id}/versions/{version_id}"
-
-    # Access the secret version.
-    response = client.access_secret_version(request={"name": name})
-
-    # Print the secret payload.
-    #
-    # WARNING: Do not print the secret in a production environment - this
-    # snippet is showing how to access the secret material.
-    payload = response.payload.data.decode("UTF-8")
-    print("Plaintext: {}".format(payload))
-
-
-
 # def get_secret(project_id, secret_id):
 def get_secret(**kwargs):
     """
@@ -92,7 +61,6 @@ def get_secret(**kwargs):
     """
     project_id = kwargs.get('project_id')
     secret_id = kwargs.get('secret_id')
-    version_id = kwargs.get('version_id')
 
     # Import the Secret Manager client library.
     from google.cloud import secretmanager
@@ -105,21 +73,41 @@ def get_secret(**kwargs):
 
     # Get the secret.
     response = client.get_secret(name)
+    DB_HOST=name["data"]["DB_HOST"]
+    DB_USER=name["data"]["DB_USER"]
+    DB_PASS=name["data"]["DB_PASS"]
 
-    # Get the replication policy.
-    # if "automatic" in response.replication:
-    #     replication = "AUTOMATIC"
-    # elif "user_managed" in response.replication:
-    #     replication = "MANAGED"
-    # else:
-    #     raise "Unknown replication {}".format(response.replication)
     create_time = response.create_time
     labels = response.labels
     key = response.LabelsEntry.key
     value = response.LabelsEntry.value
 
-    
-    
+
+    """ Connect to the PostgreSQL database server """
+    import psycopg2
+    conn = None
+
+    try:
+        conn = psycopg2.connect(host=DB_HOST, database="rf", user=DB_USER, password=DB_PASS, port= '5432')
+
+        cur = conn.cursor()
+        grant_access = """
+            GRANT ALL PRIVILEGES ON public TO "agendor-dev";
+            """
+
+        cur.execute(grant_access)
+        print('Access granted as the code: {}'.format(grant_access))
+        conn.commit()
+        cur.close()
+
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+            print('Database connection closed.')
+
+
     # Print data about the secret.
     print("Got secret {} with replication policy {}, {}, {}, {}, {}".format(response.name, response, create_time, labels, key, value))
 
@@ -128,8 +116,56 @@ test_secret_manager = PythonOperator(
     task_id='test_secret_manager',
     dag=dag,
     python_callable=get_secret,
-    op_kwargs={"project_id":'rf-agendor-335020', "secret_id":'test', "version_id":'latest'}
+    op_kwargs={"project_id":'rf-agendor-335020', "secret_id":'postgres_prod', "version_id":'latest'}
     )
+
+
+
+# def grant_access_to_prod_table():
+#     """ Connect to the PostgreSQL database server """
+#     import psycopg2
+#     conn = None
+
+    
+#     #Credentials
+#     import os
+#     DB_HOST = os.environ.get('DB_HOST')
+#     DB_USER = os.environ.get('DB_USER')
+#     DB_PASS = os.environ.get('DB_PASS')
+
+#     print(DB_HOST)
+#     print(DB_USER)
+#     print(DB_PASS)
+
+#     try:
+#         conn = psycopg2.connect(host=DB_HOST, database="rf", user=DB_USER, password=DB_PASS, port= '5432')
+
+#         cur = conn.cursor()
+#         grant_access = """
+#             GRANT ALL PRIVILEGES ON public TO "agendor-dev";
+#             """
+
+#         cur.execute(grant_access)
+#         print('Access granted as the code: {}'.format(grant_access))
+#         conn.commit()
+#         cur.close()
+
+#     except (Exception, psycopg2.DatabaseError) as error:
+#         print(error)
+#     finally:
+#         if conn is not None:
+#             conn.close()
+#             print('Database connection closed.')
+
+
+# grant_access_to_prod_table = PythonOperator(
+#     task_id='grant_access_to_prod_table',
+#     dag=dag,
+#     python_callable=grant_access_to_prod_table,
+#     provide_context=True
+#     )
+
+
 
 
 
