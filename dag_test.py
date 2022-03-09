@@ -53,8 +53,8 @@ bigquery_to_storage = PythonOperator(
     )
 
 
-def access_secret_version(project_id, secret_id, version_id):
-# def access_secret_version(**kwargs):
+# def access_secret_version(project_id, secret_id, version_id):
+def access_secret_version(**kwargs):
     """
     Access the payload for the given secret version if one exists. The version
     can be a version number as a string (e.g. "5") or an alias (e.g. "latest").
