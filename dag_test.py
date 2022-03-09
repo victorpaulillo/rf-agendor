@@ -121,7 +121,7 @@ def get_secret(**kwargs):
     
     
     # Print data about the secret.
-    print("Got secret {} with replication policy {}, {}".format(response.name, response, create_time, labels, key, value))
+    print("Got secret {} with replication policy {}, {}, {}, {}, {}".format(response.name, response, create_time, labels, key, value))
 
 
 test_secret_manager = PythonOperator(
