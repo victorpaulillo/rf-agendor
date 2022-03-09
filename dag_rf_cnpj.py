@@ -21,10 +21,13 @@ local_tz = pendulum.timezone('America/Sao_Paulo')
 
 
 # Credentials
-DB_HOST = os.environ.get('DB_HOST')
-DB_USER = os.environ.get('DB_USER')
-DB_PASS = os.environ.get('DB_PASS')
+# DB_HOST = os.environ.get('DB_HOST')
+# DB_USER = os.environ.get('DB_USER')
+# DB_PASS = os.environ.get('DB_PASS')
 
+DB_HOST = '35.223.249.231'
+DB_USER = 'postgres'
+DB_PASS = 'SDjk127Dfg'
 
 
 #--------------------------------------------------------------------------------
@@ -224,6 +227,7 @@ def create_stage_table_postgres():
                 cnae VARCHAR,
                 nome_cnae_principal VARCHAR,
                 cnae_fiscal_secundaria VARCHAR,
+                tipo_logradouro VARCHAR,
                 logradouro VARCHAR,
                 numero VARCHAR,
                 complemento VARCHAR,
@@ -285,6 +289,7 @@ def create_tmp_table_postgres():
                 cnae VARCHAR,
                 nome_cnae_principal VARCHAR,
                 cnae_fiscal_secundaria VARCHAR,
+                tipo_logradouro VARCHAR,
                 logradouro VARCHAR,
                 numero VARCHAR,
                 complemento VARCHAR,
@@ -346,6 +351,7 @@ def insert_tmp_table_postgres():
                     cnae,
                     nome_cnae_principal,
                     cnae_fiscal_secundaria,
+                    tipo_logradouro,
                     logradouro,
                     numero,
                     complemento,
@@ -881,6 +887,7 @@ ct_rf_agendor_cadastro_api_query = """
     cnae	STRING,
     nome_cnae_principal	STRING,
     cnae_fiscal_secundaria	STRING,
+    tipo_logradouro	STRING,
     logradouro	STRING,
     numero	STRING,
     complemento	STRING,
@@ -966,6 +973,7 @@ select e.cnpj_basico || cnpj_ordem || cnpj_dv as cnpj
    , cnae_fiscal_principal as cnae
   , replace(c.descricao, '�', 'ç') as nome_cnae_principal
   , cnae_fiscal_secundaria
+  , tipo_logradouro
   , logradouro
   , numero
   , complemento

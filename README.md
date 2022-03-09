@@ -26,6 +26,15 @@ echo -e "AIRFLOW_UID=$(id -u)\nAIRFLOW_GID=0" > .env
     echo -e "DB_PASS='password'" >> .env
 
 sudo docker-compose up airflow-init
+
+# Change the docker-compose.yaml to add environment variable with the postgres credentials
+# And it is possible to say to docker install all libraries inside the docker-compose.yaml file 
+#    AIRFLOW_CONN_HOST: 35.223.249.231
+#    AIRFLOW_CONN_USER: postgres
+#    AIRFLOW_CONN_PASS: SDjk127Dfg
+
+
+
 sudo docker-compose up
 
 git clone https://github.com/victorpaulillo/rf-agendor.git
@@ -109,3 +118,6 @@ E vou mandar aqui uns pontos de atenção:
 - O logradouro (endereço) aparece sem o "Rua", "Avenida", "Rodovia", ou qualquer outro prefixo que informe o "tipo de rua". Pode ser algum erro de uma transformação minha. Preciso validar, mas acho que é assim que o dado bem mesmo. Ex.: No site da receita "JD IRACEMA" na base da receita, que estou disponibilizando "IRACEMA"
 - Quando a natureza_juridica é igual "Empresário (Individual)" não vai ter quadro de sócios. Isso está igual ao o que aparece no site da receita consultando na mão
 
+
+https://stackoverflow.com/questions/69352461/how-to-set-connections-and-variables-in-airflow-using-docker-compose-file
+https://stackoverflow.com/questions/67851351/cannot-install-additional-requirements-to-apache-airflow

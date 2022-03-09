@@ -38,8 +38,12 @@ start_dag = DummyOperator(task_id='start_dag', dag=dag)
 import os
 def db_pass():
     database_url = os.environ.get('DB_PASS')
+    database_url2 = os.environ.get('AIRFLOW_CONN_PASS')
+    database_url3 = os.environ.get('AIRFLOW_CONN_HOST')
     print(database_url)
-    return database_url
+    print(database_url2)
+    print(database_url3)
+    return database_url, database_url2, database_url3
 
 bigquery_to_storage = PythonOperator(
     task_id='db_pass',
