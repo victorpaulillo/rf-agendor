@@ -107,12 +107,12 @@ def get_secret(**kwargs):
     response = client.get_secret(name)
 
     # Get the replication policy.
-    if "automatic" in response.replication:
-        replication = "AUTOMATIC"
-    elif "user_managed" in response.replication:
-        replication = "MANAGED"
-    else:
-        raise "Unknown replication {}".format(response.replication)
+    # if "automatic" in response.replication:
+    #     replication = "AUTOMATIC"
+    # elif "user_managed" in response.replication:
+    #     replication = "MANAGED"
+    # else:
+    #     raise "Unknown replication {}".format(response.replication)
 
     # Print data about the secret.
     print("Got secret {} with replication policy {}".format(response.name, replication))
