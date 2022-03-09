@@ -113,7 +113,8 @@ def get_secret(**kwargs):
     #     replication = "MANAGED"
     # else:
     #     raise "Unknown replication {}".format(response.replication)
-
+    replication = 'lala'
+    
     # Print data about the secret.
     print("Got secret {} with replication policy {}".format(response.name, replication))
 
