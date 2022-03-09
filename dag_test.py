@@ -73,9 +73,12 @@ def get_secret(**kwargs):
 
     # Get the secret.
     response = client.get_secret(name)
-    DB_HOST=response.LabelsEntry.value["data"]["DB_HOST"]
-    DB_USER=response.LabelsEntry.value["data"]["DB_USER"]
-    DB_PASS=response.LabelsEntry.value["data"]["DB_PASS"]
+    import ast
+    credentials = ast.literal_eval(response.LabelsEntry.value)
+
+    DB_HOST=credentials["data"]["DB_HOST"]
+    DB_USER=credentials["data"]["DB_USER"]
+    DB_PASS=credentials["data"]["DB_PASS"]
 
     create_time = response.create_time
     labels = response.labels
