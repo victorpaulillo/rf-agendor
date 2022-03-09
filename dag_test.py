@@ -61,7 +61,7 @@ def access_secret_version(**kwargs):
     """
     project_id = kwargs.get('project_id')
     secret_id = kwargs.get('secret_id')
-    bucket_version_idname = kwargs.get('version_id')
+    version_id = kwargs.get('version_id')
 
     # Import the Secret Manager client library.
     from google.cloud import secretmanager
