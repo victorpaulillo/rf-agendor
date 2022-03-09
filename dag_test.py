@@ -104,7 +104,7 @@ def get_secret(**kwargs):
     name = client.secret_path(project_id, secret_id)
 
     # Get the secret.
-    response = client.get_secret(request={"name": name})
+    response = client.get_secret(name)
 
     # Get the replication policy.
     if "automatic" in response.replication:
