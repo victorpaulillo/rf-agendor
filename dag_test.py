@@ -54,6 +54,7 @@ bigquery_to_storage = PythonOperator(
 
 
 def access_secret_version(project_id, secret_id, version_id):
+# def access_secret_version(**kwargs):
     """
     Access the payload for the given secret version if one exists. The version
     can be a version number as a string (e.g. "5") or an alias (e.g. "latest").
@@ -81,9 +82,9 @@ def access_secret_version(project_id, secret_id, version_id):
 
 
 test_secret_manager = PythonOperator(
-    task_id='db_pass',
+    task_id='test_secret_manager',
     dag=dag,
-    python_callable=db_pass,
+    python_callable=access_secret_version,
     op_kwargs={"project_id":'rf-agendor-335020', "secret_id":'test', "version_id":'latest'}
     )
 
