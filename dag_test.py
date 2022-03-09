@@ -84,10 +84,44 @@ def access_secret_version(**kwargs):
 
 
 
+# def get_secret(project_id, secret_id):
+def get_secret(**kwargs):
+    """
+    Get information about the given secret. This only returns metadata about
+    the secret container, not any secret material.
+    """
+    project_id = kwargs.get('project_id')
+    secret_id = kwargs.get('secret_id')
+    version_id = kwargs.get('version_id')
+
+    # Import the Secret Manager client library.
+    from google.cloud import secretmanager
+
+    # Create the Secret Manager client.
+    client = secretmanager.SecretManagerServiceClient()
+
+    # Build the resource name of the secret.
+    name = client.secret_path(project_id, secret_id)
+
+    # Get the secret.
+    response = client.get_secret(request={"name": name})
+
+    # Get the replication policy.
+    if "automatic" in response.replication:
+        replication = "AUTOMATIC"
+    elif "user_managed" in response.replication:
+        replication = "MANAGED"
+    else:
+        raise "Unknown replication {}".format(response.replication)
+
+    # Print data about the secret.
+    print("Got secret {} with replication policy {}".format(response.name, replication))
+
+
 test_secret_manager = PythonOperator(
     task_id='test_secret_manager',
     dag=dag,
-    python_callable=access_secret_version,
+    python_callable=get_secret,
     op_kwargs={"project_id":'rf-agendor-335020', "secret_id":'test', "version_id":'latest'}
     )
 
