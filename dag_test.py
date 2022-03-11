@@ -99,7 +99,7 @@ def get_secret(**kwargs):
 
         cur = conn.cursor()
         grant_access = """
-            GRANT ALL PRIVILEGES ON public TO "agendor-dev";
+            GRANT ALL PRIVILEGES ON public TO "test";
             """
 
         cur.execute(grant_access)
