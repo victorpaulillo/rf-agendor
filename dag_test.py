@@ -76,7 +76,7 @@ def get_secret(**kwargs):
     # response = client.access_secret_version(request={"name": secret_detail})
     response = client.access_secret_version(secret_detail)
     DB_HOST = response.payload.data.decode("UTF-8")
-
+    print(DB_HOST)
     # Get the secret.
     # response = client.get_secret(name)
     
