@@ -73,7 +73,8 @@ def get_secret(**kwargs):
     # name = client.secret_path(project_id, secret_id)
 
     secret_detail = f"projects/{project_id}/secrets/{secret_id}/versions/{version_id}"
-    response = client.access_secret_version(request={"name": secret_detail})
+    # response = client.access_secret_version(request={"name": secret_detail})
+    response = client.access_secret_version(secret_detail)
     DB_HOST = response.payload.data.decode("UTF-8")
 
     # Get the secret.
