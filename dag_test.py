@@ -73,12 +73,16 @@ def get_secret(**kwargs):
 
     # Get the secret.
     response = client.get_secret(name)
-    import ast
-    credentials = ast.literal_eval(response.LabelsEntry.value)
+    
+    # import ast
+    # credentials = ast.literal_eval(response.LabelsEntry.value)
 
-    DB_HOST=credentials["data"]["DB_HOST"]
-    DB_USER=credentials["data"]["DB_USER"]
-    DB_PASS=credentials["data"]["DB_PASS"]
+    # DB_HOST=credentials["data"]["DB_HOST"]
+    # DB_USER=credentials["data"]["DB_USER"]
+    # DB_PASS=credentials["data"]["DB_PASS"]
+    DB_HOST = response.LabelsEntry.value
+    DB_USER = 'postgres'
+    DB_PASS = 'SDjk127Dfg'
 
     create_time = response.create_time
     labels = response.labels
@@ -119,54 +123,9 @@ test_secret_manager = PythonOperator(
     task_id='test_secret_manager',
     dag=dag,
     python_callable=get_secret,
-    op_kwargs={"project_id":'rf-agendor-335020', "secret_id":'postgres_prod', "version_id":'latest'}
+    # op_kwargs={"project_id":'rf-agendor-335020', "secret_id":'postgres_prod', "version_id":'latest'}
+    op_kwargs={"project_id":'rf-agendor-335020', "secret_id":'DB_HOST', "version_id":'latest'}
     )
-
-
-
-# def grant_access_to_prod_table():
-#     """ Connect to the PostgreSQL database server """
-#     import psycopg2
-#     conn = None
-
-    
-#     #Credentials
-#     import os
-#     DB_HOST = os.environ.get('DB_HOST')
-#     DB_USER = os.environ.get('DB_USER')
-#     DB_PASS = os.environ.get('DB_PASS')
-
-#     print(DB_HOST)
-#     print(DB_USER)
-#     print(DB_PASS)
-
-#     try:
-#         conn = psycopg2.connect(host=DB_HOST, database="rf", user=DB_USER, password=DB_PASS, port= '5432')
-
-#         cur = conn.cursor()
-#         grant_access = """
-#             GRANT ALL PRIVILEGES ON public TO "agendor-dev";
-#             """
-
-#         cur.execute(grant_access)
-#         print('Access granted as the code: {}'.format(grant_access))
-#         conn.commit()
-#         cur.close()
-
-#     except (Exception, psycopg2.DatabaseError) as error:
-#         print(error)
-#     finally:
-#         if conn is not None:
-#             conn.close()
-#             print('Database connection closed.')
-
-
-# grant_access_to_prod_table = PythonOperator(
-#     task_id='grant_access_to_prod_table',
-#     dag=dag,
-#     python_callable=grant_access_to_prod_table,
-#     provide_context=True
-#     )
 
 
 
