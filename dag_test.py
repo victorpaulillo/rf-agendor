@@ -61,6 +61,7 @@ def get_secret(**kwargs):
     """
     project_id = kwargs.get('project_id')
     secret_id = kwargs.get('secret_id')
+    version_id = kwargs.get('version_id')
 
     # Import the Secret Manager client library.
     from google.cloud import secretmanager
@@ -69,10 +70,14 @@ def get_secret(**kwargs):
     client = secretmanager.SecretManagerServiceClient()
 
     # Build the resource name of the secret.
-    name = client.secret_path(project_id, secret_id)
+    # name = client.secret_path(project_id, secret_id)
+
+    secret_detail = f"projects/{project_id}/secrets/{secret_id}/versions/{version_id}"
+    response = client.access_secret_version(request={"name": secret_detail})
+    DB_HOST = response.payload.data.decode("UTF-8")
 
     # Get the secret.
-    response = client.get_secret(name)
+    # response = client.get_secret(name)
     
     # import ast
     # credentials = ast.literal_eval(response.LabelsEntry.value)
@@ -80,7 +85,7 @@ def get_secret(**kwargs):
     # DB_HOST=credentials["data"]["DB_HOST"]
     # DB_USER=credentials["data"]["DB_USER"]
     # DB_PASS=credentials["data"]["DB_PASS"]
-    DB_HOST = response.LabelsEntry.value
+    # DB_HOST = response.LabelsEntry.value
     DB_USER = 'postgres'
     DB_PASS = 'SDjk127Dfg'
 
