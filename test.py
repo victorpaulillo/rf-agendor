@@ -1,4 +1,6 @@
 import os
+from google.cloud import secretmanager
+
 def db_pass():
     database_url = os.environ.get('DB_PASS')
     print(database_url)
@@ -23,10 +25,14 @@ def get_secret(**kwargs):
 
     # Build the resource name of the secret.
     # name = client.secret_path(project_id, secret_id)
-
+    print('1')
     secret_detail = f"projects/{project_id}/secrets/{secret_id}/versions/{version_id}"
+    # 710709955498
+    # secret_detail = f"projects/710709955498/secrets/{secret_id}/versions/{version_id}"
+    print('2')
     # response = client.access_secret_version(request={"name": secret_detail})
     response = client.access_secret_version(secret_detail)
+    print('3')
     DB_HOST = response.payload.data.decode("UTF-8")
     print(DB_HOST)
     # Get the secret.
