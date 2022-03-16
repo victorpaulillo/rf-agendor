@@ -6,6 +6,7 @@ from airflow.operators.python_operator import PythonOperator
 from google.cloud import bigquery
 import pendulum
 import os
+from google.cloud import secretmanager # Import the Secret Manager client library.
 
 #-------------------------------------------------------------------------------
 # Settings 
@@ -20,14 +21,31 @@ default_args = {
 local_tz = pendulum.timezone('America/Sao_Paulo')
 
 
-# Credentials
-# DB_HOST = os.environ.get('DB_HOST')
-# DB_USER = os.environ.get('DB_USER')
-# DB_PASS = os.environ.get('DB_PASS')
+#------------------------------------------------------------------------------
+#  Credentials
 
-DB_HOST = '35.223.249.231'
-DB_USER = 'postgres'
-DB_PASS = 'SDjk127Dfg'
+# Create the Secret Manager client.
+client = secretmanager.SecretManagerServiceClient()
+
+project_id = 'rf-agendor-335020'
+version_id = 'latest'
+secret_id_host = 'DB_HOST'
+secret_id_user = 'DB_USER'
+secret_id_pass = 'DB_PASS'
+
+# Build the resource name of the secret.
+secret_detail_host = f"projects/{project_id}/secrets/{secret_id_host}/versions/{version_id}"
+response_host = client.access_secret_version(secret_detail_host)
+DB_HOST = response_host.payload.data.decode("UTF-8")
+print(DB_HOST)
+secret_detail_user = f"projects/{project_id}/secrets/{secret_id_user}/versions/{version_id}"
+response_user = client.access_secret_version(secret_detail_user)
+DB_USER = response_user.payload.data.decode("UTF-8")
+print(DB_USER)
+secret_detail_pass = f"projects/{project_id}/secrets/{secret_id_pass}/versions/{version_id}"
+response_pass = client.access_secret_version(secret_detail_pass)
+DB_PASS = response_pass.payload.data.decode("UTF-8")
+print(DB_PASS)
 
 
 #--------------------------------------------------------------------------------
@@ -681,24 +699,13 @@ def grant_access_to_prod_table():
     """ Connect to the PostgreSQL database server """
     import psycopg2
     conn = None
-
-    
-    #Credentials
-    import os
-    DB_HOST = os.environ.get('DB_HOST')
-    DB_USER = os.environ.get('DB_USER')
-    DB_PASS = os.environ.get('DB_PASS')
-
-    print(DB_HOST)
-    print(DB_USER)
-    print(DB_PASS)
-
     try:
         conn = psycopg2.connect(host=DB_HOST, database="rf", user=DB_USER, password=DB_PASS, port= '5432')
 
         cur = conn.cursor()
         grant_access = """
             GRANT ALL PRIVILEGES ON public TO "agendor-dev";
+            GRANT ALL PRIVILEGES ON TABLE rf_agendor_cadastro_api TO "agendor-dev";
             """
 
         cur.execute(grant_access)
