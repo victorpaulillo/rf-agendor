@@ -103,6 +103,9 @@ sudo groupadd docker
 sudo usermod -aG docker $USER
 newgrp docker
 
+Adicionar no Secret Manager do Google as credenciais do Banco de Dados postgres
+***** Adicionar o role 'Assessor de secret do Secret Manager Permite o acesso ao payload de secrets.' para a conta de serviço da VM criada
+
 ------------------------------------------------------------------------------------
 
 
@@ -121,3 +124,9 @@ E vou mandar aqui uns pontos de atenção:
 
 https://stackoverflow.com/questions/69352461/how-to-set-connections-and-variables-in-airflow-using-docker-compose-file
 https://stackoverflow.com/questions/67851351/cannot-install-additional-requirements-to-apache-airflow
+
+
+pip install --upgrade google-api-python-client
+pip install google-cloud-secret-manager
+
+

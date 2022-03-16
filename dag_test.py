@@ -90,10 +90,10 @@ def get_secret(**kwargs):
     DB_USER = 'postgres'
     DB_PASS = 'SDjk127Dfg'
 
-    create_time = response.create_time
-    labels = response.labels
-    key = response.LabelsEntry.key
-    value = response.LabelsEntry.value
+    # create_time = response.create_time
+    # labels = response.labels
+    # key = response.LabelsEntry.key
+    # value = response.LabelsEntry.value
 
 
     """ Connect to the PostgreSQL database server """
