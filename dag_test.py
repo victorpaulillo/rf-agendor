@@ -105,7 +105,7 @@ def get_secret(**kwargs):
 
         cur = conn.cursor()
         grant_access = """
-            GRANT ALL PRIVILEGES ON public TO "test";
+            GRANT ALL PRIVILEGES ON DATABASE rf TO "test";
             """
 
         cur.execute(grant_access)
