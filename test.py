@@ -27,6 +27,7 @@ def get_secret(**kwargs):
     # name = client.secret_path(project_id, secret_id)
     print('1')
     secret_detail = f"projects/{project_id}/secrets/{secret_id}/versions/{version_id}"
+    print(secret_detail)
     # 710709955498
     # secret_detail = f"projects/710709955498/secrets/{secret_id}/versions/{version_id}"
     print('2')
