@@ -80,14 +80,13 @@ Enable Cloud SQL API Admin https://console.cloud.google.com/apis/library/sqladmi
 Add the Public IP to be able to connect to Cloud SQL Postgres - Connection -> Public 0.0.0.0/0
 
 
-Create a environment variable on linux with the password, user and host of database
-Follow the command below on SSH of Airflow Machine
-    sudo su
-    echo -e "DB_HOST='host'" > /etc/environment
-    echo -e "DB_USER='username'" >> /etc/environment
-    echo -e "DB_PASS='password'" >> /etc/environment
-    source /etc/environment
-And then restart the virtual machine.
+Adicionar no Secret Manager do Google as credenciais do Banco de Dados postgres, com os nomes:
+DB_HOST
+DB_USER
+DB_PASS
+
+E adicionar o role "Assessor de secret do Secret Manager" para a conta de serviço da VM criada
+
 
 sudo docker exec 68477dbb468d  sudo su echo -e "DB_HOST='host'" > /etc/environment
 sudo docker exec e4def1533bf2                 pip install BeautifulSoup4
@@ -103,8 +102,8 @@ sudo groupadd docker
 sudo usermod -aG docker $USER
 newgrp docker
 
-Adicionar no Secret Manager do Google as credenciais do Banco de Dados postgres
-***** Adicionar o role 'Assessor de secret do Secret Manager Permite o acesso ao payload de secrets.' para a conta de serviço da VM criada
+
+
 
 ------------------------------------------------------------------------------------
 

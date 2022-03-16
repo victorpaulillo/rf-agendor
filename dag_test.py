@@ -60,7 +60,9 @@ def get_secret(**kwargs):
     the secret container, not any secret material.
     """
     project_id = kwargs.get('project_id')
-    secret_id = kwargs.get('secret_id')
+    secret_id_host = kwargs.get('secret_id_host')
+    secret_id_user = kwargs.get('secret_id_user')
+    secret_id_pass = kwargs.get('secret_id_pass')
     version_id = kwargs.get('version_id')
 
     # Import the Secret Manager client library.
@@ -70,31 +72,18 @@ def get_secret(**kwargs):
     client = secretmanager.SecretManagerServiceClient()
 
     # Build the resource name of the secret.
-    # name = client.secret_path(project_id, secret_id)
-
-    secret_detail = f"projects/{project_id}/secrets/{secret_id}/versions/{version_id}"
-    # response = client.access_secret_version(request={"name": secret_detail})
-    response = client.access_secret_version(secret_detail)
-    DB_HOST = response.payload.data.decode("UTF-8")
+    secret_detail_host = f"projects/{project_id}/secrets/{secret_id_host}/versions/{version_id}"
+    response_host = client.access_secret_version(secret_detail_host)
+    DB_HOST = response_host.payload.data.decode("UTF-8")
     print(DB_HOST)
-    # Get the secret.
-    # response = client.get_secret(name)
-    
-    # import ast
-    # credentials = ast.literal_eval(response.LabelsEntry.value)
-
-    # DB_HOST=credentials["data"]["DB_HOST"]
-    # DB_USER=credentials["data"]["DB_USER"]
-    # DB_PASS=credentials["data"]["DB_PASS"]
-    # DB_HOST = response.LabelsEntry.value
-    DB_USER = 'postgres'
-    DB_PASS = 'SDjk127Dfg'
-
-    # create_time = response.create_time
-    # labels = response.labels
-    # key = response.LabelsEntry.key
-    # value = response.LabelsEntry.value
-
+    secret_detail_user = f"projects/{project_id}/secrets/{secret_id_user}/versions/{version_id}"
+    response_user = client.access_secret_version(secret_detail_user)
+    DB_USER = response_user.payload.data.decode("UTF-8")
+    print(DB_USER)
+    secret_detail_pass = f"projects/{project_id}/secrets/{secret_id_pass}/versions/{version_id}"
+    response_pass = client.access_secret_version(secret_detail_pass)
+    DB_PASS = response_pass.payload.data.decode("UTF-8")
+    print(DB_PASS)
 
     """ Connect to the PostgreSQL database server """
     import psycopg2
@@ -121,16 +110,12 @@ def get_secret(**kwargs):
             print('Database connection closed.')
 
 
-    # Print data about the secret.
-    print("Got secret {} with replication policy {}".format(response.name, response))
-
 
 test_secret_manager = PythonOperator(
     task_id='test_secret_manager',
     dag=dag,
     python_callable=get_secret,
-    # op_kwargs={"project_id":'rf-agendor-335020', "secret_id":'postgres_prod', "version_id":'latest'}
-    op_kwargs={"project_id":'rf-agendor-335020', "secret_id":'DB_HOST', "version_id":'latest'}
+    op_kwargs={"project_id":'rf-agendor-335020', "secret_id_host":'DB_HOST', "secret_id_user":'DB_USER', "secret_id_pass":'DB_PASS',  "version_id":'latest'}
     )
 
 
