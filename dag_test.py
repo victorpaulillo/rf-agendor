@@ -105,7 +105,7 @@ def get_secret(**kwargs):
 
         cur = conn.cursor()
         grant_access = """
-            GRANT ALL PRIVILEGES ON DATABASE rf TO "test";
+            GRANT ALL PRIVILEGES ON TABLE rf_agendor_cadastro_api TO test;
             """
 
         cur.execute(grant_access)
