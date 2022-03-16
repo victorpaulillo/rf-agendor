@@ -58,7 +58,7 @@ def get_secret(**kwargs):
     return DB_HOST
 
 
-lala = get_secret(project_id='rf-agendor-335020', secret_id = 'DB_HOST', version_i = 'latest')
+lala = get_secret(project_id='rf-agendor-335020', secret_id = 'DB_HOST', version_id = 'latest')
 
 print(lala)
 
