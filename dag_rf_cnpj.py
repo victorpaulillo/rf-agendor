@@ -22,27 +22,27 @@ local_tz = pendulum.timezone('America/Sao_Paulo')
 
 
 #------------------------------------------------------------------------------
-#  Credentials
+#  Credentials and Configs
+project_name = 'importacao-dados-da-receita'
 
 # Create the Secret Manager client.
 client = secretmanager.SecretManagerServiceClient()
 
-project_id = 'rf-agendor-335020'
 version_id = 'latest'
 secret_id_host = 'DB_HOST'
 secret_id_user = 'DB_USER'
 secret_id_pass = 'DB_PASS'
 
 # Build the resource name of the secret.
-secret_detail_host = f"projects/{project_id}/secrets/{secret_id_host}/versions/{version_id}"
+secret_detail_host = f"projects/{project_name}/secrets/{secret_id_host}/versions/{version_id}"
 response_host = client.access_secret_version(secret_detail_host)
 DB_HOST = response_host.payload.data.decode("UTF-8")
 print(DB_HOST)
-secret_detail_user = f"projects/{project_id}/secrets/{secret_id_user}/versions/{version_id}"
+secret_detail_user = f"projects/{project_name}/secrets/{secret_id_user}/versions/{version_id}"
 response_user = client.access_secret_version(secret_detail_user)
 DB_USER = response_user.payload.data.decode("UTF-8")
 print(DB_USER)
-secret_detail_pass = f"projects/{project_id}/secrets/{secret_id_pass}/versions/{version_id}"
+secret_detail_pass = f"projects/{project_name}/secrets/{secret_id_pass}/versions/{version_id}"
 response_pass = client.access_secret_version(secret_detail_pass)
 DB_PASS = response_pass.payload.data.decode("UTF-8")
 print(DB_PASS)
@@ -86,7 +86,7 @@ def bigquery_to_storage():
     from google.cloud import bigquery
     client = bigquery.Client()
     bucket_file_name = 'cnpj_rf_agendor/bigquery_to_postgres'
-    project = "rf-agendor-335020"
+    project = project_name
     dataset_id = "rf"
     table_id = "rf_agendor_cadastro_api"
 
@@ -161,7 +161,7 @@ def storage_to_postgres_bash_command(**kwargs):
     service = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
 
     # Project ID of the project that contains the instance.
-    project = 'rf-agendor-335020'  # TODO: Update placeholder value.
+    project = project_name  # TODO: Update placeholder value.
 
     # Cloud SQL instance ID. This does not include the project ID.
     instance = 'rf-agendor'  # TODO: Update placeholder value.
@@ -601,8 +601,8 @@ def validation_no_records_postgres_bq():
     # Download query results.
     query_bq = """
         select count(1) as qt
-        from `rf-agendor-335020.rf.rf_agendor_cadastro_api`
-    """
+        from `{project_name}.rf.rf_agendor_cadastro_api`
+    """.format(project_name=project_name)
     df_bq = (
         bqclient.query(query_bq)
         .result()
@@ -653,8 +653,8 @@ def validation_final_no_records_postgres_bq():
     # Download query results.
     query_bq = """
         select count(1) as qt
-        from `rf-agendor-335020.rf.rf_agendor_cadastro_api`
-    """
+        from `{project_name}.rf.rf_agendor_cadastro_api`
+    """.format(project_name=project_name)
     df_bq = (
         bqclient.query(query_bq)
         .result()
@@ -730,7 +730,7 @@ grant_access_to_prod_table = PythonOperator(
 
     
 ct_qualificacoes_socios_query = """
-    create external table if not exists `rf-agendor-335020.rf.qualificacoes_socios`
+    create external table if not exists `{project_name}.rf.qualificacoes_socios`
     (
     codigo string,
     descricao string
@@ -740,10 +740,10 @@ ct_qualificacoes_socios_query = """
     field_delimiter = ';',
     uris = ['gs://cnpj_rf_agendor/unzip_files/*.QUALSCSV']
     );
-    """
+    """.format(project_name=project_name)
 
 ct_paises_query = """
-    create external table if not exists `rf-agendor-335020.rf.paises`
+    create external table if not exists `{project_name}.rf.paises`
     (
     codigo string,
     descricao string
@@ -753,10 +753,10 @@ ct_paises_query = """
     field_delimiter = ';',
     uris = ['gs://cnpj_rf_agendor/unzip_files/*.PAISCSV']
     );
-"""
+""".format(project_name=project_name)
 
 ct_natureza_juridica_query = """
-    create external table if not exists `rf-agendor-335020.rf.natureza_juridica`
+    create external table if not exists `{project_name}.rf.natureza_juridica`
     (
     codigo string,
     descricao string
@@ -766,10 +766,10 @@ ct_natureza_juridica_query = """
     field_delimiter = ';',
     uris = ['gs://cnpj_rf_agendor/unzip_files/*.NATJUCSV']
     );
-    """
+    """.format(project_name=project_name)
 
 ct_municipios_query = """
-    create external table if not exists `rf-agendor-335020.rf.municipios`
+    create external table if not exists `{project_name}.rf.municipios`
     (
     codigo string,
     descricao string
@@ -779,10 +779,10 @@ ct_municipios_query = """
     field_delimiter = ';',
     uris = ['gs://cnpj_rf_agendor/unzip_files/*.MUNICCSV']
     );
-"""
+""".format(project_name=project_name)
 
 ct_empresas_query = """
-    create external table if not exists `rf-agendor-335020.rf.empresas`
+    create external table if not exists `{project_name}.rf.empresas`
     (
     cnpj_basico string,
     razao_social string,
@@ -797,10 +797,10 @@ ct_empresas_query = """
     field_delimiter = ';',
     uris = ['gs://cnpj_rf_agendor/unzip_files/*.EMPRECSV']
     );
-    """
+    """.format(project_name=project_name)
 
 ct_cnae_query = """
-    create external table if not exists `rf-agendor-335020.rf.cnae`
+    create external table if not exists `{project_name}.rf.cnae`
     (
     codigo	STRING,
     descricao	STRING
@@ -810,10 +810,10 @@ ct_cnae_query = """
     field_delimiter = ';',
     uris = ['gs://cnpj_rf_agendor/unzip_files/*.CNAECSV']
     );
-    """
+    """.format(project_name=project_name)
 
 ct_estabelecimentos_query = """
-    create external table if not exists `rf-agendor-335020.rf.estabelecimentos`
+    create external table if not exists `{project_name}.rf.estabelecimentos`
     (
         cnpj_basico STRING , 
         cnpj_ordem STRING , 
@@ -851,10 +851,10 @@ ct_estabelecimentos_query = """
     field_delimiter = ';',
     uris = ['gs://cnpj_rf_agendor/unzip_files_treated/*.ESTABELE']
     );
-    """
+    """.format(project_name=project_name)
 
 ct_socios_query = """
-    create external table if not exists `rf-agendor-335020.rf.socios`
+    create external table if not exists `{project_name}.rf.socios`
     (
     cnpj_basico	STRING,
     identificador_socio	STRING,
@@ -873,18 +873,18 @@ ct_socios_query = """
     field_delimiter = ';',
     uris = ['gs://cnpj_rf_agendor/unzip_files/*.SOCIOCSV']
     );
-    """
+    """.format(project_name=project_name)
 
 ct_socios_agg_json_query = """
-    create or replace table 	`rf-agendor-335020.rf.socios_agg_json`
+    create or replace table 	`{project_name}.rf.socios_agg_json`
     (
     cnpj_basico STRING,
     socios_json ARRAY<STRING>
     );
-    """
+    """.format(project_name=project_name)
 
 ct_rf_agendor_cadastro_api_query = """
-    create or replace table 	`rf-agendor-335020.rf.rf_agendor_cadastro_api`
+    create or replace table 	`{project_name}.rf.rf_agendor_cadastro_api`
     (
     cnpj	STRING,
     matriz_filial	STRING,
@@ -915,10 +915,10 @@ ct_rf_agendor_cadastro_api_query = """
     cnpj_basico	STRING,
     socios_json STRING
     );
-    """
+    """.format(project_name=project_name)
 
 insert_into_socios_agg_json_query = """
-    insert into `rf-agendor-335020.rf.socios_agg_json`
+    insert into `{project_name}.rf.socios_agg_json`
     with 
     socios as (
     select s.cnpj_basico
@@ -961,10 +961,10 @@ insert_into_socios_agg_json_query = """
     group by cnpj_basico
     order by cnpj_basico
     ;
-    """
+    """.format(project_name=project_name)
 
 insert_into_rf_agendor_cadastro_api_query = """
-insert into `rf-agendor-335020.rf.rf_agendor_cadastro_api`
+insert into `{project_name}.rf.rf_agendor_cadastro_api`
 select e.cnpj_basico || cnpj_ordem || cnpj_dv as cnpj
   , case when e.identificador_matriz_filial = '1' then 'Matriz'
       when e.identificador_matriz_filial = '2' then 'Filial'
@@ -1017,8 +1017,7 @@ left join rf.natureza_juridica as n
 on n.codigo = emp.natureza_juridica
 left join rf.socios_agg_json as s
 on s.cnpj_basico = e.cnpj_basico
-
-"""
+""".format(project_name=project_name)
 
 ct_qualificacoes_socios = PythonOperator(task_id='ct_qualificacoes_socios',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":ct_qualificacoes_socios_query})
 ct_paises = PythonOperator(task_id='ct_paises',dag=dag,python_callable=bigquery_execution,op_kwargs={"query":ct_paises_query})
