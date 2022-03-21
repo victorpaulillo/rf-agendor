@@ -24,6 +24,7 @@ local_tz = pendulum.timezone('America/Sao_Paulo')
 #------------------------------------------------------------------------------
 #  Credentials and Configs
 project_name = 'importacao-dados-da-receita'
+rf_bucket_name = 'importacao_rf_agendor'
 
 # Create the Secret Manager client.
 client = secretmanager.SecretManagerServiceClient()
@@ -69,7 +70,7 @@ def bigquery_execution(query):
 def bigquery_to_storage():
     # First we will delete all files from storage, to not duplicate any file
     from google.cloud import storage
-    bucket_name = 'cnpj_rf_agendor'
+    bucket_name = rf_bucket_name
     directory_name = 'bigquery_to_postgres'
 
     client = storage.Client()
@@ -85,7 +86,7 @@ def bigquery_to_storage():
 
     from google.cloud import bigquery
     client = bigquery.Client()
-    bucket_file_name = 'cnpj_rf_agendor/bigquery_to_postgres'
+    bucket_file_name = '{bucket_name}/bigquery_to_postgres'.format(bucket_name=rf_bucket_name)
     project = project_name
     dataset_id = "rf"
     table_id = "rf_agendor_cadastro_api"
@@ -116,7 +117,7 @@ def compose_file(**kwargs):
     from google.cloud import storage
 
     """Concatenate source blobs into destination blob."""
-    bucket_name = 'cnpj_rf_agendor'
+    bucket_name = rf_bucket_name
     destination_blob_name = "bigquery_to_postgres/rf_agendor_cadastro_api_composed"
 
     storage_client = storage.Client()
@@ -140,7 +141,7 @@ def list_storage_files():
 
     client = storage.Client()
     list_files = []
-    for blob in client.list_blobs('cnpj_rf_agendor', prefix='bigquery_to_postgres'):
+    for blob in client.list_blobs(rf_bucket_name, prefix='bigquery_to_postgres'):
         print(str(blob))
         blob_name = blob.name
         list_files.append(blob_name)
@@ -167,7 +168,7 @@ def storage_to_postgres_bash_command(**kwargs):
     instance = 'rf-agendor'  # TODO: Update placeholder value.
     # table='rf_agendor_cadastro_api_tmp_{}'.format(number)
     table='rf_agendor_cadastro_api_stage'
-    file_name='gs://cnpj_rf_agendor/bigquery_to_postgres/rf_agendor_cadastro_api_composed'
+    file_name='gs://{bucket_name}/bigquery_to_postgres/rf_agendor_cadastro_api_composed'.format(bucket_name=rf_bucket_name)
 
 
     instances_import_request_body = {
@@ -738,9 +739,9 @@ ct_qualificacoes_socios_query = """
     OPTIONS (
     format = 'CSV',
     field_delimiter = ';',
-    uris = ['gs://cnpj_rf_agendor/unzip_files/*.QUALSCSV']
+    uris = ['gs://{bucket_name}/unzip_files/*.QUALSCSV']
     );
-    """.format(project_name=project_name)
+    """.format(project_name=project_name, bucket_name=rf_bucket_name)
 
 ct_paises_query = """
     create external table if not exists `{project_name}.rf.paises`
@@ -751,9 +752,9 @@ ct_paises_query = """
     OPTIONS (
     format = 'CSV',
     field_delimiter = ';',
-    uris = ['gs://cnpj_rf_agendor/unzip_files/*.PAISCSV']
+    uris = ['gs://{bucket_name}/unzip_files/*.PAISCSV']
     );
-""".format(project_name=project_name)
+""".format(project_name=project_name, bucket_name=rf_bucket_name)
 
 ct_natureza_juridica_query = """
     create external table if not exists `{project_name}.rf.natureza_juridica`
@@ -764,9 +765,9 @@ ct_natureza_juridica_query = """
     OPTIONS (
     format = 'CSV',
     field_delimiter = ';',
-    uris = ['gs://cnpj_rf_agendor/unzip_files/*.NATJUCSV']
+    uris = ['gs://{bucket_name}/unzip_files/*.NATJUCSV']
     );
-    """.format(project_name=project_name)
+    """.format(project_name=project_name, bucket_name=rf_bucket_name)
 
 ct_municipios_query = """
     create external table if not exists `{project_name}.rf.municipios`
@@ -777,9 +778,9 @@ ct_municipios_query = """
     OPTIONS (
     format = 'CSV',
     field_delimiter = ';',
-    uris = ['gs://cnpj_rf_agendor/unzip_files/*.MUNICCSV']
+    uris = ['gs://{bucket_name}/unzip_files/*.MUNICCSV']
     );
-""".format(project_name=project_name)
+""".format(project_name=project_name, bucket_name=rf_bucket_name)
 
 ct_empresas_query = """
     create external table if not exists `{project_name}.rf.empresas`
@@ -795,9 +796,9 @@ ct_empresas_query = """
     OPTIONS (
     format = 'CSV',
     field_delimiter = ';',
-    uris = ['gs://cnpj_rf_agendor/unzip_files/*.EMPRECSV']
+    uris = ['gs://{bucket_name}/unzip_files/*.EMPRECSV']
     );
-    """.format(project_name=project_name)
+    """.format(project_name=project_name, bucket_name=rf_bucket_name)
 
 ct_cnae_query = """
     create external table if not exists `{project_name}.rf.cnae`
@@ -808,9 +809,9 @@ ct_cnae_query = """
     OPTIONS (
     format = 'CSV',
     field_delimiter = ';',
-    uris = ['gs://cnpj_rf_agendor/unzip_files/*.CNAECSV']
+    uris = ['gs://{bucket_name}/unzip_files/*.CNAECSV']
     );
-    """.format(project_name=project_name)
+    """.format(project_name=project_name, bucket_name=rf_bucket_name)
 
 ct_estabelecimentos_query = """
     create external table if not exists `{project_name}.rf.estabelecimentos`
@@ -849,9 +850,9 @@ ct_estabelecimentos_query = """
     OPTIONS (
     format = 'CSV',
     field_delimiter = ';',
-    uris = ['gs://cnpj_rf_agendor/unzip_files_treated/*.ESTABELE']
+    uris = ['gs://{bucket_name}/unzip_files_treated/*.ESTABELE']
     );
-    """.format(project_name=project_name)
+    """.format(project_name=project_name, bucket_name=rf_bucket_name)
 
 ct_socios_query = """
     create external table if not exists `{project_name}.rf.socios`
@@ -871,9 +872,9 @@ ct_socios_query = """
     OPTIONS (
     format = 'CSV',
     field_delimiter = ';',
-    uris = ['gs://cnpj_rf_agendor/unzip_files/*.SOCIOCSV']
+    uris = ['gs://{bucket_name}/unzip_files/*.SOCIOCSV']
     );
-    """.format(project_name=project_name)
+    """.format(project_name=project_name, bucket_name=rf_bucket_name)
 
 ct_socios_agg_json_query = """
     create or replace table 	`{project_name}.rf.socios_agg_json`

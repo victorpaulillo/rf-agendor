@@ -42,6 +42,7 @@ If the Docker is not healthy, then go to "cd airflow-docker" and run the command
 # 2. Create the Storage bucket
 Criar um bucket no Google Cloud Storage com o nome "importacao_rf_agendor" com a mesma localização da VM (São Paulo)
 Vá para a script "dag_rf_download" aproximadamente na linha 38 'Configs' e substitua ou verifique se o nome do bucket é o mesmo entre o script e o bucket criado
+E adicionar o role no IAM "Storage Object Viewer" para a conta de serviço da VM criada
 
 
 # 3. Create a Cloud SQL Postgres Instance
