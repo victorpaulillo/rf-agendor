@@ -262,7 +262,7 @@ start_dag = DummyOperator(task_id='start_dag', dag=dag)
 remove_special_char_phase = DummyOperator(task_id='remove_special_char_phase', dag=dag)
 trigger_next_dag_phase = DummyOperator(task_id='trigger_next_dag_phase', dag=dag)
 
-delete_files_storage = PythonOperator(task_id='delete_files_storage',dag=dag,python_callable=delete_files_storage,op_kwargs={"bucket_name":'rf_bucket_name'})
+delete_files_storage = PythonOperator(task_id='delete_files_storage',dag=dag,python_callable=delete_files_storage,op_kwargs={"bucket_name":rf_bucket_name})
 list_files_rf = PythonOperator(task_id='list_files_rf',dag=dag,python_callable=list_files_rf)
 
 
