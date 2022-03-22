@@ -90,17 +90,12 @@ def bigquery_to_storage():
     project = project_name
     dataset_id = "rf"
     table_id = "rf_agendor_cadastro_api"
-    print('1')
 
     destination_uri = "gs://{}/{}".format(bucket_file_name, "rf_agendor_cadastro_api-*")
     dataset_ref = bigquery.DatasetReference(project, dataset_id)
-    print('2')
     table_ref = dataset_ref.table(table_id)
-    print('3')
     job_config = bigquery.job.ExtractJobConfig()
-    print('4')
     job_config.compression = bigquery.Compression.GZIP
-    print('5')
 
     extract_job = client.extract_table(
         table_ref,
@@ -157,24 +152,25 @@ def list_storage_files():
 
 def storage_to_postgres_bash_command(**kwargs):
     from pprint import pprint
-
+    print('1')
     from googleapiclient import discovery
+    print('2')
     from oauth2client.client import GoogleCredentials
-
+    print('3')
 
     credentials = GoogleCredentials.get_application_default()
-
+    print('4')
     service = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
-
+    print('5')
     # Project ID of the project that contains the instance.
     project = project_name  # TODO: Update placeholder value.
-
+    print('6')
     # Cloud SQL instance ID. This does not include the project ID.
     instance = 'rf-agendor'  # TODO: Update placeholder value.
     # table='rf_agendor_cadastro_api_tmp_{}'.format(number)
     table='rf_agendor_cadastro_api_stage'
     file_name='gs://{bucket_name}/bigquery_to_postgres/rf_agendor_cadastro_api_composed'.format(bucket_name=rf_bucket_name)
-
+    print('7')
 
     instances_import_request_body = {
         
@@ -189,9 +185,11 @@ def storage_to_postgres_bash_command(**kwargs):
                 }
                 }
     }
+    print('8')
 
     print(instances_import_request_body)
     request = service.instances().import_(project=project, instance=instance, body=instances_import_request_body)
+    print('9')
     response = request.execute()
 
     # TODO: Change code below to process the `response` dict:
