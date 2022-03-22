@@ -53,6 +53,12 @@ Crie o usuario do Agendor dev no Cloud SQL - 'agendor-dev'
 Enable Cloud SQL API Admin https://console.cloud.google.com/apis/library/sqladmin.googleapis.com
 Crie o database "rf" no postgres atraves do Cloud Shell, usando o comando "create database rf;"
 
+# Será necessário fazer uma autenticacao OAuth com o Google para ser possível disparar um post para iniciar a importacao do arquivo csv do storage para o postgres.
+Para isso rode o comando no ssh da vm 'gcloud auth login';
+Obtenha o url;
+Adicione o parametro "&redirect_uri=urn:ietf:wg:oauth:2.0:oob:auto" conforme a 'Copiar/colar manualmente' da documentação "https://developers.google.com/identity/protocols/oauth2/native-app"
+Faça login, permita o autenticador e copie e cole o 'C[odigo de Autorização' no terminal
+
 
 
 # 4. Create the BigQuery schema
@@ -99,5 +105,11 @@ sudo docker exec 88d32e1fa876                         pip install BeautifulSoup4
 sudo docker exec 437f739832d3                         pip install BeautifulSoup4
 sudo docker exec d363f241be35                         pip install BeautifulSoup4
 
+<!-- sudo docker exec e62ed3964966                         pip install google-api-python-client
+sudo docker exec ee9fba202ad3                         pip install google-api-python-client
+sudo docker exec 88d32e1fa876                         pip install google-api-python-client
+sudo docker exec 437f739832d3                         pip install google-api-python-client
+sudo docker exec d363f241be35                         pip install google-api-python-client -->
 
 
+pip install --upgrade google-api-python-client
