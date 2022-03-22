@@ -42,7 +42,6 @@ If the Docker is not healthy, then go to "cd airflow-docker" and run the command
 # 2. Create the Storage bucket
 Criar um bucket no Google Cloud Storage com o nome "importacao_rf_agendor" com a mesma localização da VM (São Paulo)
 Vá para a script "dag_rf_download" aproximadamente na linha 38 'Configs' e substitua ou verifique se o nome do bucket é o mesmo entre o script e o bucket criado
-E adicionar o role no IAM "Storage Object Viewer" para a conta de serviço da VM criada
 
 
 # 3. Create a Cloud SQL Postgres Instance
@@ -51,17 +50,17 @@ Criar uma instancia no Postgres com o nome "rf" na regiao de São Paulo
     Add the Public IP to be able to connect to Cloud SQL Postgres - Connection -> Public 0.0.0.0/0
 Vá para a script "dag_rf_cnpj" aproximadamente na linha 25 'Configs' e substitua ou verifique se o nome do projeto é o mesmo entre o script e o projeto do GCP
 Crie o usuario do Agendor dev no Cloud SQL - 'agendor-dev'
-# Enable Cloud SQL API Admin https://console.cloud.google.com/apis/library/sqladmin.googleapis.com?project=rf-agendor-335020
+Enable Cloud SQL API Admin https://console.cloud.google.com/apis/library/sqladmin.googleapis.com
+Crie o database "rf" no postgres atraves do Cloud Shell, usando o comando "create database rf;"
+
 
 
 # 4. Create the BigQuery schema
 Create 'rf' schema on biguery (Needs to be on the same region as the storage bucket)
-Remember to add permissions to the users to access the data (could happend an issue related to that)
-
-Liberar permissao da Conta de Serviço da Instancia do Postgres no bucket do Google Cloud Storage
+E adicionar o role no IAM "BigQuery Data Editor" e "BigQuery Job User" para a conta de serviço da VM criada
 
 
-# Adicione as credenciais do Cloud SQL no Google Secret Manager
+# 5. Adicione as credenciais do Cloud SQL no Google Secret Manager
 Adicionar no Secret Manager do Google as credenciais do Banco de Dados postgres, com os nomes:
 DB_HOST
 DB_USER
@@ -69,7 +68,11 @@ DB_PASS
 
 E adicionar o role no IAM "Secret Manager Secret Accessor" para a conta de serviço da VM criada
 
-# 6. Instalar as bibliotecas nos dockers:
+# 6. Adicione a permissao do VM Instance Schedule na Conta de Serviço
+Adicione o role no IAM "Compute Instance Admin (v1)" para a conta de serviço da VM criada
+
+
+# 7. Instalar as bibliotecas nos dockers:
 Obtenha os nomes dos containers apache/airflow atraves do comando no SSH 'sudo docker ps', substitua o CONTAINER_ID abaixo e e instale as bibliotecas
 
 sudo docker exec e62ed3964966                         pip install subprocess.run

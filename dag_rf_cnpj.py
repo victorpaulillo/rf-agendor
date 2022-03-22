@@ -90,12 +90,17 @@ def bigquery_to_storage():
     project = project_name
     dataset_id = "rf"
     table_id = "rf_agendor_cadastro_api"
+    print('1')
 
     destination_uri = "gs://{}/{}".format(bucket_file_name, "rf_agendor_cadastro_api-*")
     dataset_ref = bigquery.DatasetReference(project, dataset_id)
+    print('2')
     table_ref = dataset_ref.table(table_id)
+    print('3')
     job_config = bigquery.job.ExtractJobConfig()
+    print('4')
     job_config.compression = bigquery.Compression.GZIP
+    print('5')
 
     extract_job = client.extract_table(
         table_ref,
