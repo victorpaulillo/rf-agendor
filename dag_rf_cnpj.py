@@ -160,8 +160,8 @@ def storage_to_postgres_bash_command(**kwargs):
 
     credentials = GoogleCredentials.get_application_default()
     print('4')
-    # service = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
-    service = discovery.build('sqladmin', 'v1beta4')
+    service = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
+    # service = discovery.build('sqladmin', 'v1beta4')
     print('5')
     # Project ID of the project that contains the instance.
     project = project_name  # TODO: Update placeholder value.
