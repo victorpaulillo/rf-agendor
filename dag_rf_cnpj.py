@@ -157,35 +157,19 @@ def list_storage_files():
 
 def storage_to_postgres_bash_command(**kwargs):
     from pprint import pprint
-    print('1')
     from googleapiclient import discovery
-    print('2')
     from oauth2client.client import GoogleCredentials
-    # from oauth2client.client import AccesTokenCredentials
-    from oauth2client.client import AccessTokenCredentials
-    print('3')
-    import google.oauth2.credentials
 
-    # credentials = google.oauth2.credentials.Credentials(API_KEY)
-    # credentials = AccessTokenCredentials(API_KEY, 'API_KEY')
     credentials = GoogleCredentials.get_application_default()
-
-    import google.auth
-
-    # credentials, project_id = google.auth.default()
-    print('4')
     service = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
-    # service = discovery.build('sqladmin', 'v1beta4')
-    print('5')
+
     # Project ID of the project that contains the instance.
     project = project_name  # TODO: Update placeholder value.
-    print('6')
     # Cloud SQL instance ID. This does not include the project ID.
     instance = 'rf-agendor'  # TODO: Update placeholder value.
     # table='rf_agendor_cadastro_api_tmp_{}'.format(number)
     table='rf_agendor_cadastro_api_stage'
     file_name='gs://{bucket_name}/bigquery_to_postgres/rf_agendor_cadastro_api_composed'.format(bucket_name=rf_bucket_name)
-    print('7')
 
     instances_import_request_body = {
         
@@ -200,11 +184,9 @@ def storage_to_postgres_bash_command(**kwargs):
                 }
                 }
     }
-    print('8')
 
     print(instances_import_request_body)
     request = service.instances().import_(project=project, instance=instance, body=instances_import_request_body)
-    print('9')
     response = request.execute()
 
     # TODO: Change code below to process the `response` dict:

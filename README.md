@@ -52,13 +52,7 @@ Vá para a script "dag_rf_cnpj" aproximadamente na linha 25 'Configs' e substitu
 Crie o usuario do Agendor dev no Cloud SQL - 'agendor-dev'
 Enable Cloud SQL API Admin https://console.cloud.google.com/apis/library/sqladmin.googleapis.com
 Crie o database "rf" no postgres atraves do Cloud Shell, usando o comando "create database rf;"
-
-# Será necessário fazer uma autenticacao OAuth com o Google para ser possível disparar um post para iniciar a importacao do arquivo csv do storage para o postgres.
-Para isso rode o comando no ssh da vm 'gcloud auth login';
-Obtenha o url;
-Adicione o parametro "&redirect_uri=urn:ietf:wg:oauth:2.0:oob:auto" conforme a 'Copiar/colar manualmente' da documentação "https://developers.google.com/identity/protocols/oauth2/native-app"
-Faça login, permita o autenticador e copie e cole o 'C[odigo de Autorização' no terminal
-
+Copie o nome da Conta de Serviço da Instance do Cloud SQL Postgres. Vá no bucket criado do Cloud Storage e adiocione as roles "Leitor de bucket legado do Storage" e "Leitor de objeto legado do Storage" para essa conta de serviço
 
 
 # 4. Create the BigQuery schema
@@ -81,35 +75,28 @@ Adicione o role no IAM "Compute Instance Admin (v1)" para a conta de serviço da
 # 7. Instalar as bibliotecas nos dockers:
 Obtenha os nomes dos containers apache/airflow atraves do comando no SSH 'sudo docker ps', substitua o CONTAINER_ID abaixo e e instale as bibliotecas
 
-sudo docker exec e62ed3964966                         pip install subprocess.run
-sudo docker exec ee9fba202ad3                         pip install subprocess.run
-sudo docker exec 88d32e1fa876                         pip install subprocess.run
-sudo docker exec 437f739832d3                         pip install subprocess.run
-sudo docker exec d363f241be35                         pip install subprocess.run
+sudo docker exec a1713da78eb5                         pip install subprocess.run
+sudo docker exec e068abefd88c                         pip install subprocess.run
+sudo docker exec 157a57f49a33                         pip install subprocess.run
+sudo docker exec f4801422d5cb                         pip install subprocess.run
+sudo docker exec fa00edf25ad0                         pip install subprocess.run
 
-sudo docker exec e62ed3964966                         pip install pandas
-sudo docker exec ee9fba202ad3                         pip install pandas
-sudo docker exec 88d32e1fa876                         pip install pandas
-sudo docker exec 437f739832d3                         pip install pandas
-sudo docker exec d363f241be35                         pip install pandas
+sudo docker exec a1713da78eb5                         pip install pandas
+sudo docker exec e068abefd88c                         pip install pandas
+sudo docker exec 157a57f49a33                         pip install pandas
+sudo docker exec f4801422d5cb                         pip install pandas
+sudo docker exec fa00edf25ad0                         pip install pandas
 
-sudo docker exec e62ed3964966                         pip install oauth2client
-sudo docker exec ee9fba202ad3                         pip install oauth2client
-sudo docker exec 88d32e1fa876                         pip install oauth2client
-sudo docker exec 437f739832d3                         pip install oauth2client
-sudo docker exec d363f241be35                         pip install oauth2client
+sudo docker exec a1713da78eb5                         pip install oauth2client
+sudo docker exec e068abefd88c                         pip install oauth2client
+sudo docker exec 157a57f49a33                         pip install oauth2client
+sudo docker exec f4801422d5cb                         pip install oauth2client
+sudo docker exec fa00edf25ad0                         pip install oauth2client
 
-sudo docker exec e62ed3964966                         pip install BeautifulSoup4
-sudo docker exec ee9fba202ad3                         pip install BeautifulSoup4
-sudo docker exec 88d32e1fa876                         pip install BeautifulSoup4
-sudo docker exec 437f739832d3                         pip install BeautifulSoup4
-sudo docker exec d363f241be35                         pip install BeautifulSoup4
-
-<!-- sudo docker exec e62ed3964966                         pip install google-api-python-client
-sudo docker exec ee9fba202ad3                         pip install google-api-python-client
-sudo docker exec 88d32e1fa876                         pip install google-api-python-client
-sudo docker exec 437f739832d3                         pip install google-api-python-client
-sudo docker exec d363f241be35                         pip install google-api-python-client -->
+sudo docker exec a1713da78eb5                         pip install BeautifulSoup4
+sudo docker exec e068abefd88c                         pip install BeautifulSoup4
+sudo docker exec 157a57f49a33                         pip install BeautifulSoup4
+sudo docker exec f4801422d5cb                         pip install BeautifulSoup4
+sudo docker exec fa00edf25ad0                         pip install BeautifulSoup4
 
 
-pip install --upgrade google-api-python-client
