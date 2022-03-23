@@ -167,8 +167,8 @@ def storage_to_postgres_bash_command(**kwargs):
     import google.oauth2.credentials
 
     # credentials = google.oauth2.credentials.Credentials(API_KEY)
-    credentials = AccessTokenCredentials(API_KEY, 'API_KEY')
-    # credentials = GoogleCredentials.get_application_default()
+    # credentials = AccessTokenCredentials(API_KEY, 'API_KEY')
+    credentials = GoogleCredentials.get_application_default()
 
     import google.auth
 
