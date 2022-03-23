@@ -157,12 +157,14 @@ def storage_to_postgres_bash_command(**kwargs):
     print('2')
     from oauth2client.client import GoogleCredentials
     print('3')
+    import google.oauth2.credentials
 
+    credentials = google.oauth2.credentials.Credentials('AIzaSyA1YxZUNFCqeRRHh1Yg99jRqnHnBRiLXoc')
     # credentials = GoogleCredentials.get_application_default()
 
     import google.auth
 
-    credentials, project_id = google.auth.default()
+    # credentials, project_id = google.auth.default()
     print('4')
     service = discovery.build('sqladmin', 'v1beta4', credentials=credentials)
     # service = discovery.build('sqladmin', 'v1beta4')
