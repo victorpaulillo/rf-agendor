@@ -594,7 +594,7 @@ def validation_no_records_postgres_bq():
     # Wait 30 minutes each retry to see if the file has been loaded on the postgres stage table
     import time
     print('Waiting 30 minutes to make sure that the file has finished loading on postgres stage table')
-    time.sleep(1800)
+    # time.sleep(1800)
 
 
     bqclient = bigquery.Client()
