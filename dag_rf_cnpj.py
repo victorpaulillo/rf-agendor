@@ -163,7 +163,6 @@ def storage_to_postgres_bash_command(**kwargs):
     project = project_name  # TODO: Update placeholder value.
     # Cloud SQL instance ID. This does not include the project ID.
     instance = 'rf-agendor'  # TODO: Update placeholder value.
-    # table='rf_agendor_cadastro_api_tmp_{}'.format(number)
     table='rf_agendor_cadastro_api_stage'
     file_name='gs://{bucket_name}/bigquery_to_postgres/rf_agendor_cadastro_api_composed'.format(bucket_name=rf_bucket_name)
 
@@ -590,7 +589,7 @@ def validation_no_records_postgres_bq():
     # Wait 30 minutes each retry to see if the file has been loaded on the postgres stage table
     import time
     print('Waiting 30 minutes to make sure that the file has finished loading on postgres stage table')
-    # time.sleep(1800)
+    time.sleep(1800)
 
 
     bqclient = bigquery.Client()

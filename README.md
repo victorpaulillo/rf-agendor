@@ -57,7 +57,7 @@ Copie o nome da Conta de Serviço da Instance do Cloud SQL Postgres. Vá no buck
 
 # 4. Create the BigQuery schema
 Create 'rf' schema on biguery (Needs to be on the same region as the storage bucket)
-E adicionar o role no IAM "BigQuery Data Editor" e "BigQuery Job User" para a conta de serviço da VM criada
+E adicionar o role no IAM "BigQuery Data Editor", "BigQuery Job User" e "Usuário de sessão de leitura do BigQuery" para a conta de serviço da VM criada
 
 
 # 5. Adicione as credenciais do Cloud SQL no Google Secret Manager
