@@ -33,6 +33,7 @@ version_id = 'latest'
 secret_id_host = 'DB_HOST'
 secret_id_user = 'DB_USER'
 secret_id_pass = 'DB_PASS'
+secret_id_api = 'API_KEY'
 
 # Build the resource name of the secret.
 secret_detail_host = f"projects/{project_name}/secrets/{secret_id_host}/versions/{version_id}"
@@ -47,6 +48,10 @@ secret_detail_pass = f"projects/{project_name}/secrets/{secret_id_pass}/versions
 response_pass = client.access_secret_version(secret_detail_pass)
 DB_PASS = response_pass.payload.data.decode("UTF-8")
 print(DB_PASS)
+secret_detail_api = f"projects/{project_name}/secrets/{secret_id_api}/versions/{version_id}"
+response_api = client.access_secret_version(secret_detail_api)
+API_KEY = response_api.payload.data.decode("UTF-8")
+print(API_KEY)
 
 
 #--------------------------------------------------------------------------------
@@ -159,7 +164,7 @@ def storage_to_postgres_bash_command(**kwargs):
     print('3')
     import google.oauth2.credentials
 
-    credentials = google.oauth2.credentials.Credentials('AIzaSyA1YxZUNFCqeRRHh1Yg99jRqnHnBRiLXoc')
+    credentials = google.oauth2.credentials.Credentials(API_KEY)
     # credentials = GoogleCredentials.get_application_default()
 
     import google.auth
