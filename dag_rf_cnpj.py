@@ -387,6 +387,8 @@ def insert_tmp_table_postgres():
                 from rf_agendor_cadastro_api_stage
                 where cnpj is not null
                 and cnpj <> 'cnpj'
+            on conflict (cnpj)
+            do nothing
             ;
             """
         cur.execute(insert_data_statement)

@@ -75,28 +75,28 @@ Adicione o role no IAM "Compute Instance Admin (v1)" para a conta de serviço da
 # 7. Instalar as bibliotecas nos dockers:
 Obtenha os nomes dos containers apache/airflow atraves do comando no SSH 'sudo docker ps', substitua o CONTAINER_ID abaixo e e instale as bibliotecas
 
-sudo docker exec a1713da78eb5                         pip install subprocess.run
-sudo docker exec e068abefd88c                         pip install subprocess.run
-sudo docker exec 157a57f49a33                         pip install subprocess.run
-sudo docker exec f4801422d5cb                         pip install subprocess.run
-sudo docker exec fa00edf25ad0                         pip install subprocess.run
+sudo docker exec ff56a132f97c                         pip install subprocess.run
+sudo docker exec 80f94c332bee                         pip install subprocess.run
+sudo docker exec 99efeb23f7cc                         pip install subprocess.run
+sudo docker exec 3f5cf2fa9085                         pip install subprocess.run
+sudo docker exec 43c1511e9bae                         pip install subprocess.run
 
-sudo docker exec a1713da78eb5                         pip install pandas
-sudo docker exec e068abefd88c                         pip install pandas
-sudo docker exec 157a57f49a33                         pip install pandas
-sudo docker exec f4801422d5cb                         pip install pandas
-sudo docker exec fa00edf25ad0                         pip install pandas
+sudo docker exec ff56a132f97c                         pip install pandas
+sudo docker exec 80f94c332bee                         pip install pandas
+sudo docker exec 99efeb23f7cc                         pip install pandas
+sudo docker exec 3f5cf2fa9085                         pip install pandas
+sudo docker exec 43c1511e9bae                         pip install pandas
 
-sudo docker exec a1713da78eb5                         pip install oauth2client
-sudo docker exec e068abefd88c                         pip install oauth2client
-sudo docker exec 157a57f49a33                         pip install oauth2client
-sudo docker exec f4801422d5cb                         pip install oauth2client
-sudo docker exec fa00edf25ad0                         pip install oauth2client
+sudo docker exec ff56a132f97c                         pip install oauth2client
+sudo docker exec 80f94c332bee                         pip install oauth2client
+sudo docker exec 99efeb23f7cc                         pip install oauth2client
+sudo docker exec 3f5cf2fa9085                         pip install oauth2client
+sudo docker exec 43c1511e9bae                         pip install oauth2client
 
-sudo docker exec a1713da78eb5                         pip install BeautifulSoup4
-sudo docker exec e068abefd88c                         pip install BeautifulSoup4
-sudo docker exec 157a57f49a33                         pip install BeautifulSoup4
-sudo docker exec f4801422d5cb                         pip install BeautifulSoup4
-sudo docker exec fa00edf25ad0                         pip install BeautifulSoup4
+sudo docker exec ff56a132f97c                         pip install BeautifulSoup4
+sudo docker exec 80f94c332bee                         pip install BeautifulSoup4
+sudo docker exec 99efeb23f7cc                         pip install BeautifulSoup4
+sudo docker exec 3f5cf2fa9085                         pip install BeautifulSoup4
+sudo docker exec 43c1511e9bae                         pip install BeautifulSoup4
 
 
