@@ -51,7 +51,7 @@ dag = DAG(
 )
 
 
-    
+
 def download_files(**kwargs):
     ti = kwargs['ti']
     file_number = kwargs.get('file_number')
