@@ -5,7 +5,7 @@
 https://www.youtube.com/watch?v=aTaytcxy2Ck
 https://airflow.apache.org/docs/apache-airflow/stable/start/docker.html
 
-# 1. Create a VM Instance with 16GB RAM and 6 cores vCPU
+# 1. Create a VM Instance with 16GB RAM, 6 cores vCPU and 20GB Storage
 # Run the commands below on the Instance SSH
 sudo apt-get update
 sudo apt install docker.io
