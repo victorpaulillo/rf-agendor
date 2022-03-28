@@ -702,7 +702,6 @@ def grant_access_to_prod_table():
 
         cur = conn.cursor()
         grant_access = """
-            GRANT ALL PRIVILEGES ON public TO "agendor-dev";
             GRANT ALL PRIVILEGES ON TABLE rf_agendor_cadastro_api TO "agendor-dev";
             """
 
