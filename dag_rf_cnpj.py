@@ -650,7 +650,7 @@ def validation_final_no_records_postgres_bq():
 
     # Download query results.
     query_bq = """
-        select count(1) as qt
+        select count(distinct cnpj) as qt
         from `{project_name}.rf.rf_agendor_cadastro_api`
     """.format(project_name=project_name)
     df_bq = (
