@@ -43,8 +43,8 @@ rf_bucket_name = 'importacao_rf_agendor'
 dag = DAG(
     dag_id='dag_rf_download',
     description=f'DAG para Download de dados de CNPJ da Receita Federal',
-    # schedule_interval= '0 23 * * 6',
-    schedule_interval= '0 23 * * 1',
+    schedule_interval= '0 23 * * 6',
+    # schedule_interval= '0 23 * * 1',
     start_date=datetime(2021, 4, 7, tzinfo=local_tz),
     default_args=default_args,
     catchup=False,
