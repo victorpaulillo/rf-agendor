@@ -703,6 +703,7 @@ def grant_access_to_prod_table():
         cur = conn.cursor()
         grant_access = """
             GRANT ALL PRIVILEGES ON TABLE rf_agendor_cadastro_api TO "agendor-dev";
+            CREATE INDEX cnae_idx ON rf_agendor_cadastro_api (cnae);
             """
 
         cur.execute(grant_access)
